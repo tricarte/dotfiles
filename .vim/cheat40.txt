@@ -1,0 +1,8 @@
+My Mappings {{{2
+NerdTree Toggle          «F3»         N
+NerdTree File in tree    «F2»         N
+
+Surround Stuff
+Change "" to ''          «cs"'»       N
+Change "" to tag 
+}}}

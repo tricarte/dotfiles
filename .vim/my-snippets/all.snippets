@@ -1,0 +1,58 @@
+extends all
+
+snippet fknamemale "Fake Male Name" i
+`!v fake#gen('male_name')`
+endsnippet
+
+snippet fknamefemale "Fake Female Name" i
+`!v fake#gen('female_name')`
+endsnippet
+
+snippet fkint "Fake Integer"
+`!v fake#int()`
+endsnippet
+
+snippet fkint0-100 "Fake Integer 0-100"
+`!v fake#int(0-100)`
+endsnippet
+
+snippet fkfloat "Fake Float"
+`!v fake#float()`
+endsnippet
+
+snippet fkpassword "Fake Password"
+`!v fake#chars(8)`
+endsnippet
+
+snippet fklastname "Fake Lastname"
+`!v fake#gen('surname')`
+endsnippet
+
+snippet fkfullname "Fake Fullname"
+`!v fake#gen('fullname')`
+endsnippet
+
+# snippet fkemail "Fake Email"
+# `!v fake#gen('email')`
+# endsnippet
+
+snippet fkword "Fake Word"
+`!v fake#gen('word')`
+endsnippet
+
+snippet fksentence "Fake Sentence"
+`!v fake#gen('sentense')`
+endsnippet
+
+snippet fkparagraph "Fake Paragraph"
+`!v fake#gen('paragraph')`
+endsnippet
+
+snippet fkcountry "Fake Country"
+`!v fake#gen('country')`
+endsnippet
+
+snippet title "Titlelize in the Transformation"
+${1:a text}
+${1/\w+\s*/\u$0/g}
+endsnippet

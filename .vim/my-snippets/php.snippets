@@ -1,0 +1,103 @@
+extends php
+snippet klein_separate_class_method
+class AboutAction {
+	public static function index () {
+		return function ($request, $response, $service) {
+			$service->pageTitle = 'Your title here';
+			$service->render('views/about.php');
+		};
+	}
+}
+endsnippet
+snippet klein_boilerplate_minimal
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+$klein = new \Klein\Klein();
+
+$klein->respond('GET', '/hello-world', function () {
+	return 'Hello World!';
+});
+
+$klein->dispatch();
+endsnippet
+snippet klein_boilerplate_subdirectory
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+$base  = dirname($_SERVER['PHP_SELF']);
+
+// Update request when we have a subdirectory
+if(ltrim($base, '/')){
+
+	$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], strlen($base));
+}
+
+// Dispatch as always
+$klein = new \Klein\Klein();
+
+$klein->respond('GET', '/', function ($req, $res) {
+	$x = (object) [
+		'a' => 'test',
+		'b' => 'test23',
+		'c' => 'test9'
+	];
+	$res->json($x);
+});
+
+$klein->dispatch();
+endsnippet
+snippet klein_route_get
+$klein->respond('GET', '/', function ($req, $res) {
+	$x = (object) [
+		'a' => 'test',
+		'b' => 'test23',
+		'c' => 'test9'
+	];
+	$res->json($x);
+});
+endsnippet
+snippet klein_nested_route
+$kl->with('/api', function () use ($kl) {
+	# this route will be under /api/search
+	$kl->respond('GET', '/search', function ($req, $res, $service, $app) {
+		# do stuff...
+	});
+
+	# /api/xyz route namespace
+	$kl->with('/xyz', function () use ($kl) {
+
+		# /api/xyz/[all]?
+		$kl->respond('GET', '/[all]?', function ($req, $res, $service, $app) {
+			# do stuff...
+		});
+	});
+});
+endsnippet
+snippet klein_http_error_404_route
+$kl->onHttpError(function ($code, $router, $matched) {
+	$router->response()->body('Error: ' . $code);
+});
+endsnippet
+snippet wp_plugin_header "WP Plugin Header File"
+<?php
+/**
+ * Plugin Name
+ *
+ * @package     PluginPackage
+ * @author      Your Name
+ * @copyright   2019 Your Name or Company Name
+ * @license     GPL-2.0-or-later
+ *
+ * @wordpress-plugin
+ * Plugin Name: Plugin Name
+ * Plugin URI:  https://example.com/plugin-name
+ * Description: Description of the plugin.
+ * Version:     1.0.0
+ * Author:      Your Name
+ * Author URI:  https://example.com
+ * Text Domain: plugin-slug
+ * License:     GPL v2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ */
+endsnippet
