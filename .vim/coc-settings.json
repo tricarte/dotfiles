@@ -1,0 +1,135 @@
+// vim: filetype=jsonc
+{
+    "coc.preferences.formatOnType": false,
+    "coc.preferences.formatOnTypeFiletypes": [],
+    // "languageserver": {
+    //     "bash": {
+    //         "command": "bash-language-server",
+    //         "args": ["start"],
+    //         "filetypes": ["sh"],
+    //         "ignoredRootPaths": ["~"]
+    //     }
+    // },
+    "snippets.userSnippetsDirectory": "~/.vim/my-snippets",
+    "suggest.noselect": false,
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "suggest.floatConfig": {
+        "border": true
+    },
+    "signature.floatConfig": {
+        "border": true
+    },
+    "hover.floatConfig": {
+        "border": true
+    },
+    "diagnostic.messageTarget": "float",
+    "intelephense": {
+        "format": {
+            "braces": "k&r"
+        },
+        "completion": {
+            "fullyQualifyGlobalConstantsAndFunctions": true
+        },
+        "inlineParameters": {
+            "showDollarSign": true
+        },
+        "files": {
+            "exclude": [
+                "**/.git/**",
+                "**/.svn/**",
+                "**/.hg/**",
+                "**/CVS/**",
+                "**/.DS_Store/**",
+                "**/node_modules/**",
+                "**/bower_components/**",
+                "**/vendor/**/{Tests,tests}/**",
+                "**/.history/**",
+                "**/vendor/**/vendor/**"
+            ]
+        },
+        "diagnostics": {
+            "run": "onSave",
+            // because we use ALE for PHP syntax check.
+            "enable": false,
+            "unusedSymbols": false
+        },
+        "stubs": [
+            "apcu",
+            "wordpress",
+            "apache",
+            // "bcmath",
+            "bz2",
+            // "calendar",
+            // "com_dotnet",
+            "Core",
+            "ctype",
+            "curl",
+            "date",
+            // "dba",
+            "dom",
+            "enchant",
+            "exif",
+            "FFI",
+            "fileinfo",
+            "filter",
+            "fpm",
+            "ftp",
+            "gd",
+            // "gettext",
+            // "gmp",
+            "hash",
+            "iconv",
+            "imap",
+            "intl",
+            "json",
+            // "ldap",
+            "libxml",
+            "mbstring",
+            "meta",
+            "mysqli",
+            // "oci8",
+            // "odbc",
+            "openssl",
+            "pcntl",
+            "pcre",
+            "PDO",
+            // "pdo_ibm",
+            "pdo_mysql",
+            // "pdo_pgsql",
+            "pdo_sqlite",
+            // "pgsql",
+            "Phar",
+            "posix",
+            "pspell",
+            "readline",
+            "Reflection",
+            "session",
+            "shmop",
+            "SimpleXML",
+            // "snmp",
+            // "soap",
+            "sockets",
+            "sodium",
+            "SPL",
+            "sqlite3",
+            "standard",
+            "superglobals",
+            "sysvmsg",
+            "sysvsem",
+            "sysvshm",
+            "tidy",
+            "tokenizer",
+            "xml",
+            "xmlreader",
+            "xmlrpc",
+            "xmlwriter",
+            "xsl",
+            "Zend OPcache",
+            "zip",
+            "zlib"
+        ]
+    },
+    "markdown-preview-enhanced.previewTheme": "one-dark.css",
+    "snippets.ultisnips.pythonPrompt": false
+}

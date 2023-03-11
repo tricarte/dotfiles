@@ -1,0 +1,193 @@
+#TODO: This may cause problems when resourcing .bashrc
+# shellcheck source=/dev/null
+# BASHRC_CUSTOM_LOADED="yes"
+
+# PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+# PROMPT_COMMAND="history -a; history -r; $PROMPT_COMMAND"
+
+# load .bash_functions
+if [ -f ~/.bash_functions ]; then
+    . ~/.bash_functions
+fi
+
+# # load prompt theme
+# if [ -f ~/.shell_prompt_airline.sh ]; then
+#     . ~/.shell_prompt_airline.sh
+# fi
+eval "$(starship init bash)"
+
+# added to prevent exiting with ctrl + d for tmux
+IGNOREEOF=3   # Shell only exists after the third consecutive Ctrl-d
+# set -o ignoreeof  # Same as setting IGNOREEOF=3
+
+pathmunge "$HOME/.composer/vendor/bin:$HOME/.npm-global/bin"
+# PATH="$HOME/.composer/vendor/bin:$HOME/.npm-global/bin:$PATH"
+
+. /usr/share/autojump/autojump.bash
+
+# explain.sh begins
+explain () {
+  if [ "$#" -eq 0 ]; then
+    while read  -p "Command: " cmd; do
+      curl -Gs "https://www.mankier.com/api/explain/?cols="$(tput cols) --data-urlencode "q=$cmd"
+    done
+    echo "Bye!"
+  elif [ "$#" -eq 1 ]; then
+    curl -Gs "https://www.mankier.com/api/explain/?cols="$(tput cols) --data-urlencode "q=$1"
+  else
+    echo "Usage"
+    echo "explain                  interactive mode."
+    echo "explain 'cmd -o | ...'   one quoted command to explain it."
+  fi
+}
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# export FZF_DEFAULT_COMMAND='rg --files'
+export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --glob '!*/{.git,node_modules}/**'"
+export FZF_CTRL_T_COMMAND="rg --files --no-ignore-vcs --glob '!*/{.git,node_modules}/**'"
+export FZF_ALT_C_COMMAND="fd --type d --no-ignore-vcs --exclude node_modules --exclude .git"
+# -m allows multiple selection
+# export FZF_DEFAULT_OPTS='-m --height 100% --color=bg+:#C792EA,fg+:#1C1C1C,gutter:-1'
+export FZF_DEFAULT_OPTS='-m --height 100%'
+
+# https://minsw.github.io/fzf-color-picker/
+# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+# --color=fg:#d0d0d0,bg:#263238,hl:#5f87af
+# --color=fg+:#d0d0d0,bg+:#562c5c,hl+:#5fd7ff
+# --color=info:#afaf87,prompt:#d7005f,pointer:#af5fff
+# --color=marker:#87ff00,spinner:#af5fff,header:#87afaf'
+
+# Palenight
+# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+#  --color=fg:#8796b0,bg:#292d3e,hl:#82aaff
+#  --color=fg+:#959dcb,bg+:#444267,hl+:#82aaff
+#  --color=info:#ffcb6b,prompt:#ffcb6b,pointer:#89ddff
+#  --color=marker:#89ddff,spinner:#89ddff,header:#82aaff'
+
+# Dracula
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9
+--color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9
+--color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
+--color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
+
+# Seou256 Dusk
+# export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+# --color fg:242,bg:236,hl:65,fg+:15,bg+:239,hl+:108
+# --color info:108,prompt:109,spinner:108,pointer:168,marker:168'
+
+# load cht.sh completion
+if [ -f ~/.cht.completion.sh ]; then
+    source ~/.cht.completion.sh
+fi
+
+# load wpcli completion
+if [ -f ~/.wp-completion.bash ]; then
+    source ~/.wp-completion.bash
+fi
+
+# load rustic completion
+if [ -f ~/.rustic-completions.bash ]; then
+    source ~/.rustic-completions.bash
+fi
+
+# load wpsite completion
+if [ -f ~/.wpsite-completion.bash ]; then
+    source ~/.wpsite-completion.bash
+fi
+
+# load backupstic completion
+if [ -f ~/.backupstic-completion.bash ]; then
+    source ~/.backupstic-completion.bash
+fi
+
+# Load ssh key for github/gitlab
+# FIXME: This supposes that only one key is added to the agent
+# and it is github/gitlab key.
+ssh-add -l > /dev/null 2>&1
+if [ $? -eq 1 ]
+then
+  if [ -f ~/.ssh/github-id_rsa.pub ]
+  then
+      ssh-add ~/.ssh/github-id_rsa > /dev/null 2>&1
+  fi
+fi
+
+# Provide directory completion for wpr function
+_wpr_complete()
+{
+  local cur
+
+  # FIXME: This is hardcoded.
+  if [[ -z "${SITESDIR}" ]]; then
+      SITESDIR="$HOME/sites"
+  fi
+
+  COMPREPLY=()
+  cur=${COMP_WORDS[COMP_CWORD]}
+
+  if [ "$COMP_CWORD" -eq 1 ]; then
+      FD=$(command -v fd)
+      if [[ $FD ]]; then
+          COMPREPLY=($( compgen -W "$($FD wpstarter.json --max-depth 2 --type f --base-directory $SITESDIR --color never --exec dirname)" -- $cur ) )
+      else
+          COMPREPLY=($( compgen -W "$(find $SITESDIR/ -maxdepth 2 -type f -name wpstarter.json -exec dirname {} \; | xargs -i basename {})" -- $cur ) )
+      fi
+  fi
+
+  return 0
+}
+complete -F _wpr_complete wpr
+
+# Be modular!!!
+# Include additional shell script files
+if [[ -d "$HOME/Library/bashrc.d" ]]; then
+    for FN in "$HOME"/Library/bashrc.d/*.sh ; do
+        source "$FN"
+    done
+fi
+
+if [[ -f "$HOME/.cargo/env" ]]; then
+    source "$HOME/.cargo/env"
+fi
+
+TMUXP=$(command -v tmuxp)
+if [[ $TMUXP ]]; then
+    eval "$(_TMUXP_COMPLETE=bash_source tmuxp)"
+fi
+
+# nnn file manager configuration
+# e enables detached text file editing.
+# c enables nuke as opener. See NNN_OPENER
+# export NNN_OPTS="AdoQUc"
+# Working region
+export NNN_OPTS="AdoQUe"
+export NNN_BMS="h:$HOME;n:$HOME/Documents/notes;s:$HOME/sites;r:$HOME/repos;p:$HOME/valet-park;D:$HOME/Downloads/;V:$HOME/Videos;P:$HOME/Pictures"
+export NNN_PLUG='j:autojump;f:finder;o:fzopen;p:mocplay;d:diffs;t:nmount;v:imgview'
+export VISUAL=ewrap
+export NNN_COLORS='1234'
+# End of working region
+# export NNN_OPENER="$HOME/.config/nnn/plugins/nuke"
+
+# export LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
+
+# export VISUAL="vim --remote-silent"
+export VISUAL="vim"
+# Without --remote-silent below doesn't work with lf with e key mapping
+# export VISUAL="vim"
+export EDITOR="$VISUAL"
+
+export BAT_PAGER='less -R --incsearch -i -J -g'
+
+export ANDROID_HOME="${HOME}/Android/Sdk"
+
+if [[ -f "${HOME}/.apis" ]]; then
+    source "${HOME}/.apis"
+fi
+
+PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"${HOME}/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"; export PERL_MM_OPT;

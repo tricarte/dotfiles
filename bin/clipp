@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# ~/.clipp file format
+# auth="user:password"
+# url="http://host.tld/some/url"
+
+if [[ ! -f "${HOME}/.clipp" ]]; then
+  exit 1
+fi
+
+source "${HOME}/.clipp"
+
+if readlink /proc/$$/fd/0 | grep -q "^pipe:"; then
+  # This works.
+  # Pipe input (echo abc | myscript)
+  # or ( cat | myscript )
+  content=$(</dev/stdin)
+  curl -sS --data-urlencode content="${content}" --user "${auth}" "${url}"
+  exit
+elif file $(readlink /proc/$$/fd/0) | grep -q "character special"; then
+  # If there are no parameters, just output the last copy.
+  if [ $# -eq 0 ]; then
+    curl -sS --user "${auth}" "${url}"
+    printf "\n"
+  else
+    # This is not working as expected.
+    # Here the content is probably coming from the first parameter
+    # sent to the script as a filename meaning that I'm POSTing
+    # file content to the remote server. But I don't think
+    # $content stores what I expect from it. SO FIX IT.
+    content=$(</dev/stdin)
+    curl -sS --data-urlencode content="${content}" --user "${auth}" "${url}"
+  fi
+  exit
+else
+  # This works.
+  # File input (myscript < file.txt)
+  content=$(</dev/stdin)
+  curl -sS --data-urlencode content="${content}" --user "${auth}" "${url}"
+  exit
+fi

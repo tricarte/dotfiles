@@ -1,0 +1,61 @@
+# rustic config file to backup /home, /etc and /root to a local repository
+#
+# backup usage: "rustic -P local backup
+# cleanup:      "rustic -P local forget --prune
+#
+[global]
+repository = "/media/change_me_username/change_me_deviceID/rustic-backups/valet-sites"
+# password-file =  "/root/key-rustic"
+no-cache = true # no cache needed for local repository
+# password-command = "gpg --no-tty -q -d /etc/.rustic-pass.gpg"
+password-command = "gpg -q -d --pinentry-mode loopback /etc/.rustic-pass.gpg"
+
+[forget]
+# keep-hourly = 20
+# keep-daily = 14
+keep-daily = 3
+# keep-weekly = 8
+# keep-monthly = 24
+# keep-yearly = 10
+
+[backup]
+one-filesystem = true
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/adminer"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/cssmdn"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/imarx"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/imml"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/kbdev"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/pdo"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/phpinfo"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/playground"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/pvnstat"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/react-codesandbox-sample-based-on-react-scripts.zip"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/sniploc"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/vnstati"
+
+[[backup.sources]]
+source = "/home/change_me_username/valet-park/vnstatp"

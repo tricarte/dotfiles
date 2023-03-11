@@ -23,14 +23,24 @@ endif
 " Required:
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'mhinz/vim-startify' " Start screen for VIM
-Plug 'moll/vim-bbye' " <leader>q to close buffer without messing layout.
+" Plug 'Exafunction/codeium.vim'
+Plug 'windwp/vim-floaterm-repl'
+" Plug 'moll/vim-bbye' " <leader>q to close buffer without messing layout.
 " Plug 'scrooloose/nerdtree'
 " Plug 'jistr/vim-nerdtree-tabs'
 " Plug 'xuyuanp/nerdtree-git-plugin'
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
+Plug 'ptzz/lf.vim'
+Plug 'wellle/context.vim'
+" Because of context.vim, I disabled indenLine
+" Plug 'Yggdroot/indentLine'
 Plug 'itchyny/lightline.vim'
-Plug 'taohexxx/lightline-buffer'
+Plug 'mengelbrecht/lightline-bufferline'
+" Show buffers in statusline or command line
+" Plug 'bling/vim-bufferline'
+" Plug 'liuchengxu/eleline.vim'
+" Plug 'taohexxx/lightline-buffer'
 " Using vim-signify instead
 " Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
@@ -38,35 +48,51 @@ Plug 'mhinz/vim-signify'
 " Using :FixWhitespace command instead
 " Plug 'bronson/vim-trailing-whitespace'
 Plug 'cohama/lexima.vim' " Auto pair and pairs with new lines
-Plug 'majutsushi/tagbar'
-Plug 'scrooloose/syntastic', { 'for': ['php', 'javascript', 'css', 'jsx', 'html', 'json', 'sh', 'blade'] }
-" Plug 'w0rp/ale'
+Plug 'preservim/tagbar'
+" Plug 'scrooloose/syntastic', { 'for': ['php', 'javascript', 'css', 'jsx', 'html', 'json', 'sh', 'blade'] }
+Plug 'dense-analysis/ale'
 Plug 'sheerun/vim-polyglot'
+let g:polyglot_disabled = ['markdown', 'php']
 " Plug 'othree/html5.vim'
-Plug 'StanAngeloff/php.vim'
+" Plug 'StanAngeloff/php.vim' " Improved syntax highlighting for PHP.
 Plug 'edkolev/promptline.vim' , { 'on': 'PromptlineSnapshot' }
 
-" Color schemes
-" Plug 'cormacrelf/vim-colors-github'
+" Colorschemes
+Plug 'ntk148v/komau.vim'
+Plug 'fenetikm/falcon'
+Plug 'n1ghtmare/noirblaze-vim'
+Plug 'kaicataldo/material.vim'
+Plug 'chriskempson/base16-vim'
+Plug 'cormacrelf/vim-colors-github'
 " Plug 'kabbamine/yowish.vim'
-" Plug 'NLKNguyen/papercolor-theme'
-" Plug 'ajh17/spacegray.vim'
-" Plug 'christophermca/meta5'
-" Plug 'morhetz/gruvbox'
-" Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-" Plug 'joshdick/onedark.vim'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'fneu/breezy'
+Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+Plug 'joshdick/onedark.vim'
 Plug 'rakr/vim-one'
+" Plug 'aonemd/kuroi.vim'
+" Plug 'huyvohcmc/atlas.vim' " Full grey on dark only
+" Plug 'davidosomething/vim-colors-meh' " Dark only, a tiny bit colored, low contrast
+Plug 'preservim/vim-colors-pencil' " Both dark and light is GOOD.
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'stefanvanburen/rams.vim' " Light is pretty good, but it needs markdown improvements.
+" Plug 'pgdouyon/vim-yin-yang' " This has both dark(yin) and light(yang), yin is good.
 
 " Plug 'shawncplus/phpcomplete.vim'
-Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
-Plug 'tobyS/vmustache', { 'for': 'php' }
-Plug 'alvan/vim-php-manual', { 'for': 'php' }
-Plug 'tobyS/pdv', { 'for': 'php' }
+" Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
+" Plug 'alvan/vim-php-manual', { 'for': 'php' }
+
+" Highlight matching tag
 Plug 'valloric/MatchTagAlways', { 'for': ['html', 'php', 'jsx', 'xml'] }
+
+" Change the matching tag when you change the other tag.
 Plug 'AndrewRadev/tagalong.vim', { 'for': ['html', 'php', 'jsx', 'xml'] }
-Plug 'lifepillar/vim-mucomplete'
-" Plug 'dsawardekar/wordpress.vim'
-Plug 'tricarte/wordpress.vim'
+
+" Simple completion engine
+" Plug 'lifepillar/vim-mucomplete'
+
+" Plug 'tricarte/wordpress.vim' " Forked from 'dsawardekar/wordpress.vim'
+
 " PHP xdebug debugging support
 " F5 to start debugging: visit file in browser or run in cli
 " F2 to step over
@@ -81,19 +107,27 @@ if isdirectory('/usr/local/opt/fzf')
 else
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin --no-bash' }
   Plug 'junegunn/fzf.vim'
+  Plug 'chengzeyi/fzf-preview.vim'
+  Plug 'voldikss/fzf-floaterm'
 endif
 
-Plug 'SirVer/ultisnips'
+" Snippet management
+" Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+" Plug 'jvanja/vim-bootstrap4-snippets'
+" PHP snippets
+Plug 'sniphpets/sniphpets'
+Plug 'sniphpets/sniphpets-common'
+
 " Close all buffers but this
 Plug 'vim-scripts/BufOnly.vim'
-" automatically change directory to project's root
-Plug 'airblade/vim-rooter'
-" integerate ranger file manager with vim, :Ranger
-Plug 'francoiscabrol/ranger.vim', { 'on': 'RangerWorkingDirectory' }
-Plug 'jvanja/vim-bootstrap4-snippets'
 
-Plug 'Shougo/echodoc.vim'
+" Automatically change directory to project's root
+Plug 'airblade/vim-rooter'
+
+" Integerate ranger file manager with vim, :Ranger
+" Disabled, gonna try floaterm
+" Plug 'francoiscabrol/ranger.vim', { 'on': 'RangerWorkingDirectory' }
 
 " :<,>Multichange to apply one change to all occurences, aka refactoring
 Plug 'AndrewRadev/multichange.vim'
@@ -104,32 +138,38 @@ Plug 'brooth/far.vim'
 
 Plug 'ryanoasis/vim-devicons'
 
-" php snippets
-Plug 'sniphpets/sniphpets'
-Plug 'sniphpets/sniphpets-common'
-" php support for tagbar using phpctags
+" PHP support for tagbar using phpctags
 Plug 'vim-php/tagbar-phpctags.vim'
 
 " " ' ( { on visuals also works using a config in this file (vnoremap with zdi)
-" cst cs yss ys visual+S
+" cst : Change surrounding tab
+" cs : Press cs then what to change, then to what.
+" yss : Then specify the surrounding chars to the whole line.
+" ys 
+" visual+S
 Plug 'tpope/vim-surround'
 
 " C-P - (B)uffer, (M)RU, (F)iles, (C)mdPalette, (P) Mixed
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'fisadev/vim-ctrlp-cmdpalette'
-Plug 'tacahiroy/ctrlp-funky'
+" Plug 'ctrlpvim/ctrlp.vim'
+" Plug 'fisadev/vim-ctrlp-cmdpalette'
+" Plug 'tacahiroy/ctrlp-funky'
 
 " :yrs for YankRingShow
-Plug 'vim-scripts/YankRing.vim'
-" jump to anywhere using ,,w for current line forward, ,,s for entire buffer
+" Plug 'vim-scripts/YankRing.vim' " I never use it.
+
+" Jump to anywhere using ,,w for current line forward, ,,s for entire buffer
 Plug 'easymotion/vim-easymotion'
+
 " <c+_><c+_> to comment out
 Plug 'tomtom/tcomment_vim'
+" Plug 'tpope/vim-commentary'
+" Sometimes commenting in JSX is not working properly.
+Plug 'suy/vim-context-commentstring'
 
 " :Tabularize /pattern
 Plug 'godlygeek/tabular' , {'on': 'Tabularize'}
 
-" create text objects easily
+" Create text objects easily
 Plug 'kana/vim-textobj-user'
 " ie, ae text object to select entire buffer: vie mapping
 Plug 'kana/vim-textobj-entire'
@@ -142,10 +182,10 @@ Plug 'fvictorio/vim-textobj-backticks'
 
 Plug 'ap/vim-css-color'
 
-" tags management
+" Tags management
 Plug 'ludovicchabant/vim-gutentags'
 
-" search files using silver search :Ags searchTerm,
+" Search files using silver search :Ags searchTerm,
 " r R: forward backward results, p P forward backward paths, u key-mappings
 Plug 'gabesoft/vim-ags', {'on': 'Ags'}
 
@@ -155,31 +195,33 @@ Plug 'gabesoft/vim-ags', {'on': 'Ags'}
 " and enter 0.4 for pane numbering.
 " Default values are provided in configuration
 " Plug 'jpalardy/vim-slime'
+Plug 'voldikss/vim-floaterm' " Toggle a floating terminal with F12
 
-" run commands asynchronously
+" Run commands asynchronously.
+" Sprint below requires it.
 Plug 'skywind3000/asyncrun.vim'
 
 " run code file through its interpreter and display in quickfix, just run :Sprint
 " requires asyncrun.vim
 Plug 'pedsm/sprint'
 
-" execute sql statements through mysql and pgsql
+" Execute sql statements through mysql and pgsql
 " hit enter on visual or non commented line
 " or <leader><enter> on current paragraph
-Plug 'ivalkeen/vim-simpledb'
+" Plug 'ivalkeen/vim-simpledb'
 
-" git commit  browser
+" Git commit  browser
 " :GV, :GV! commits that affect current file only
 Plug 'junegunn/gv.vim'
 
-" imporoved syntax highligting with snippets support (but for snipmate)
+" Imporoved nginx syntax highligting with snippets support (but for snipmate)
 Plug 'chr4/nginx.vim'
 
 " <leader>? to get a vim cheatsheet
-Plug 'lifepillar/vim-cheat40'
+" Plug 'lifepillar/vim-cheat40' " Not using it.
 
 " Display number of found search results
-Plug 'google/vim-searchindex'
+" Plug 'google/vim-searchindex'
 
 Plug 'vim-scripts/visualrepeat'
 
@@ -198,21 +240,34 @@ Plug 'vim-scripts/visualrepeat'
 
 " php-cs-fixer
 " <leader>pcd for directory, pcf for file
-Plug 'stephpy/vim-php-cs-fixer', {'for': 'php'}
+" Plug 'stephpy/vim-php-cs-fixer', {'for': 'php'}
 
 " Laravel artisan support
 " :Artisan make:* with completion
 "Plug 'noahfrederick/vim-laravel'
 
 Plug 'tpope/vim-repeat'
+Plug 'inkarkat/vim-ingo-library'
 
-" auto add colon or semicolon at the end of the line, <leader>;
+" Auto add colon or semicolon at the end of the line using <LEADER>;
 Plug 'lfilho/cosco.vim', {'for': ['python', 'php', 'javascript']}
+
 " :{Chrome,Firefox,Opera,AllBrowser}Reload
-Plug 'lordm/vim-browser-reload-linux', {'on': ['ChromeReload', 'FirefoxReload']}
+" On last try, it was running buggy, requires xdotool.
+" Maybe it didnot work with bismuth tiling window manager under KDE.
+Plug 'lordm/vim-browser-reload-linux', {'on': ['ChromeReload', 'FirefoxReload']} " Not using it.
+
 " Format files using prettier code formatter
-"Plug 'prettier/vim-prettier', {
- " \ 'do': 'npm install'}
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html', 'php', 'sh'] }
+
+" Plug 'tobyS/vmustache', { 'for': 'php' } " pdv below requires vmustache
+" Plug 'tobyS/pdv', { 'for': 'php' } " PHP DocBlock generator
+" Use tab and <s-tab> for jumping between PHPDoc elements.
+Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+
 
 " Create markdown based slideshows
 " Write your slides in markdown and :RemarkPreview
@@ -231,7 +286,6 @@ Plug 'tpope/vim-capslock'
 " cil (change inside line) overrides (change inside last...)
 Plug 'wellle/targets.vim' 
 
-" Disabled, it doesn't recognize already changed directories.
 " Integrate autojump to vim.
 " J and Cd: Use Cd to save changed directory to autojump db.
 Plug 'tricarte/jump.vim'
@@ -247,25 +301,27 @@ Plug 'https://gitlab.com/dbeniamine/cheat.sh-vim.git'
 " matchit.vim Improved.
 Plug 'andymass/vim-matchup'
 
-" Add plugins above this line {{{1
+" Jump to next find character still using f instead of ;. Also for t and T.
+Plug 'rhysd/clever-f.vim'
 
-" html
-"" HTML Bundle
+" Add plugins above this line - END {{{1
+
+" HTML
 Plug 'hail2u/vim-css3-syntax'
-Plug 'gorodinskiy/vim-coloresque'
+" Plug 'gorodinskiy/vim-coloresque'
 Plug 'tpope/vim-haml'
 Plug 'mattn/emmet-vim'
 Plug 'alvan/vim-closetag'
 Plug 'gcmt/breeze.vim' " Html tag jump
 
-" javascript
-"" Javascript Bundle
+" JavaScript
 " It looks like polyglot handles it pretty well.
 " Plug 'jelera/vim-javascript-syntax'
 
-" php
-"" PHP Bundle
+" PHP
 Plug 'arnaud-lb/vim-php-namespace'
+
+Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
 
 call plug#end()
 " matchup.vim will replace both matchit.vim and matchparen
@@ -273,7 +329,7 @@ call plug#end()
 runtime ftplugin/man.vim
 
 " Required:
-filetype plugin indent on
+" filetype plugin indent on
 
 " Use persistent history.
 " https://advancedweb.hu/2017/09/19/vim-persistent-undo/
@@ -296,7 +352,10 @@ set fileencodings=utf-8
 set bomb
 set binary
 set ttyfast
-set synmaxcol=2048
+" set synmaxcol=2048
+set synmaxcol=240
+set shortmess-=S
+set list lcs=trail:·,tab:»·
 
 "" Fix backspace indent
 set backspace=indent,eol,start
@@ -316,7 +375,7 @@ set ttimeout
 set timeoutlen=100
 set ttimeoutlen=100
 " set ttimeoutlen=0 " This fixes the delay after escape visual
-set pastetoggle=<f12>
+" set pastetoggle=<f12>
 set splitbelow " puts new splits to the bottom
 set splitright " ensures new splits are to the right of current
 
@@ -346,26 +405,23 @@ set smartcase
 set showmatch
 set nowrap
 set wrapscan
-" find and replace file wise not line wise
-set gdefault
+set gdefault " Find and replace file wise not line wise
 set foldenable
 " http://www.bestofvim.com/tip/better-line-wraps/
-" improve the display of wrapped lines
+" Improve the display of wrapped lines
 " set showbreak=<ctrl-v>u21aa
 set showbreak=⇇
-" session settings to remember (to be used in :mksession)
+" Session settings to remember (to be used in :mksession)
 set sessionoptions=resize,winpos,winsize,buffers,tabpages,folds,curdir,help
-" show (partial) command in the status line
-set showcmd
-" Use one space, not two, after punctuation.
-set nojoinspaces
+set showcmd " Show (partial) command in the status line
+set nojoinspaces " Use one space, not two, after punctuation.
 set nrformats=
 
 "" Directories for swp files
 " below 4 settings are here to provide encryption within VIM
 " vim -x file.txt
 " for an already opened file use :X
-" dont forget that .viminfo file may contain sensitive data
+" Don't forget that .viminfo file may contain sensitive data
 " to disable it use 'set viminfo='
 set nobackup
 set nowritebackup
@@ -374,7 +430,7 @@ set cryptmethod=blowfish2
 
 set path+=**
 set wildmode=longest,list,full
-set wildmenu " this is the command mode completion menu
+set wildmenu " This is the command mode completion menu
 set wildignorecase
 
 set fileformats=unix,dos,mac
@@ -385,7 +441,7 @@ else
     set shell=/bin/sh
 endif
 
-" session management
+" Session management
 let g:session_directory = "~/.vim/session"
 let g:session_autoload = "no"
 let g:session_autosave = "no"
@@ -398,37 +454,91 @@ syntax on
 set ruler
 set relativenumber
 set number
-set noshowmode                    " we use lightline to show the mode
+set noshowmode                    " We use lightline to show the mode
+set cmdheight=2
 
-set termguicolors
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+if has('termguicolors')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors " This setting corrects the colorscheme but breaks builtin terminal
+    let &t_ut = " "
+
+    " let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
+    " let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
+    " set notermguicolors
+endif
 
 set background=dark
+" set background=light
 
 let no_buffers_menu=1
 if !exists('g:not_finish_vimplug')
-  " colorscheme base16-material
   " colorscheme PaperColor
-  " colorscheme gruvbox
   " colorscheme yowish
   " colorscheme github
-  " colorscheme spacegray
-  " colorscheme meta5
   " colorscheme lucario
   " colorscheme challenger_deep " prefer
   " colorscheme onedark " prefer 2
-  colorscheme one
+  " colorscheme one " light version
+  " colorscheme kuroi
+  " colorscheme atlas
+  " colorscheme meh
+  " colorscheme breezy " Another preferred one
+  " colorscheme palenight " Another preferred one
+  " colorscheme pencil " Another preferred one
+  " colorscheme base16-google-light " Another preferred one
+  " colorscheme base16-materia " Another preferred dark one
+  " colorscheme base16-material " Another preferred dark one
+  colorscheme base16-material-palenight " This is the one I use
+  " colorscheme komau " Another preferred dark one
+  " colorscheme base16-solarized-dark " Another preferred dark one
+  " colorscheme base16-solarized-light " Another preferred light one
+  " colorscheme base16-one-light " Another preferred one
+  " colorscheme shine " This is an official colorscheme.
+  " colorscheme zellner " This is an official colorscheme.
+  " colorscheme default
+  " colorscheme material
+  let g:material_terminal_italics = 1
+  " let g:material_theme_style = 'lighter'
+  " let g:material_theme_style = 'palenight'
+  " let g:material_theme_style = 'default'
+  " colorscheme falcon
+  let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
+  let g:pencil_terminal_italics = 0
+  let g:palenight_terminal_italics=1
+  " colorscheme paper
+  " colorscheme rams " Preferred one
+  " colorscheme koehler
+  " colorscheme yin
   let g:challenger_deep_termcolors = 16
   " colorscheme lanox
   " colorscheme lanox_modified
   " colorscheme nord
-  " colorscheme default
-  highlight Comment cterm=italic
+  highlight Comment cterm=italic gui=italic
+endif
+
+if exists('*term_setansicolors')
+  let g:terminal_ansi_colors = repeat([0], 16)
+  let g:terminal_ansi_colors[0] = '#303c41'
+  let g:terminal_ansi_colors[1] = '#f07178'
+  let g:terminal_ansi_colors[2] = '#c3e88d'
+  let g:terminal_ansi_colors[3] = '#ffcb6b'
+  let g:terminal_ansi_colors[4] = '#82aaff'
+  let g:terminal_ansi_colors[5] = '#c792ea'
+  let g:terminal_ansi_colors[6] = '#89ddff'
+  let g:terminal_ansi_colors[7] = '#eeffff'
+  let g:terminal_ansi_colors[8] = '#4a5459'
+  let g:terminal_ansi_colors[9] = '#ff8b92'
+  let g:terminal_ansi_colors[10] = '#ddffa7'
+  let g:terminal_ansi_colors[11] = '#ffe585'
+  let g:terminal_ansi_colors[12] = '#9cc4ff'
+  let g:terminal_ansi_colors[13] = '#e1acff'
+  let g:terminal_ansi_colors[14] = '#a3f7ff'
+  let g:terminal_ansi_colors[15] = '#ffffff'
 endif
 
 set mousemodel=popup
-set mouse=a " enable mouse in all modes
+set mouse=a " Enable mouse in all modes
 " https://github.com/romainl/idiomatic-vimrc/blob/master/idiomatic-vimrc.vim#L89
 " set t_Co=256
 " set gfn=Monospace\ 10
@@ -448,34 +558,35 @@ if has("gui_running")
   set linespace=6
 else
   let g:CSApprox_loaded = 1
-
-" IndentLine
-"let g:indentLine_enabled = 1
-"let g:indentLine_concealcursor = 0
-"let g:indentLine_char = '┆'
-"let g:indentLine_faster = 1
-
-if $COLORTERM == 'gnome-terminal'
-    set term=gnome-256color
-else
-    if $TERM == 'xterm'
-        set term=xterm-256color
-    endif
 endif
 
-endif
+" Commented
+" if $COLORTERM == 'gnome-terminal'
+"     set term=gnome-256color
+" else
+"     if $TERM == 'xterm'
+"         set term=xterm-256color
+"     endif
+"
+"     if $TERM == 'xterm-kitty'
+"         set term=xterm-kitty
+"     endif
+" endif
+set term=$TERM
 
-if &term =~ '256color'
-  set t_ut=
-endif
+" commented
+" if &term =~ '256color'
+"     set t_ut=
+" endif
 
+" let &t_ut=''
 
 "" Disable the blinking cursor.
 set gcr=a:blinkon0
 set scrolloff=3
 
 "" Status bar
-set laststatus=2
+set laststatus=2 " Always show the status line
 
 "" Use modeline overrides
 set modeline
@@ -487,11 +598,16 @@ set titlestring=%F
 
 " This is set to reduce gitgutter refresh time.
 " Default is 4 seconds.
-set updatetime=100
+" Since I'm using vim-signify this may be not necessary.
+" coc.nvim suggests this 300
+set updatetime=300
 
 " Try to speed up slow scrolling in terminal.
 set nocursorline
+" set cursorline
+" This may be the cause of line glitches when openning new buffers.
 set lazyredraw
+set redrawtime=3000
 
 " set statusline=%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)\
 
@@ -513,41 +629,64 @@ let g:airline_section_c = "%{expand('%:p:h')}"
 
 set showtabline=2  " always show tabline
 
-" use lightline-buffer in lightline
+" Use lightline-buffer in lightline
+let g:lightline#bufferline#enable_devicons = 1
+let g:lightline#bufferline#clickable = 1
+let g:lightline#bufferline#show_number  = 2
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
 let g:lightline = {
-    \ 'tabline': {
-    \   'left': [ 
-    \             [ 'separator' ],
-    \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
-    \   'right': [ [ 'close' ], ],
-    \ },
-    \ 'component_expand': {
-    \   'buffercurrent': 'lightline#buffer#buffercurrent',
-    \   'bufferbefore': 'lightline#buffer#bufferbefore',
-    \   'bufferafter': 'lightline#buffer#bufferafter',
-    \ },
-    \ 'component_type': {
-    \   'buffercurrent': 'tabsel',
-    \   'bufferbefore': 'raw',
-    \   'bufferafter': 'raw',
-    \ },
-    \ 'component': {
-    \   'separator': '',
-    \   'totallines': "%{line('$')}",
-    \ },
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ],
-    \             [ 'gitbranch', 'readonly', 'modified' ] ],
-    \   'right': [ [ 'lineinfo' ], [ 'totallines' ],
-    \              [ 'percent' ],
-    \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
-    \ },
-    \ 'component_function': {
-    \   'gitbranch': 'GitRepoBranchPath',
-    \   'bufferinfo': 'lightline#buffer#bufferinfo',
-    \ },
-    \ 'colorscheme': 'ayu_mirage',
-    \ }
+      \ 'colorscheme': 'material',
+      \ 'tabline': {
+      \   'left': [ ['buffers'] ],
+      \   'right': [ ['close'] ]
+      \ },
+      \ 'component_expand': {
+      \   'buffers': 'lightline#bufferline#buffers'
+      \ },
+      \ 'component_type': {
+      \   'buffers': 'tabsel'
+      \ },
+      \ 'component': {
+      \   'separator': '',
+      \   'totallines': "%{line('$')}",
+      \ },
+      \ }
+" let g:lightline = {
+"     \ 'tabline': {
+"     \   'left': [ 
+"     \             [ 'separator' ],
+"     \             [ 'bufferbefore', 'buffercurrent', 'bufferafter' ], ],
+"     \   'right': [ [ 'close' ], ],
+"     \ },
+"     \ 'component_expand': {
+"     \   'buffercurrent': 'lightline#buffer#buffercurrent',
+"     \   'bufferbefore': 'lightline#buffer#bufferbefore',
+"     \   'bufferafter': 'lightline#buffer#bufferafter',
+"     \ },
+"     \ 'component_type': {
+"     \   'buffercurrent': 'tabsel',
+"     \   'bufferbefore': 'raw',
+"     \   'bufferafter': 'raw',
+"     \ },
+"     \ 'component': {
+"     \   'separator': '',
+"     \   'totallines': "%{line('$')}",
+"     \ },
+"     \ 'active': {
+"     \   'left': [ [ 'mode', 'paste' ],
+"     \             [ 'gitbranch', 'readonly', 'modified' ] ],
+"     \   'right': [ [ 'lineinfo' ], [ 'totallines' ],
+"     \              [ 'percent' ],
+"     \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+"     \ },
+"     \ 'component_function': {
+"     \   'gitbranch': 'GitRepoBranchPath',
+"     \   'bufferinfo': 'lightline#buffer#bufferinfo',
+"     \ },
+"     \ 'colorscheme': 'material',
+"     \ }
 " Change bufferline theme using \ 'colorscheme': 'one', 
 " just before the last } character.
 
@@ -555,7 +694,7 @@ function! GitRepoBranchPath()
     let dir = FugitiveExtractGitDir(getcwd())
     
     if fnamemodify(dir, ':t') == '.git'
-        return fnamemodify(FugitiveWorkTree(), ':t') . '::' . fugitive#head() . ' | ' . fnamemodify(fugitive#Expand('%'), ':h')
+        return fnamemodify(FugitiveWorkTree(), ':t') . '::' . FugitiveHead() . ' | ' . fnamemodify(fugitive#Expand('%'), ':h')
     else
         return getcwd()
     endif
@@ -625,15 +764,17 @@ endif
 "" Autocmd Rules
 "*****************************************************************************
 "" The PC is fast enough, do syntax highlight syncing from start unless 200 lines
-augroup vimrc-sync-fromstart
-  autocmd!
-  autocmd BufEnter * :syntax sync maxlines=200
-augroup END
+" TODO: FIX: Disabling this part make buffer switching with high line numbers
+" Fassssst.
+" augroup vimrc-sync-fromstart
+"   autocmd!
+"   autocmd BufEnter * :syntax sync maxlines=200
+" augroup END
 
-"" txt
+" txt markdown text wrapping
 augroup vimrc-wrapping
   autocmd!
-  autocmd BufRead,BufNewFile *.txt call s:setupWrapping()
+  autocmd BufRead,BufNewFile *.txt,*.md call s:setupWrapping()
 augroup END
 
 "" make/cmake
@@ -650,18 +791,18 @@ set wildmode=list:longest,list:full
 set wildignore+=*.o,*.obj,.git,*.rbc,*.pyc,__pycache__
 let $FZF_DEFAULT_COMMAND =  "find * -path '*/\.*' -prune -o -path 'node_modules/**' -prune -o -path 'target/**' -prune -o -path 'dist/**' -prune -o  -type f -print -o -type l -print 2> /dev/null"
 
-" The Silver Searcher
-if executable('ag')
-  let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
-  set grepprg=ag\ --nogroup\ --nocolor
-endif
-
 " ripgrep
 if executable('rg')
-  let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+  let $FZF_DEFAULT_COMMAND = 'rg --files --no-ignore --hidden --follow --glob "!.git/*"'
   set grepprg=rg\ --vimgrep
   command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
 endif
+
+" The Silver Searcher
+" if executable('ag')
+"   let $FZF_DEFAULT_COMMAND = 'ag --hidden --ignore .git -g ""'
+"   set grepprg=ag\ --nogroup\ --nocolor
+" endif
 
 " Disable visualbell
 set noerrorbells visualbell t_vb=
@@ -670,9 +811,6 @@ if has('autocmd')
 endif
 
 "" Copy/Paste/Cut
-" if has('unnamedplus')
-"   set clipboard=unnamed
-" endif
 if has('unnamedplus')
     vnoremap <c-x> "+d
     vnoremap <c-v> "+p
@@ -684,7 +822,7 @@ endif
 "" Custom configs
 "*****************************************************************************
 
-" javascript
+" JavaScript
 let g:javascript_enable_domhtmlcss = 1
 
 " Useful PHP settings
@@ -695,4 +833,70 @@ let php_htmlInStrings = 1
 " set dictionary=/usr/share/dict/words
 
 runtime! config/*.vimrc
-set re=1
+" Let vim decide the regexp engine based on the pattern.
+" Setting this to 1 may hang typescript files.
+" 0: vim decides, 1: old engine 2: NFA engine
+set re=0
+
+" https://www.tdaly.co.uk/post/vanilla-vim-statusline
+" https://www.tdaly.co.uk/projects/vim-statusline-generator/
+"" statusline
+" set laststatus=2
+" set statusline=                          " left align
+" set statusline+=%2*\                     " blank char
+" set statusline+=%2*\%{StatuslineMode()}
+" set statusline+=%2*\
+" set statusline+=%1*\ <<
+" set statusline+=%1*\ %f                  " short filename
+" set statusline+=%1*\ >>
+" set statusline+=%=                       " right align
+" set statusline+=%*
+" set statusline+=%3*\%h%m%r               " file flags (help, read-only, modified)
+" set statusline+=%4*\%{b:gitbranch}       " include git branch
+" set statusline+=%3*\%.25F                " long filename (trimmed to 25 chars)
+" set statusline+=%3*\::
+" set statusline+=%3*\%l/%L\\|             " line count
+" set statusline+=%3*\%y                   " file type
+" hi User1 ctermbg=black ctermfg=grey guibg=black guifg=grey
+" hi User2 ctermbg=green ctermfg=black guibg=green guifg=black
+" hi User3 ctermbg=black ctermfg=lightgreen guibg=black guifg=lightgreen
+" hi User4 ctermbg=black ctermfg=lightgreen guibg=black guifg=lightgreen
+"
+" "" statusline functions
+" function! StatuslineMode()
+"   let l:mode=mode()
+"   if l:mode==#"n"
+"     return "NORMAL"
+"   elseif l:mode==?"v"
+"     return "VISUAL"
+"   elseif l:mode==#"i"
+"     return "INSERT"
+"   elseif l:mode==#"R"
+"     return "REPLACE"
+"   elseif l:mode==?"s"
+"     return "SELECT"
+"   elseif l:mode==#"t"
+"     return "TERMINAL"
+"   elseif l:mode==#"c"
+"     return "COMMAND"
+"   elseif l:mode==#"!"
+"     return "SHELL"
+"   endif
+" endfunction
+"
+" function! StatuslineGitBranch()
+"   let b:gitbranch=""
+"   if &modifiable
+"     lcd %:p:h
+"     let l:gitrevparse=system("git rev-parse --abbrev-ref HEAD")
+"     lcd -
+"     if l:gitrevparse!~"fatal: not a git repository"
+"       let b:gitbranch="(".substitute(l:gitrevparse, '\n', '', 'g').") "
+"     endif
+"   endif
+" endfunction
+"
+" augroup GetGitBranch
+"   autocmd!
+"   autocmd VimEnter,WinEnter,BufEnter * call StatuslineGitBranch()
+" augroup END

@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+[[ -z ${SUDO_USER:-} ]] && {
+  echo "This script should be run with sudo!"
+  exit
+}
+
+enc() {
+  read -rp "Name of the encrypted output file: " name
+  if [[ -n $name ]]; then
+    echo -e "Now type the content, press the Enter key and then Ctrl+D to exit.\n"
+    gpg --output "$name" --symmetric -
+    if [[ -f "$name" ]]; then
+      echo "File successfully created."
+      return
+    fi
+  else
+    echo "You have to name the encryted file."
+    return 1
+  fi
+}
+
+#-------------------------------------------------------------------
+# Global Option Parsing
+#-------------------------------------------------------------------
+PARAMS=""
+while (("$#")); do
+  case "$1" in
+  single)
+    RTONLY=1
+    shift # Pop the first element off the array on each iteration.
+    ;;
+  mount-only)
+    MONLY=1
+    shift
+    ;;
+  *) # unsupported flags
+    echo "Error: Unsupported flag $1" >&2
+    exit 1
+    ;;
+  *) # preserve positional arguments
+    PARAMS="$PARAMS $1"
+    shift
+    ;;
+  esac
+done
+
+eval set -- "$PARAMS"
+
+if [[ ! -x "/usr/local/bin/conta" ]]; then
+  echo "conta symlink does not exist in /usr/local/bin"
+  exit 1
+fi
+
+user=$(getent passwd 1000 | cut -d':' -f1)
+
+# mounted=$(find /media/"${user}"/* -maxdepth 0)
+# -d1: max depth 1
+mounted=$(fd . /media/"${user}"/ -d1)
+
+if [[ -n $mounted ]]; then
+  echo "Other storage devices are mounted."
+  exit 1
+fi
+
+if [[ ! -f /etc/.container.gpg ]]; then
+  echo "/etc/.container.gpg does not exist. Now creating..."
+  read -rsp "Enter the container password: " pass
+  enc < <(echo -e ".container.gpg\n${pass}")
+  if [[ -f .container.gpg ]]; then
+    mv .container.gpg /etc
+    chmod 600 /etc/.container.gpg
+    chown "$user":"$user" /etc/.container.gpg
+  fi
+fi
+
+res=$(find ./ -maxdepth 1 -type f -name '*.iso')
+
+if [[ -z $res ]]; then
+  if [[ -d "/home/${user}/isos/ubuntu_custom_dvd" ]]; then
+    cd "/home/${user}/isos/ubuntu_custom_dvd" || exit
+    res=$(find ./ -maxdepth 1 -type f -name '*.iso')
+    if [[ -z $res ]]; then
+      echo "No containers found neither in current directory nor ~/isos/ubuntu_custom_dvd"
+      exit 1
+    fi
+  else
+    echo "No containers found in current directory and ~/isos/ubuntu_custom_dvd does not exist."
+    exit 1
+  fi
+fi
+
+if [[ -f /etc/.container.gpg ]]; then
+  pass=$(sudo -u "${user}" gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+elif [[ -f "/home/${user}/.container" ]]; then
+  pass=$(cat "/home/${user}/.container")
+else
+  read -rsp "You have to enter the container password: " pass
+fi
+
+if [[ -z $pass ]]; then
+  echo "Password cannot be empty."
+  exit 1
+fi
+
+# First unmount any mounted container
+conta --text --non-interactive -d
+
+if [[ $RTONLY ]]; then
+  conta --text --fs-options="umask=022" --non-interactive --mount --password="$pass" ./*rd.iso
+else
+  for file in *.iso; do
+
+    if [[ $(basename "$file" .iso) =~ -t$ ]]; then
+      conta --text --fs-options="umask=022" --non-interactive --mount -tc --password="$pass" "$file"
+      if [[ $? == 1 ]]; then
+        echo "Something went wrong!"
+        exit 1
+      fi
+    else
+      conta --text --fs-options="umask=022" --non-interactive --mount --password="$pass" "$file"
+      if [[ $? == 1 ]]; then
+        echo "Something went wrong!"
+        exit 1
+      fi
+    fi
+  done
+fi
+
+if [[ ! $MONLY ]]; then
+  sudo -u "${user}" \
+    TERMINFO="/home/${user}/.local/kitty.app/lib/kitty/terminfo" \
+    lf -command "st"
+fi

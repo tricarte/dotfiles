@@ -1,0 +1,94 @@
+# rustic config file to backup /home, /etc and /root to a local repository
+#
+# backup usage: "rustic -P local backup
+# cleanup:      "rustic -P local forget --prune
+#
+[global]
+repository = "/media/change_me_username/change_me_deviceID/rustic-backups/repos"
+# password-file =  "/root/key-rustic"
+no-cache = true # no cache needed for local repository
+# password-command = "gpg --no-tty -q -d /etc/.rustic-pass.gpg"
+password-command = "gpg -q -d --pinentry-mode loopback /etc/.rustic-pass.gpg"
+
+[forget]
+# keep-hourly = 20
+# keep-daily = 14
+keep-daily = 3
+# keep-weekly = 8
+# keep-monthly = 24
+# keep-yearly = 10
+
+[backup]
+one-filesystem = true
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/30-Days-Of-React"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/admin-menu-search"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/create-virtual-host"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/dnsm"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/msmtp-setup"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/mu-plugins"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/mu-plugins-single"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/nginx-config-installer"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/opcache-toggle-for-valet-linux"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/pws"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/reactwptheme"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/setup-linux"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/snippy-wordpress-import"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/snipwpready"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/vim-my-way"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/vince-volume"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/vite-template-react"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/vnstat-charts"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/wp-cron-runner"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/wpcs"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/wpinstall"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/wpready3"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/wpsite"
+
+[[backup.sources]]
+source = "/home/change_me_username/repos/backupstic"

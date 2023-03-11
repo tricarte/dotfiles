@@ -12,6 +12,11 @@ augroup jsFold
     autocmd Syntax javascript.jsx normal zR
 augroup END
 
+augroup previewMarkdown
+    autocmd!
+    autocmd Syntax markdown command! Preview :CocCommand markdown-preview-enhanced.openPreview
+augroup END
+
 " create directory on save if it does not exist
 " http://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
 " You can use a plugin for this https://github.com/pbrisbin/vim-mkdir
@@ -28,11 +33,18 @@ augroup END
 " autocmd cursormovedi * if pumvisible() == 0|pclose|endif
 " autocmd insertleave * if pumvisible() == 0|pclose|endif
 
-"" Remember cursor position
+" Remember cursor position
 augroup vimrc-remember-cursor-position
   autocmd!
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 augroup END
+
+" if executable('kitty')
+"     augroup SwitchToVIMWindow
+"         autocmd!
+"         autocmd BufReadPost * execute "silent! !switchtovim"
+"     augroup END
+" endif
 
 " autocommands by admin
 " augroup filetype_html
@@ -55,7 +67,7 @@ augroup CreateFromTemplate
 augroup END
 
 " Auto refresh NERDTree when entering its window
-autocmd BufEnter * call NERDTreeRefresh()
+" autocmd BufEnter * call NERDTreeRefresh()
 
 " Using vim-php-namespace instead.
 " autocmd User Composer nmap <buffer> <LocalLeader>f <Plug>(composer-find) |
@@ -75,12 +87,18 @@ augroup END
 
 " nnoremap <leader>; mqA;<esc>`q
 " Now using a plugin to insert the semicolon at the end of the line.
-autocmd FileType javascript,css,php nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
-autocmd FileType javascript,css,php imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
+augroup semiColon
+    au!
+    autocmd FileType javascript,css,php nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
+    autocmd FileType javascript,css,php imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
+augroup END
 
 " html
 " for html files, 2 spaces
-autocmd Filetype html setlocal ts=2 sw=2 expandtab
+augroup twoSpaceForHTML
+    au!
+    autocmd Filetype html setlocal ts=2 sw=2 expandtab
+augroup END
 
 " vim-javascript
 augroup vimrc-javascript
@@ -95,9 +113,10 @@ augroup END
 " augroup END
 
 " Move to the next attribute using <tab> and <s-tab> in html.
-augroup breeze-jump
-    au FileType html,twig,php,xml,javascript.jsx,vue nmap <TAB> <Plug>(breeze-next-attribute)
-    au FileType html,twig,php,xml,javascript.jsx,vue nmap <S-TAB> <Plug>(breeze-prev-attribute)
+augroup breezeJump
+    au!
+    au FileType html,twig,php,xml,javascript.jsx,typescript,vue nmap <TAB> <Plug>(breeze-next-attribute)
+    au FileType html,twig,php,xml,javascript.jsx,typescript,vue nmap <S-TAB> <Plug>(breeze-prev-attribute)
 augroup END
 
 " Backup any file when saved using git to ~/.vim-git-backups.
@@ -108,25 +127,36 @@ augroup custom_backup
 augroup END
 
 " Set /usr/share/dict/words as dictionary for markdown files
-augroup set-dictionary
+augroup setDictionary
+    autocmd!
     au FileType markdown,text setlocal dictionary+=/usr/share/dict/words
 augroup END
 
 " Trigger context aware php completion
-augroup php-completion
-    autocmd!
-    au FileType php inoremap -> -><c-x><c-o>
-    au FileType php inoremap :: ::<c-x><c-o>
-augroup END
+" Fix $this-> not work in intelephense and coc.nvim
+" augroup phpCompletion
+"     autocmd!
+    " au FileType php inoremap -> -><c-x><c-o>
+    " au FileType php inoremap :: ::<c-x><c-o>
+" augroup END
 
-augroup WPDangIt
-    autocmd!
-    autocmd Filetype markdown,text inoreabbrev wp WP
-augroup END
+" augroup WPDangIt
+"     autocmd!
+"     autocmd Filetype markdown,text inoreabbrev wp WP
+" augroup END
 
 augroup Markdown
   autocmd!
   autocmd FileType markdown set wrap
+augroup END
+
+augroup JsonFolding
+  autocmd!
+  autocmd FileType json
+                    \ setlocal foldmethod=indent |
+                    \ setlocal fillchars=fold:\ |
+                    \ setlocal foldtext=NeatFoldText()
+                    " \ setlocal foldtext=foldtext()
 augroup END
 
 " augroup WPDict
@@ -138,3 +168,46 @@ augroup helpfiles
   au!
   au BufRead,BufEnter */doc/* wincmd L
 augroup END
+
+" Disable warning of readonly file editing
+augroup NoRo
+    au!
+    au BufEnter * set noro
+augroup END
+
+augroup PHPIndent
+    autocmd!
+    autocmd FileType php set autoindent
+augroup END
+
+augroup UpdateCocLightline
+    autocmd!
+    autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+augroup END
+
+augroup COCCSS
+    autocmd!
+    autocmd FileType scss setl iskeyword+=@-@
+augroup END
+
+autocmd QuitPre * call <sid>TermForceCloseAll()
+function! s:TermForceCloseAll() abort
+    let term_bufs = filter(range(1, bufnr('$')), 'getbufvar(v:val, "&buftype") == "terminal"')
+    for t in term_bufs
+            execute "bd! " t
+    endfor
+endfunction
+
+" Treat *.jsx as filetype javascript.jsx
+" augroup jsxtojsjsx
+"     autocmd!
+"     autocmd BufRead *.jsx :set filetype=javascript.jsx
+" augroup END
+
+augroup setFormatters
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typescript,typescriptreact,javascript,javascriptreact,json,html,php setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end

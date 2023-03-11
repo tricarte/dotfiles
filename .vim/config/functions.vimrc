@@ -25,13 +25,15 @@ function! XTermPasteBegin(ret)
   return a:ret
 endfunction
 
-execute "set <f28>=\<Esc>[200~"
-execute "set <f29>=\<Esc>[201~"
-map <expr> <f28> XTermPasteBegin("i")
-imap <expr> <f28> XTermPasteBegin("")
-vmap <expr> <f28> XTermPasteBegin("c")
-cmap <f28> <nop>
-cmap <f29> <nop>
+" This section is disabled cause it's causing glitches
+" in terminal when pasting clipboard.
+" execute "set <f28>=\<Esc>[200~"
+" execute "set <f29>=\<Esc>[201~"
+" map <expr> <f28> XTermPasteBegin("i")
+" imap <expr> <f28> XTermPasteBegin("")
+" vmap <expr> <f28> XTermPasteBegin("c")
+" cmap <f28> <nop>
+" cmap <f29> <nop>
 
 function! NERDTreeRefresh()
     if &filetype == "nerdtree"
@@ -80,4 +82,16 @@ function! OpenCurrentFileBackupHistory()
   let cmd = 'tmux split-window -h -c "' . backup_dir . '"\; '
   let cmd .= 'send-keys "git log --patch --since=\"1 month ago\" ' . expand('%:t') . '" C-m'
   call system(cmd)
+endfunction
+
+function! NeatFoldText()
+    let foldchar         = matchstr(&fillchars, 'fold:\zs.')
+    let lines_count      = v:foldend - v:foldstart + 1
+    let lines_count_text = printf("┈─ %1s lines ─┈", lines_count) . repeat(foldchar, 10)
+    let foldtextstart    = repeat(' ', indent(nextnonblank(v:foldstart))) . " ••• " 
+    let foldtextend      = lines_count_text . repeat(foldchar, 8)
+    let foldtextlength   = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+
+    " return foldtextstart . repeat(foldchar, winwidth(0) - foldtextlength) . foldtextend
+    return foldtextstart . " " . foldtextend
 endfunction

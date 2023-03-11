@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+sel=$(fd --base-directory "$HOME/Downloads/appimages" --exec basename {} | rofi -dmenu -p 'Select appimage')
+# sel=$( fd --base-directory "$HOME/Downloads/appimages" --exec basename {} | fzf)
+if [[ -n "$sel" ]]; then
+  cd "$HOME/Downloads/appimages" && ./"${sel}" || exit
+fi

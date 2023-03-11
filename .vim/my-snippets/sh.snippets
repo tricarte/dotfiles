@@ -1,0 +1,106 @@
+extends sh
+
+snippet sh_bang
+#!/usr/bin/env bash
+endsnippet
+
+snippet sh_check_command_exists "Is executable installed?"
+${1:the_command}= \$(command -v ${2:$1})
+if [ \$? ]; then
+    echo "Err: ${0}Required command is not installed."
+    exit 1
+fi
+endsnippet
+
+snippet sh_check_argument_provided "Empty string check"
+${1:argument}=\$1
+if [[ -z \$${2:$1} ]] ; then
+	echo "Err: ${0}Reason..."
+	exit 1
+fi
+endsnippet
+
+snippet sh_check_string_not_zero_length "Not empty string check"
+if [[ -n ${1:string_var} ]] ; then
+	${0}
+fi
+endsnippet
+
+snippet sh_check_directory_exists
+if [[ -d "${1:/path/to/directory}" ]] ; then
+	${0}
+fi
+endsnippet
+
+snippet sh_check_file_exists
+if [[ ! -f "${1:/path/to/file}" ]]
+then
+	echo "Err: ${2:...}"
+	exit 1
+fi
+endsnippet
+
+snippet sh_latest_file_or_directory "Latest file or directory in path using ls."
+${1:LATEST}=$( ls -t "${2:/path/to/item}" -1 | head -n1 )
+endsnippet
+
+snippet sh_tstamp "Timestamp string"
+$(date +%Y-%m-%d-%H%M%S)
+endsnippet
+
+snippet sh_tstampvar "Assign timestamp string to var."
+${0:TSTAMP}=$(date +%Y-%m-%d-%H%M%S)
+endsnippet
+
+snippet sh_check_database_exists
+mysql -u root -pvagrant "${1:DATABASE}" -e exit > /dev/null 2>&1 && \
+    echo "Err: Database already exists." && \
+    exit 1
+endsnippet
+
+snippet sh_execute_sql_using_mysql_client
+mysql -u root -pvagrant -e"${1:CREATE DATABASE DBNAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;}"
+endsnippet
+
+snippet sh_restore_mysql_database_dump
+gunzip < "${1:/path/to/dump.sql.gz}" | mysql -u root -pvagrant ${2:DATABASE_NAME}
+endsnippet
+
+snippet sh_extract_tar_to_another_directory
+tar zxf "${1:/path/to/archive.tar.gz}" -C "${2:/tmp}"
+endsnippet
+
+snippet sh_tar_archive_only_root "Create archive of the deepest path, not whole path"
+tar czf \
+    "${1:/path/to/archive}"  \
+    --exclude=*.tar.gz --directory="${2:parent_directory}" "${3:dir_to_be_archived_in_parent}"
+endsnippet
+
+snippet sh_replace_string_in_file
+replace -s "${1:search}" "${2:replace}" -- "${3:/path/to/file}"
+endsnippet
+
+snippet devnull
+> /dev/null 2>&1
+endsnippet
+
+snippet yesno
+read -p "Are you sure?  (y/n): " -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Aborted."
+    exit 1
+fi
+endsnippet
+
+snippet sh_script_path_location
+scriptPath="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+endsnippet
+
+snippet sh_create_temp_directory
+function createTmpDir() {
+    tmpDir="/tmp/$(basename "$0").$RANDOM.$RANDOM.$RANDOM.$$"
+    (umask 077 && mkdir -p "${tmpDir}") || \
+        { _e "Could not create temporary directory! Exiting."; exit 1; }
+}
+endsnippet

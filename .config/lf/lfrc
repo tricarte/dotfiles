@@ -1,0 +1,1136 @@
+# **TEMPLATES**
+
+# APP=$(command -v app)
+# if [[ -z $APP ]]; then
+#     lf -remote "send $id echoerr app is not installed."
+# fi
+
+%[ $LF_LEVEL -eq 1 ] || printf "Warning: You're in a nested lf instance!"
+
+# Right now this looks useless.
+# It is this that causes the below error message when you exit lf.
+# listen: send: no such client id is connected
+${{
+    w=$(tput cols)
+    if [ $w -le 80 ]; then
+        lf -remote "send $id set ratios 1:2"
+    elif [ $w -le 160 ]; then
+        lf -remote "send $id set ratios 1:2:3"
+    else
+        lf -remote "send $id set ratios 1:2:3:5"
+    fi
+}}
+
+set anchorfind
+set autoquit true
+set findlen 4
+set incsearch true
+set incfilter true
+set icons
+set shell bash
+set mouse on
+set nopreview
+# set filesep "\n"
+
+# Invoke rename command with F2
+map <f-2> :rename
+
+# Reload
+map <f-5> :reload
+
+# set previewer /usr/local/bin/pistol
+# set previewer ~/.config/ranger/scope.sh
+
+# Disabled preview and use i key for previewing
+# set nopreview
+# map i $/usr/local/bin/pistol $f | less -R
+map i &{{
+    # if [[ -f "$f" ]]; then
+    #     BAT_PAGER='less -R --incsearch -i -J -g' $(command -v bat) "$f"
+    # else
+    #     lf -remote "send $id echoerr Previewer only works on files!"
+    # fi
+    # clear && /usr/local/bin/pistol "$f" | less -R --incsearch -i -J -g
+
+    PISTOL=$(command -v pistol)
+    if [[ -z $PISTOL ]]; then
+        lf -remote "send $id echoerr pistol is not installed."
+        exit
+    fi
+
+    if [[ $TERM == "xterm-kitty" ]]; then
+        if [[ -S /tmp/mykitty ]]; then
+            kitty @ --to unix:/tmp/mykitty launch \
+                --keep-focus --type=overlay-main \
+                --hold /usr/local/bin/pistol "$f"
+        fi
+    else
+        clear && /usr/local/bin/pistol "$f"
+    fi
+}}
+
+# Open hovered directory in GUI file manager
+map <c-o> &{{
+    if [[ -d "$f" ]]; then
+        xdg-open "$f"
+        exit
+    fi
+
+    # If it's a file, open the containing dir
+    if [[ -f "$f" ]]; then
+        xdg-open $(dirname "$f")
+        exit
+    fi
+}}
+
+# Open with menu
+# Uppercase letter o
+map O ${{
+    # Requires libfile-mimeinfo-perl package
+    clear
+    mimeopen --ask "$f"
+}}
+
+map +x &{{
+    # Make selection executable
+    list=""
+    while IFS=$'\n' read item; do
+        if [[ -f "${item}" ]] && [[ ! -x "${item}" ]]; then
+            list+="${item}\n"
+        fi
+    done < <(printf "${fx}\n")
+    printf "$list" | xargs --delimiter='\n' chmod +x
+    lf -remote "send $id reload"
+}}
+
+map -x &{{
+    # Remove executable bit from selection
+    list=""
+    while IFS=$'\n' read item; do
+        if [[ -f "${item}" ]] && [[ -x "${item}" ]]; then
+            list+="${item}\n"
+        fi
+    done < <(printf "${fx}\n")
+    printf "$list" | xargs --delimiter='\n' chmod -x
+    lf -remote "send $id reload"
+}}
+
+# Another command based version
+# cmd open &xdg-open $f
+
+# map U $ncdu $f
+
+# cli, not tui, so needs screen clearing.
+# Horizontal bar charts, but can be disabled.
+# Does not support selection and deletion as in ncdu and gdu.
+# map U !dust $f
+
+# This feels fast. Written in Rust.
+# Can output in json.
+# Horizontal bar chart.
+# Can display all items, not just big ones with --min-ratio=0
+map U !{{
+    PDU=$(command -v pdu)
+    if [[ -n $PDU ]]; then
+        # clear && echo -ne "Calculating... \r"
+        clear && printf "Calculating... \r"
+        printf "$fx" | xargs --delimiter='\n' $PDU
+    else
+        lf -remote "send $id echoerr pdu is not installed."
+    fi
+}}
+
+# This may be the one you'll want to use.
+# It is the go port of ncdu, but colorized.
+# This can return the selected item if Q is pressed.
+# map U $gdu $f
+
+# This is only interested in finding large files.
+# When directory is small, it doesn't even show the total size.
+# Can output selected large files to external tools.
+# map U $godu $f
+
+# According to pdu, this is the slowest one.
+# But doesn't feel slow though.
+# No progress bar for large directories.
+# Displays apparant size with a cli flag.
+# map U $dua interactive $f
+
+# Below is not working.
+# map <enter> :select $f
+
+# Creating custom command
+# cmd usage $du -h -d1 | less
+# Can chain commands
+# map st :set sortby time; set info time
+
+# Info: Create a drag and drop source with dragon
+cmd dnd &{{
+    DRAGON=$(command -v dragon-drag-and-drop)
+    if [[ -z $DRAGON ]]; then
+        lf -remote "send $id echoerr dragon is not installed."
+    fi
+    printf "${fx}" | xargs --delimiter='\n' $DRAGON --and-exit -on-top --all
+}}
+
+# Info: Convert current working directory to a dnd drop target
+cmd drop ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+    DRAGON=$(command -v dragon-drag-and-drop)
+    if [[ -z $DRAGON ]]; then
+        lf -remote "send $id echoerr dragon is not installed."
+    fi
+
+    items=$($DRAGON --target --and-exit -p)
+    if [[ -n $items ]]; then
+        res=$(printf "Copy\nMove" | $FZF --no-info --disabled --no-multi --cycle -q "Select action...")
+
+        if [[ $res == "Copy" ]]; then
+            printf "${items}" | xargs --delimiter='\n' cp -R --update --target-directory="${PWD}"
+        elif [[ $res == "Move" ]]; then
+            printf "${items}" | xargs --delimiter='\n' mv --update --target-directory="${PWD}"
+        fi
+
+        if [[ -n $res ]]; then
+            lf -remote "send $id load"
+        fi
+    fi
+}}
+
+
+# Info: Autojump to directory
+cmd j &{{
+    J=$(command -v autojump)
+    if [[ -z $J ]]; then
+        lf -remote "send $id echoerr autojump is not installed."
+    fi
+    lf -remote "send $id cd $($J $@)"
+}}
+
+# Info: FZF integration using <c-f>
+cmd fzf_jump ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    # NOTE: In order to make fd ignore items in gitignore files,
+    # it must contain a .git directory.
+    res="$(fd -H --ignore | $FZF +m --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [ -d "$res" ] ; then
+        cmd="cd"
+    elif [ -f "$res" ] ; then
+        cmd="select"
+    else
+        exit 0
+    fi
+    if [[ -n $res ]]; then
+        lf -remote "send $id $cmd \"$res\""
+    fi
+}}
+map <c-f> :fzf_jump
+
+# Info: Grep files using fzf and ripgrep
+cmd grep ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+    res="$( \
+        RG_PREFIX="rg --hidden --column --line-number --no-heading --color=always \
+            --smart-case "
+        FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
+            $FZF --bind "change:reload:$RG_PREFIX {q} || true" \
+            --ansi --layout=reverse --header 'Search in files' \
+            | cut -d':' -f1
+    )"
+    [ ! -z "$res" ] && lf -remote "send $id select \"$res\""
+}}
+
+# Info: Create new directory
+cmd mkdir %{{
+    if [[ -z "$@" ]]; then
+        lf -remote "send $id echoerr No arguments provided"
+        exit
+    fi
+
+    mkdir -- "$@"
+    lf -remote "send $id select $@"
+}}
+
+# Info: Create new file
+cmd touch %{{
+    if [[ -z "$@" ]]; then
+        lf -remote "send $id echoerr No arguments provided"
+        exit
+    fi
+
+    touch "$@"
+    lf -remote "send $id select \"${@}\""
+}}
+
+# Info: Create new directory or file
+cmd new !{{
+    clear
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    res=$(printf "Directory\nFile" | $FZF)
+    case "${res}" in
+        # symbolically copy mode is indicating a soft link
+        File)
+            printf "New file name: "
+            read newf
+            if [[ -n "${newf}" ]]; then
+                lf -remote "send $id touch \"${newf}\""
+            fi
+            ;;
+        Directory)
+            printf "New directory name: "
+            read newd
+            if [[ -n "${newd}" ]]; then
+                lf -remote "send $id mkdir \"${newd}\""
+            fi
+            ;;
+        *)
+            lf -remote "send $id echoerr Unknown action."
+    esac
+}}
+
+# Info: Move selected item(s) to the directory that will be created
+cmd move2newdir ${{
+    clear
+    set -f
+    printf "Directory name: "
+    read newd
+    mkdir -- "$newd"
+    mv -- $fx "$newd"
+    lf -remote "send $id select \"${newd}\""
+}}
+
+# Info: Create symlinks/hardlinks
+cmd link %{{
+    # y (select for copy) and P to paste soft-link
+    # d (select for cut) and P to paste hard-link
+    set -- $(cat ~/.local/share/lf/files)
+    mode="$1"
+    shift
+    if [ "$#" -lt 1 ]; then
+        lf -remote "send $id echoerr First select the item to be linked to by pressing y(soft link) or d(hard link)."
+        exit 0
+    fi
+    case "$mode" in
+        # symbolically copy mode is indicating a soft link
+        copy) ln -sr -t . -- "$@";;
+        # while a move mode is indicating a hard link
+        move) ln -t . -- "$@";;
+    esac
+    rm ~/.local/share/lf/files
+    lf -remote "send $id clear"
+}}
+map P :link
+
+# Info: Go to a bookmarked directory
+cmd bookmark_jump ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+    LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
+    res=$(cat $LF_BOOKMARK_PATH/$(ls "$LF_BOOKMARK_PATH" | $FZF))
+    res=$(eval "echo -e ${res}")
+    if [[ -n "$res" ]]; then
+        lf -remote "send $id cd "$res""
+    fi
+}}
+map b :bookmark_jump
+
+# Info: Bookmark the working directory ( not the selected one )
+cmd bookmark_create ${{
+    LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
+    clear
+    read -rp "Enter the bookmark name for ${PWD}: " ans
+    if [[ -n "${ans}" ]]; then
+        if [[ "$PWD" == ${HOME}* ]]; then
+            current=${PWD/#${HOME}/\$HOME}
+            printf $current > "${LF_BOOKMARK_PATH}/${ans}"
+        elif [[ "$PWD" == /media/${USER}* ]]; then
+            current=${PWD//${USER}/\$USER}
+            printf $current > "${LF_BOOKMARK_PATH}/${ans}"
+        else
+            printf "${PWD}" > "${LF_BOOKMARK_PATH}/${ans}"
+        fi
+    fi
+}}
+map B :bookmark_create
+
+# Info: Open selected file with a manually entered application
+cmd open-with &"$@" "$fx"
+map ` push :open-with<space>
+
+# Preview images with sxiv
+# What you mark in sxiv will also be selected in lf.
+map gq &{{
+    iv=$(command -v nsxiv)
+
+    if [[ -z $iv ]]; then
+        iv=$(command -v sxiv)
+        if [[ -z $iv ]]; then
+            lf -remote "send $id echoerr Err: Neither nsxiv nor sxiv is installed."
+            exit
+        fi
+    fi
+
+    # if [[ -d "$f" ]]; then
+    #     items=$($iv -o -t -p "$f")
+    # fi
+
+   printf "${fx}" | xargs --delimiter='\n' $iv
+
+    # if [[ -n $items ]]; then
+    #     items=$(wrap-with-quotes "${items}")
+    #     lf -remote "send $id toggle $(echo ${items})"
+    # fi
+}}
+
+# View current directory in thumbnail mode.
+# What you mark in sxiv will also be selected in lf.
+map gb &{{
+    iv=$(command -v nsxiv)
+
+    if [[ -z $iv ]]; then
+        iv=$(command -v sxiv)
+        if [[ -z $iv ]]; then
+            lf -remote "send $id echoerr Err: Neither nsxiv nor sxiv is installed."
+            exit
+        fi
+    fi
+
+    if [[ -d "$f" ]]; then
+        items=$($iv -o -t -p "$f")
+    fi
+
+    if [[ -f "$f" ]]; then
+        items=$($iv -o -t -p "$(dirname "$item")")
+    fi
+
+    if [[ -n $items ]]; then
+        items=$(wrap-with-quotes "${items}")
+        lf -remote "send $id toggle $(echo ${items})"
+    fi
+}}
+
+# Info: Create archive using atool
+cmd archive &{{
+    APACK=$(command -v apack)
+
+    if [[ -z $APACK ]]; then
+        lf -remote "send $id echoerr atool package is not installed."
+        exit
+    fi
+
+    if [[ -z "$@" ]]; then
+        lf -remote "send $id echoerr Usage: archive output.[tar].[gz|bz|bz2|lzo|lz|xz|7z|zip|rar]"
+        exit
+    fi
+
+    printf "${fx}" | xargs --delimiter='\n' realpath --relative-to="$PWD" | xargs --delimiter='\n' $APACK "$@"
+    if [[ -f "$@" ]]; then
+        lf -remote "send $id load"
+        lf -remote "send $id echo $@ created."
+    fi
+}}
+
+# Info: Extract archive with atool
+cmd extract &{{
+    AUNPACK=$(command -v aunpack)
+
+    if [[ -z $AUNPACK ]]; then
+        lf -remote "send $id echoerr atool package is not installed."
+        exit
+    fi
+
+    ( $AUNPACK "$f" && lf -remote "send $id load" ) || lf -remote "send $id echoerr Archive could not be extracted."
+
+}}
+
+# Info: Copy paths to clipboard
+cmd paths &{{
+    if [[ $XDG_SESSION_TYPE == 'x11' ]]; then
+        XCLIP=$(command -v xclip)
+        if [[ -z $XCLIP ]]; then
+            lf -remote "send $id echoerr xclip is not installed."
+            exit
+        fi
+
+        xclip -sel clip < <(printf "${fx}") && \
+            lf -remote "send $id echo Paths copied to the clipboard."
+    else
+        lf -remote "send $id echoerr You are probably in a Wayland session."
+    fi
+}}
+
+# Info: Slideshow with feh image viewer
+cmd slideshow &{{
+    FEH=$(command -v feh)
+    if [[ -z $FEH ]]; then
+        lf -remote "send $id echoerr feh - image viewer is not installed."
+    fi
+
+    if [[ $@ == "recursive" ]]; then
+        r="--recursive"
+    fi
+
+    if [[ -f "$f" ]]; then
+        target=$(dirname "$f")
+    elif [[ -d "$f" ]]; then
+        target="$f"
+    fi
+
+    $FEH -q "$r" --on-last-slide resume \
+        --scale-down --slideshow-delay 4 \
+        --randomize --quite --image-bg black "$target"
+
+    if [[ $? != 0 ]]; then
+        lf -remote "send $id echoerr There are no loadable images."
+    fi
+}}
+map gs :slideshow
+map gr :slideshow recursive
+
+# Info: Play current directory as a playlist with vlc
+cmd playvideos &{{
+    VLC=$(command -v vlc)
+    if [[ -z $VLC ]]; then
+        lf -remote "send $id echoerr vlc player is not installed."
+    fi
+
+    if [[ $@ == "recursive" ]]; then
+        r='--recursive expand'
+    fi
+
+    if [[ -f "$f" ]]; then
+        target=$(dirname "$f")
+    elif [[ -d "$f" ]]; then
+        target="$f"
+    fi
+
+    $VLC $r --quiet --random --qt-minimal-view "${target}"
+
+    if [[ $? != 0 ]]; then
+        lf -remote "send $id echoerr There are no loadable videos."
+    fi
+}}
+map gv :playvideos recursive
+
+# Info: Start image and video presentation from /media
+cmd st &{{
+    # Running lf with -command that does '-remote send' sometimes not work
+    # So we are sleeping for a while...
+    # /run/user/1000/lf.${USER}.sock
+    sleep 1
+
+    lf -remote "send $id select /media"
+    lf -remote "send $id push gr"
+    lf -remote "send $id push gv"
+
+    amixer -q sset 'Master' 0%
+    # pactl -- set-sink-volume 0 0%
+
+    for window in $(wmctrl -l); do
+        wid=$(printf ${window} | cut -d" " -f1)
+        xdotool key --window "${wid}" "super+Page_Down"
+    done
+
+    vlcid=$(wmctrl -l | grep "VLC media player" | cut -d" " -f1)
+    fehid=$(wmctrl -l | grep feh | cut -d" " -f1)
+
+    se=$(command -v safeeyes)
+    if [[ -n "${se}" ]]; then
+        $se -d
+    fi
+
+    xdotool windowactivate "${fehid}"
+    xdotool windowactivate "${vlcid}"
+}}
+
+# Info: Decrypt file which is encrypted with gpg
+# Only useful for encrypted text files
+# that will be printed to the screen.
+cmd decrypt !{{
+    clear
+    gpg -qd --pinentry-mode loopback "${f}"
+    printf "\n"
+}}
+
+# Info: Provide basic encryption/decryption with gpg
+cmd gpg !{{
+    clear
+    # gpg -qd --pinentry-mode loopback "$f"
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    res=$(
+        printf "a: Encrypt with private key\n\
+b: Encrypt with passphrase\n\
+c: Decrypt\n\
+        " \
+        | $FZF --no-info --disabled --no-multi --cycle -q "Select action...")
+
+    res=$(printf "${res}" | cut -d':' -f1)
+
+    if [[ -z "${res}" ]]; then
+        exit
+    fi
+
+    case "${res}" in
+    a)
+        publickey=$(gpg --list-keys --with-colons | grep uid | cut -d':' -f10 \
+            | $FZF --no-info --disabled --no-multi --cycle -q "Select public key...")
+
+        if [[ -f "$f" ]]; then
+            filename="$(basename "$f").gpg"
+
+            if [[ -n "${publickey}" ]]; then
+                gpg --output "${filename}" --encrypt --recipient "${publickey}" "$f"
+                if [[ -f "${filename}" ]]; then
+                    lf -remote "send $id select \"${filename}\""
+                fi
+            fi
+
+        elif [[ -d "$f" ]]; then
+            APACK=$(command -v apack)
+            archive_name="$(basename "$f").tar"
+            filename="${archive_name}.gpg"
+            $APACK "${archive_name}" $(realpath --relative-to="${PWD}" "${f}")
+            if [[ -f "${archive_name}" ]]; then
+                gpg --output "${filename}" --encrypt --recipient "${publickey}" "${archive_name}"
+                if [[ -f "${filename}" ]]; then
+                    rm -f "${archive_name}"
+                    lf -remote "send $id select \"${filename}\""
+                fi
+            fi
+        fi
+        ;;
+    b)
+        if [[ -f "${f}" ]]; then
+            filename="$(basename "$f").gpg"
+            gpg --pinentry-mode loopback --output "${filename}" --symmetric "$f"
+            if [[ -f "${filename}" ]]; then
+                lf -remote "send $id select \"${filename}\""
+            fi
+        elif [[ -d "$f" ]]; then
+            APACK=$(command -v apack)
+            archive_name="$(basename "$f").tar"
+            filename="${archive_name}.gpg"
+            $APACK "${archive_name}" $(realpath --relative-to="${PWD}" "${f}")
+            if [[ -f "${archive_name}" ]]; then
+                gpg --pinentry-mode loopback --output "${filename}" --symmetric "${archive_name}"
+                if [[ -f "${filename}" ]]; then
+                    rm -f "${archive_name}"
+                    lf -remote "send $id select \"${filename}\""
+                fi
+            fi
+        fi
+        ;;
+    c)
+        action=$(printf "a: Write to file\nb: Print to the screen (Be careful with binary files)" \
+            | $FZF --no-info --disabled --no-multi --cycle -q "Select action...")
+        action=$(printf "${action}" | cut -d':' -f1)
+
+        if [[ -n "${action}" ]]; then
+            case "${action}" in
+            a)
+                clear
+                read -rp "Enter a name for the output file: " ans
+                if [[ -f "${ans}" ]]; then
+                    ans="${ans}.new"
+                fi
+                gpg -qd --pinentry-mode loopback "${f}" > "${ans}"
+                if [[ -f "${ans}" ]]; then
+                    lf -remote "send $id select \"${ans}\""
+                fi
+                ;;
+            b)
+                clear
+                gpg -qd --pinentry-mode loopback "${f}"
+                ;;
+            *)
+                printf "You did not specify a choice.\n"
+                exit
+            esac
+
+        fi
+        ;;
+    *)
+        printf "You did not specify a choice.\n"
+        exit
+    esac
+}}
+
+map <delete> delete
+
+# Info: Fix filenames such as converting spaces to underscores
+cmd fixname &{{
+    while IFS=$'\n' read item
+    do
+        parent="$(dirname "${item}")"
+        base="$(basename "${item}")"
+
+        fixed=$(printf "$base" | tr -s ' ' | tr ' ' '_')
+        fixed=$(printf "$fixed" | sed 's/[^(^(-_)a-zA-Z0-9)]//g' | tr -s '_-')
+        if [[ "$fixed" != "$base" ]]; then
+            mv "${parent}/${base}" "${parent}/${fixed}"
+        fi
+    done < <(printf "${fx}\n")
+    lf -remote "send $id load"
+}}
+
+# Info: Add selected item to an existing rustic backup profile
+cmd backup ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    FD=$(command -v fd)
+    if [[ -z $FD ]]; then
+        lf -remote "send $id echoerr fd is not installed."
+    fi
+
+    res="$($FD toml --base-directory ~/.config/rustic -x printf "{/.}\n" | $FZF +m --header='Select backup profile')"
+
+    if [[ -n "${res}" ]]; then
+        while IFS=$'\n' read item
+        do
+            check=$(grep "${item}" "${HOME}/.config/rustic/${res}.toml")
+
+            if [[ -z $check ]]; then
+                cat <<EOT >> "${HOME}/.config/rustic/${res}.toml"
+
+[[backup.sources]]
+source = "${item}"
+EOT
+            fi
+        done < <(printf "${fx}\n")
+    fi
+}}
+
+# Info: Go to the most recent file in current directory
+cmd last &{{
+    FD=$(command -v fd)
+    ITEM=$(
+        $FD --base-directory "${@:-./}" --exact-depth 1 \
+            --type f -a \
+            --color never --exec-batch ls -t -Q -1 | head -n1
+    )
+    if [[ -n $ITEM ]]; then
+        lf -remote "send $id select ${ITEM}"
+    fi
+}}
+# Info: Go to the most recently downloaded item in ~/Downloads
+cmd lastdown &{{
+    lf -remote "send $id :last \"${HOME}/Downloads\""
+}}
+
+# Info: Mount veracrypt container
+cmd mountc !{{
+  clear
+  pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+
+  function mount() {
+    # TODO: > /dev/null thing
+    printf -v vcommand "sudo conta --text --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$f"
+
+    $vcommand
+    output=$(conta --text --non-interactive --volume-properties "$f")
+    mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
+    if [[ -d $mpoint ]]; then
+      printf "Successfully mounted.\n"
+      lf -remote "send $id select \"${mpoint}\""
+    else
+      printf "Could not mount...\n"
+    fi
+  }
+
+  if [[ $(basename "$f" .iso) =~ -t$ ]]; then
+    mount -tc
+  else
+    mount
+  fi
+}}
+
+# Info: Unmount veracrypt container
+cmd umountc !{{
+    clear
+    sudo conta --text --non-interactive --dismount "$f"
+}}
+
+# Info: Share selected files using kdeconnect-cli
+cmd kshare !{{
+  clear
+  FZF=$(command -v fzf)
+  if [[ -z $FZF ]]; then
+      lf -remote "send $id echoerr fzf is not installed."
+  fi
+
+  res=$(kdeconnect-cli -a --name-only | $FZF --no-info --disabled --no-multi --cycle -q "Select device...")
+
+  if [[ -n $res ]]; then
+    printf "${fx}" | xargs --delimiter='\n' kdeconnect-cli -n "${res}" --share
+  fi
+}}
+
+# Info: Run any executable in a new kitty window
+# Usage: :run or :runs for sudo
+cmd run &{{
+    if [[ -x "${f}" ]]; then
+        # --type=overlay
+        kitty @ --to unix:/tmp/mykitty launch --hold --self "${@:+sudo}" "${f}"
+    fi
+}}
+# Info: Run command with sudo
+cmd runs &{{
+    lf -remote "send $id :run s"
+}}
+
+# Info: Basic image operations using GraphicsMagick and ffmpeg
+cmd gm !{{
+    clear
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    # Main menu
+    res=$(
+cat <<EOF | $FZF
+Convert
+Resize
+Rotate
+Flip
+Montage
+Optimize
+StillVideo
+EOF
+)
+    case "${res}" in
+        Convert)
+            printf "Converted files will be in \"./converted\" directory.\n"
+            printf "Converting multiple images to a video slideshow or gif is also possible.\n"
+            printf "Specify the new file type by extension: "
+            read ext
+            if [[ -n "${ext}" ]]; then
+                if [[ ! -d "converted" ]]; then
+                    mkdir "converted"
+                fi
+                if [[ "${ext}" == 'gif' ]]; then
+                    printf "Enter the delay amount (Default is 80): "
+                    read delay
+                    if [[ ! "${delay}" -gt 0 ]]; then
+                        delay=80
+                    fi
+                    cmd="gm convert -loop 10 -delay ${delay} $(echo $(wrap-with-quotes "${fx}")) converted/output.gif"
+                    bash -c "${cmd}"
+                elif [[ "${ext}" == 'mp4' ]]; then
+                    printf "Enter the delay amount (Default is 1 second): "
+                    read delay
+                    if [[ ! "${delay}" -gt 0 ]]; then
+                        delay=1
+                    fi
+                    cmd="cat $(echo $(wrap-with-quotes "${fx}")) | ffmpeg -r "1/${delay}" -f image2pipe -i - -c:v libx264 -vf fps=25 -pix_fmt yuv420p -y converted/output.mp4"
+                    bash -c "${cmd}"
+                else
+                    cmds=""
+                    while IFS=$'\n' read item; do
+                        fname="$(basename "${item}")"
+                        cmds+="gm convert -define webp:lossless -quality 100 -auto-orient \"${fname}\" \"converted/${fname%.*}.${ext}\"\n"
+                    done < <(printf "${fx}\n")
+                fi
+
+                printf "${cmds}" | parallel
+
+                if [[ -d "converted" ]]; then
+                    lf -remote "send $id select converted"
+                fi
+            fi
+            ;;
+        Resize)
+            printf  "Resized files will be in \"./resized\" directory.\n"
+            action=$(printf "Manually enter the new size\nResize max size to N px" | $FZF)
+            case "$action" in
+                Manually*)
+                    printf "%s" "Specify the new dimensions in the format [Width]x[Height] or Amount%: "
+                    read dim
+                    if [[ "${dim}" =~ [0-9]*?x[0-9]*? ]] || [[ "${dim}" =~ [0-9]*% ]]; then
+                        if [[ ! -d "resized" ]]; then
+                            mkdir "resized"
+                        fi
+                        cmd=""
+                        while IFS=$'\n' read item; do
+                            fname="$(basename "${item}")"
+                            ext="${fname##*.}"
+                            if [[ "${dim}" =~ [0-9]*% ]]; then
+                                dimpercent="${dim%\%}percent"
+                            fi
+                            newfname="${fname%.*}_${dimpercent:=$dim}.${ext}"
+                            cmds+="gm convert -define webp:lossless,jpeg:preserve-settings -quality 100 -auto-orient -resize \"${dim}%\" \"${fname}\" \"resized/${newfname}\"\n"
+                        done < <(printf "${fx}\n")
+
+                        printf "${cmds}" | parallel
+
+                        if [[ -d "resized" ]]; then
+                            lf -remote "send $id select resized"
+                        fi
+                    else
+                        printf "Entered dimension format is wrong.\n"
+                    fi
+                    ;;
+                Resize*)
+                    printf "Enter the max size in px: "
+                    read size
+
+                    if [[ $size -gt 0 ]]; then
+                        if [[ ! -d "resized" ]]; then
+                            mkdir "resized"
+                        fi
+
+                        cmd=""
+                        while IFS=$'\n' read item; do
+                            fname="$(basename "${item}")"
+                            ext="${fname##*.}"
+
+                            cmds+="gm convert -define webp:lossless,jpeg:preserve-settings -quality 100  -auto-orient -geometry ${size}\> \"${item}\" \"resized/${fname%.*}_${size}.${ext}\"\n"
+                        done < <(printf "${fx}\n")
+
+                        printf "${cmds}" | parallel
+
+                        if [[ -d "resized" ]]; then
+                            lf -remote "send $id select resized"
+                        fi
+                    fi
+                    ;;
+                *)
+                    printf "Unknown action.\n"
+                    exit
+            esac
+            ;;
+        Rotate)
+            printf "Enter the rotation amount (Use '-' for counter-clockwise rotation): "
+            read rot
+            if [[ "${rot}" =~ -?[0-9]+ ]]; then
+                if [[ ! -d "rotated" ]]; then
+                    mkdir "rotated"
+                fi
+
+                cmds=""
+                while IFS=$'\n' read item; do
+                    fname="$(basename "${item}")"
+                    ext="${fname##*.}"
+                    cmds+="gm convert -define webp:lossless,jpeg:preserve-settings -quality 100  -auto-orient -rotate \"${rot}\" \"${fname}\" \"rotated/${fname}\"\n"
+                done < <(printf "${fx}\n")
+
+                printf "${cmds}" | parallel
+
+                if [[ -d "rotated" ]]; then
+                    lf -remote "send $id select rotated"
+                fi
+            else
+                printf "Entered rotation format is wrong.\n"
+            fi
+            ;;
+        Flip)
+            direction=$(printf "Horizontal\nVertical" | $FZF)
+
+            if [[ "${direction}" == "Vertical" ]]; then
+                direction="flip"
+            elif [[ "${direction}" == "Horizontal" ]]; then
+                direction="flop"
+            else
+                lf -remote "send $id echoerr Unsupported direction specifier!"
+                exit
+            fi
+
+            if [[ ! -d "flipped" ]]; then
+                mkdir "flipped"
+            fi
+
+            cmds=""
+            while IFS=$'\n' read item; do
+                fname="$(basename "${item}")"
+                cmds+="gm convert -define webp:lossless,jpeg:preserve-settings -quality 100  -auto-orient -${direction} \"${fname}\" \"flipped/${fname}\"\n"
+            done < <(printf "${fx}\n")
+
+            printf "${cmds}" | parallel
+
+            if [[ -d "flipped" ]]; then
+                lf -remote "send $id select flipped"
+            fi
+            ;;
+        Montage)
+            cmd="gm montage -quality 100 +frame +shadow +label -geometry +0+0 $(echo $(wrap-with-quotes "${fx}")) montage.jpg"
+            bash -c "${cmd}"
+            if [[ -f 'montage.jpg' ]]; then
+                lf -remote "send $id select montage.jpg"
+                lf -remote "send $id unselect"
+            fi
+            ;;
+        Optimize)
+            if [[ ! -d optimized ]]; then
+                mkdir optimized
+            fi
+
+            images=$(printf "${fx}" | grep -E '.(jpg|jpeg|png|webp|gif)$')
+
+            if [[ -n "${images}" ]]; then
+                cmds=""
+                while IFS=$'\n' read item; do
+                    if [[ "${item##*.}" == 'jpg' ]] || [[ "${item##*.}" == 'jpeg' ]]; then
+                        cmds+="jpegoptim --force -m80 --strip-exif -d optimized \"${item}\"\n"
+                    fi
+
+                    if [[ "${item##*.}" == 'png' ]]; then
+                        cmds+="pngquant --verbose -f --ext '_new.png' --skip-if-larger --strip --quality 70-95 \"${item}\"\n"
+                    fi
+
+                    if [[ "${item##*.}" == 'webp' ]]; then
+                        cmds+="cwebp -q 70 -o \"optimized/$(basename ${item})\" \"${item}\"\n"
+                    fi
+
+                    if [[ "${item##*.}" == 'gif' ]]; then
+                        cmds+="gifsicle --optimize=3 --lossy=30 -o \"optimized/$(basename ${item})\" -i \"${item}\"\n"
+                    fi
+                done < <(printf "${fx}\n")
+            fi
+
+            printf "${cmds}" | parallel
+
+            shopt -s nullglob
+            for item in *_new.png; do
+                mv "${item}" ./optimized;
+            done
+            ;;
+        StillVideo)
+            lf -remote "send $id img2vid"
+            ;;
+        *)
+            lf -remote "send $id echoerr Unknown action."
+    esac
+}}
+
+# Info: Convert still image to a video
+cmd img2vid ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    clear
+    if [[ ! "${@}" -gt 0 ]]; then
+        printf "Enter the video length in seconds: "
+        read length
+    else
+        length="${@}"
+    fi
+
+    if [[ "${length}" -gt 0 ]]; then
+        count=$(printf "${fx}\n" | wc -l)
+        encoder=$(printf "libx264\nh264_vaapi" | $FZF)
+
+        case "${encoder}" in
+            libx264)
+            while read item; do
+                count=$((count - 1))
+                filename="$(basename "${item}")"
+                printf "Processing ${item}: "
+                ffmpeg -nostdin -loglevel panic -hide_banner -loop 1 \
+                    -i "${item}" \
+                    -c:v libx264 \
+                    -t "${length}" -pix_fmt yuv420p \
+                    -vf 'scale=ceil(iw/2)*2:ceil(ih/2)*2' "${filename%.*}_libx264.mp4" -y
+
+                if [[ $count -gt 0 ]]; then
+                    printf "DONE - remaining ${count}.\n"
+                else
+                    printf "FINISHED.\n"
+                fi
+            done < <(printf "${fx}\n")
+            ;;
+            h264_vaapi)
+                while read item; do
+                    count=$((count - 1))
+                    filename="$(basename "${item}")"
+                    printf "Processing ${item}: "
+                    ffmpeg -nostdin -hide_banner -loglevel panic -loop 1 \
+                        -i "${item}" \
+                        -vaapi_device /dev/dri/renderD128 \
+                        -c:v h264_vaapi \
+                        -shortest -t "${length}" \
+                        -vf 'format=nv12,hwupload' \
+                        "${filename%.*}_vaapi.mp4" -y
+
+                        if [[ $count -gt 0 ]]; then
+                            printf "DONE - remaining ${count}.\n"
+                        else
+                            printf "FINISHED.\n"
+                        fi
+                done < <(printf "${fx}\n")
+                ;;
+            *)
+                printf "Unknown encoder!"
+                exit
+        esac
+    fi
+}}
+
+# Display image info
+map gm %{{
+    info=$(gm identify "$(basename "${f}")")
+    printf "${info}"
+}}
+
+# Info: Convert markdown to pdf using pandoc
+cmd md2pdf !{{
+    pandoc --pdf-engine=lualatex \
+        -H "${HOME}/Documents/notes/head.tex" \
+        --highlight-style zenburn -s "${f}" -o "${f}".pdf
+
+    if [[ -f "${f}".pdf ]]; then
+        lf -remote "send $id select \"${f}.pdf\""
+    fi
+}}
+
+# Display a command palette
+# Every cmd description must be in this format:
+# "Info: Description goes here..."
+# "cmd cmd_name &{{ }}"
+# TODO: This is VERY fragile.
+map gp ${{
+    FZF=$(command -v fzf)
+    if [[ -f /tmp/lf_cmd_palette_cache ]]; then
+        action=$(cat /tmp/lf_cmd_palette_cache | $FZF)
+    else
+        cmds=$(grep -E ^cmd "${HOME}/.config/lf/lfrc" | cut -d' ' -f2)
+        infos=$(grep -E '^# Info:' "${HOME}/.config/lf/lfrc" | cut -d' ' -f3-)
+        c1=$(printf "$cmds" | wc -l)
+        c2=$(printf "$infos" | wc -l)
+        if [[ $c1 == $c2 ]]; then
+            action=$(paste -d':' <(printf "${cmds}") <(printf "${infos}") | column -t -s':' | sort | tee /tmp/lf_cmd_palette_cache | $FZF)
+        else
+            lf -remote "send $id echoerr Info strings does not match the count of cmds."
+            exit
+        fi
+    fi
+
+    if [[ -n "${action}" ]]; then
+        lf -remote "send $id push :${action%%\ *}"
+    fi
+
+}}

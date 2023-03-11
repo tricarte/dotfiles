@@ -3,16 +3,13 @@ let g:slime_target = "tmux"
 let g:slime_default_config = {"socket_name": "default", "target_pane": "4"}
 
 
-" UltiSnips config
+" Using coc-snippets
+" " UltiSnips config
 " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsSnippetDirectories=["UltiSnips", "my-snippets"]
-" This conflicts with mucomplete so I change it.
-let g:UltiSnipsExpandTrigger = "<tab>"
-" let g:UltiSnipsExpandTrigger = "<c-k>"
-" This also conflicts.
-" let g:UltiSnipsJumpForwardTrigger = "<tab>"
-let g:UltiSnipsJumpForwardTrigger = "<c-j>"
-let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
+" let g:UltiSnipsSnippetDirectories=["UltiSnips", "my-snippets"]
+" let g:UltiSnipsExpandTrigger = "<tab>"
+" let g:UltiSnipsJumpForwardTrigger = "<c-j>"
+" let g:UltiSnipsJumpBackwardTrigger = "<c-k>"
 
 " Gutentags config
 " Where to store tag files
@@ -50,7 +47,6 @@ let g:gutentags_ctags_exclude = [
       \ '*bundle*.js',
       \ '*build*.js',
       \ '.*rc*',
-      \ '*.json',
       \ '*.min.*',
       \ '*.map',
       \ '*.bak',
@@ -95,6 +91,35 @@ let g:tagbar_type_css = {
     \ ]
     \ }
 let g:tagbar_autofocus = 1
+let g:tagbar_type_json = {
+    \ 'ctagstype' : 'json',
+    \ 'kinds' : [
+      \ 'o:objects',
+      \ 'a:arrays',
+      \ 'n:numbers',
+      \ 's:strings',
+      \ 'b:booleans',
+      \ 'z:nulls'
+    \ ],
+  \ 'sro' : '.',
+    \ 'scope2kind': {
+    \ 'object': 'o',
+      \ 'array': 'a',
+      \ 'number': 'n',
+      \ 'string': 's',
+      \ 'boolean': 'b',
+      \ 'null': 'z'
+    \ },
+    \ 'kind2scope': {
+    \ 'o': 'object',
+      \ 'a': 'array',
+      \ 'n': 'number',
+      \ 's': 'string',
+      \ 'b': 'boolean',
+      \ 'z': 'null'
+    \ },
+    \ 'sort' : 0
+    \ }
 
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
@@ -169,11 +194,28 @@ let g:syntastic_style_error_symbol = '✗'
 let g:syntastic_style_warning_symbol = '⚠'
 
 " if you prefer to use ale
-" let g:ale_set_quickfix = 1
-" let g:ale_open_list = 1
-" let g:ale_lint_on_save = 1
-" let g:ale_lint_on_enter = 0
-" let g:ale_lint_on_text_changed = 0
+let g:ale_set_quickfix = 1
+let g:ale_set_loclist = 0
+let g:ale_open_list = 0
+let g:ale_lint_on_save = 1
+let g:ale_set_highlights = 1
+let g:ale_set_signs = 1
+" let g:ale_virtualtext_cursor = 1
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_list_window_size = 5
+let g:ale_echo_cursor = 1
+" let g:ale_change_sign_column_color = 1
+let g:ale_sign_error = '✗'
+" let g:ale_sign_error = 'X'
+let g:ale_sign_warning = '⚠'
+let g:ale_disable_lsp = 1
+let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [] }
+let g:ale_fixers = { 'php': [ 'phpcbf', 'php_cs_fixer'], 'html': ['prettier'], 'css': ['prettier'], 'sh': ['shfmt'] }
+let g:ale_sh_shfmt_options = '-ln bash -i 2'
+
+let g:prettier#config#tab_width = 2
 
 " Sprint config
 let g:SprintHidden = 0
@@ -223,11 +265,11 @@ let g:startify_bookmarks=['~/.vim/vimrc',
             \ '/etc/ssh/sshd_config',
             \ '/etc/fail2ban/fail2ban.conf',
             \ '/etc/fail2ban/jail.local',
-            \ '/etc/php5/fpm/php.ini',
-            \ '/etc/php5/fpm/php-fpm.conf',
-            \ '/etc/php5/fpm/conf.d/05-opcache.ini',
-            \ '/etc/php5/fpm/pool.d/www.conf',
-            \ '/etc/php5/fpm/pool.d/kbdev.conf',
+            \ '/etc/php/7.4/fpm/php.ini',
+            \ '/etc/php/7.4/fpm/php-fpm.conf',
+            \ '/etc/php/7.4/fpm/conf.d/10-opcache.ini',
+            \ '/etc/php/7.4/fpm/pool.d/www.conf',
+            \ '/etc/php/7.4/fpm/pool.d/kbdev.conf',
             \ '/etc/ssmtp/ssmtp.conf',
             \ '/etc/ssmtp/revaliases',
             \ '/etc/adduser.conf',
@@ -259,27 +301,28 @@ let g:closetag_filenames = "*.html,*.xhtml,*.phtml,*.php,*.js"
 " manpager configuration
 let g:ft_man_open_mode = 'vert'
 
-" mucomplete configuration
-" set completeopt+=longest
-set completeopt+=menuone " menuone is working
-set completeopt+=noselect
-set completeopt+=noinsert
-set shortmess+=c   " Shut off completion messages
-set belloff+=ctrlg " If Vim beeps during completion
-let g:mucomplete#enable_auto_at_startup = 1
-set completeopt-=preview
-let g:mucomplete#cycle_all = 0
-let g:mucomplete#chains = {}
-let g:mucomplete#ultisnips#match_at_start = 1
-let g:mucomplete#always_use_completeopt = 1
-" let g:mucomplete#chains.default  = [ 'keyp', 'ulti', 'omni', 'path', 'dict' ]
-let g:mucomplete#chains.default  = [ 'keyp', 'ulti', 'path', 'dict' ]
-let g:mucomplete#chains.php  = [ 'omni', 'ulti', 'keyp', 'dict', 'path' ]
-let g:mucomplete#chains.html  = [ 'ulti', 'path' ]
-let g:mucomplete#chains.css  = [ 'omni', 'ulti', 'keyp' ]
-let g:mucomplete#chains['javascript.jsx']  = [ 'ulti', 'keyp' ]
-" let g:mucomplete#chains.default  = ['omni']
-" let g:mucomplete#chains.default  = ['keyn', 'ulti', 'c-n', 'omni', 'path']
+" Using coc.nvim for completion
+" " mucomplete configuration
+" " set completeopt+=longest
+" set completeopt+=menuone " menuone is working
+" set completeopt+=noselect
+" set completeopt+=noinsert
+" set shortmess+=c   " Shut off completion messages
+" set belloff+=ctrlg " If Vim beeps during completion
+" let g:mucomplete#enable_auto_at_startup = 1
+" set completeopt-=preview
+" let g:mucomplete#cycle_all = 0
+" let g:mucomplete#chains = {}
+" let g:mucomplete#ultisnips#match_at_start = 1
+" let g:mucomplete#always_use_completeopt = 1
+" " let g:mucomplete#chains.default  = [ 'keyp', 'ulti', 'omni', 'path', 'dict' ]
+" let g:mucomplete#chains.default  = [ 'keyp', 'ulti', 'path', 'dict' ]
+" let g:mucomplete#chains.php  = [ 'omni', 'ulti', 'keyp', 'dict', 'path' ]
+" let g:mucomplete#chains.html  = [ 'ulti', 'path' ]
+" let g:mucomplete#chains.css  = [ 'omni', 'ulti', 'keyp' ]
+" let g:mucomplete#chains['javascript.jsx']  = [ 'ulti', 'keyp' ]
+" " let g:mucomplete#chains.default  = ['omni']
+" " let g:mucomplete#chains.default  = ['keyn', 'ulti', 'c-n', 'omni', 'path']
 
 
 " wordpress.vim configuration
@@ -337,6 +380,7 @@ endif
 
 " Echodoc
 let g:echodoc_enable_at_startup = 1
+let g:echodoc#type = 'popup'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Vim-Php-Namespace
@@ -380,10 +424,51 @@ let g:far#source = 'ag'
 
 let g:phpcd_php_cli_executable = 'php7.4'
 
-let g:polyglot_disabled = ['php']
 
 " Disable <c-h> for I'm using it for switching to left buffer.
 let g:pdv_template_dir = $HOME ."/.vim/plugged/pdv/templates_snip" 
 let g:php_manual_online_search_shortcut = ''
 
-let g:tagalong_filetypes = ['html', 'xml', 'jsx', 'php']
+let g:tagalong_filetypes = ['html', 'xml', 'jsx', 'php', 'tsx']
+
+" FZF Config
+" let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+" let g:fzf_preview_window = ['up:40%:hidden', 'ctrl-/']
+let g:fzf_preview_window = []
+" - Popup window (center of the screen)
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+
+let g:doge_enable_mappings = 0
+let g:doge_buffer_mappings = 1
+let g:doge_php_settings = {
+\  'resolve_fqn': 1
+\}
+
+" floaterm settings
+let g:floaterm_width = 0.8
+let g:floaterm_position = 'bottom'
+let g:floaterm_height = 0.8
+let g:floaterm_autoclose = 2
+let g:floaterm_opener = 'edit'
+hi FloatermBorder guifg=orange
+
+" IndentLine
+let g:indentLine_enabled = 1
+let g:indentLine_setColors = 0
+" let g:indentLine_concealcursor = 0
+" let g:indentLine_char = '┆'
+let g:indentLine_faster = 1
+
+" vim-bufferline
+" let g:bufferline_echo = 0
+" autocmd VimEnter *
+"             \ let &statusline='%{bufferline#refresh_status()}'
+"             \ .bufferline#get_status_string()
+
+" Default is float window, but other plugins that create floats will get below
+" let g:context_presenter = 'preview'
+
+" lf.vim
+" open lf instead of netrw
+" let g:NERDTreeHijackNetrw = 0
+let g:lf_replace_netrw = 1 " Open lf when vim opens a directory

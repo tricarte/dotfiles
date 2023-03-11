@@ -21,18 +21,59 @@ command! CSFixDir :call PhpCsFixerFixDirectory()<CR>
 
 " json pretty print
 function! JSONify()
-  %!python -mjson.tool
+  %!python3 -mjson.tool
   set syntax=json
 endfunction
 command! Jsonify :call JSONify()
 
 " make current buffer executable
-command! Chmodx :!chmod a+x %
+" command! Chmodx :!chmod a+x %
+command! Chmodx :AsyncRun chmod +x %
 
 command! Whereami :call DisplayEnclosingLine()
 
-" Format long lines into paragraphs.
-command! Format :normal gqip
-
 " Generate docblock.
-command! Docblock :call pdv#DocumentWithSnip()<CR>
+" Using Doge now
+" command! Docblock :call pdv#DocumentWithSnip()<CR>
+
+" Copy content to ~/.clipboard to make it available through copying over SSH.
+" command! Clipboard :sav ~/.clipboard
+command! -range=% Clipboard  <line1>,<line2>:w! ~/.clipboard
+
+" Fix weird DOS characters.
+command! FixDos :e ++ff=dos
+
+command! -bang Docs call fzf#vim#files('~/Documents', <bang>0)
+command! -bang Valet call fzf#vim#files('~/valet-park', <bang>0)
+command! -bang Sites call fzf#vim#files('~/sites', <bang>0)
+command! -bang Repos call fzf#vim#files('~/repos', <bang>0)
+command! -bang Etc call fzf#vim#files('/etc', <bang>0)
+command! -bang Dotf call fzf#run({'source': 'dotfiles ls-files ~', 'sink': 'e'})
+
+if executable('shfmt')
+    " command! -bang ShellFormat :%!shfmt -ln bash -i 2
+    command! -bang ShellFormat :ALEFix
+endif
+
+" Apply macro to current line or to selection.
+command! -nargs=1 -range=% Macro  <line1>,<line2>:norm! @<args>
+
+" Reload last session that is saved by coc-lists
+command! Reload :source ~/.vim/sessions/default.vim
+
+" List yank registers using CocList
+command! Y :exe 'CocList registers'
+
+" Read any shell command's output into the current line
+command! -nargs=1 Read :r !<args>
+
+" TODO: Can we handle calling multiple times?
+" Run a PHP builtin server in localhost:8080
+command! Playground :e ~/sites/pws-playground/public/index.php | :exe 'FloatermNew --title=Playground --silent "./pws"'
+
+" Ranger wrapper with floaterm
+command! Ranger FloatermNew ranger
+
+command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-mode <args>
+" FIXME: Handle args in a function
+" command! -nargs=1 -range=% FindAndReplaceExact  <line1>,<line2>:!sd --string-mode <args>

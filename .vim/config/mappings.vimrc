@@ -4,8 +4,10 @@ nnoremap - <C-x>
 
 " Search mappings: These will make it so that going to the next one in a
 " search will center on the line it's found in.
-nnoremap n nzzzv
-nnoremap N Nzzzv
+" OK, this mappings causes both vim-searchindex or the native functionality
+" not work.
+" nnoremap n nzzzv
+" nnoremap N Nzzzv
 
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <silent> <F3> :NERDTreeToggle<CR>
@@ -99,7 +101,8 @@ vmap > >gv
 " vnoremap K :m '<-2<CR>gv=gv
 
 " split line
-nnoremap K i<CR><Esc>
+" Disabled. Use r<CR> or s<CR>. s<CR> will get you in 'INSERT' mode.
+" nnoremap K i<CR><Esc>
 
 " go to the beginning of the line
 " nnoremap H 0
@@ -124,8 +127,19 @@ inoremap JJ <esc>
 " nnoremap <c-l> <c-w>l
 
 " Move between buffers
-nnoremap <c-h> :bp<cr>
-nnoremap <c-l> :bn<cr>
+" nnoremap <c-h> :bp<cr>
+" nnoremap <c-l> :bn<cr>
+" https://vi.stackexchange.com/questions/19405/skip-the-quickfix-list-when-buffer-switching-using-bn
+function! BSkipQuickFix(command)
+  let start_buffer = bufnr('%')
+  execute a:command
+  while &buftype ==# 'quickfix' && bufnr('%') != start_buffer
+    execute a:command
+  endwhile
+endfunction
+
+nnoremap <c-l> :call BSkipQuickFix("bn")<CR>
+nnoremap <c-h> :call BSkipQuickFix("bp")<CR>
 
 " resize vsplit
 " no need for the below mapping, as arrow keys do this
@@ -134,24 +148,38 @@ nnoremap 25 :vertical resize 40<cr>
 nnoremap 50 <c-w>=
 nnoremap 75 :vertical resize 120<cr>
 
-" Switch to previous buffer
+" Switch to previous buffer, think of it as [ a ]lt + [ t ]ab
 nnoremap <leader>at <c-^>
 
-" All things CtrlP
-nnoremap <c-p>b :CtrlPBuffer<cr>
-nnoremap <c-p>m :CtrlPMRUFiles<cr>
-nnoremap <c-p>p :CtrlPMixed<cr>
-nnoremap <c-p>w :CtrlPCurWD<cr>
-nnoremap <c-p>f :CtrlPCurFile<cr>
-nnoremap <c-p>c :CtrlPCmdPalette<cr>
-nnoremap <c-p>cc :CtrlPClearCache<cr>
-nnoremap <c-p>t :CtrlPTag<cr>
-" meaning symbols for current file
-nnoremap <c-p>s :CtrlPBufTag<cr>
-" function definitions
-nnoremap <c-p>fd :CtrlPFunky<cr>
-" fuzzy search in current files using lines
-nnoremap <c-p>l :CtrlPLine<cr>
+" " All things CtrlP
+" nnoremap <c-p>b :CtrlPBuffer<cr>
+" nnoremap <c-p>m :CtrlPMRUFiles<cr>
+" nnoremap <c-p>p :CtrlPMixed<cr>
+" nnoremap <c-p>w :CtrlPCurWD<cr>
+" nnoremap <c-p>f :CtrlPCurFile<cr>
+" nnoremap <c-p>c :CtrlPCmdPalette<cr>
+" nnoremap <c-p>cc :CtrlPClearCache<cr>
+" nnoremap <c-p>t :CtrlPTag<cr>
+" " meaning symbols for current file
+" nnoremap <c-p>s :CtrlPBufTag<cr>
+" " function definitions
+" nnoremap <c-p>fd :CtrlPFunky<cr>
+" " fuzzy search in current files using lines
+" nnoremap <c-p>l :CtrlPLine<cr>
+
+" All things FZF
+nnoremap <c-p>b :Buffers<cr>
+nnoremap <c-p>m :History<cr>
+nnoremap <c-p>w :GFiles<cr>
+nnoremap <c-p>f :Files<cr>
+nnoremap <c-p>c :Commands<cr>
+" Tags and BTags are not LanguageServer aware.
+" They are just using the tags file.
+nnoremap <c-p>t :Tags<cr>
+" Same as Tags but for current buffer only
+nnoremap <c-p>s :BTags<cr>
+nnoremap <c-p>l :Lines<cr>
+nnoremap <c-p>$ :Floaterms<cr>
 
 " http://code.tutsplus.com/articles/top-10-pitfalls-when-switching-to-vim--net-18113
 " shortcut to fold tags with leader
@@ -166,11 +194,12 @@ nnoremap gv `[v`]
 " vnoremap J :m '>+1<CR>gv=gv
 " vnoremap K :m '<-2<CR>gv=gv
 
+" These are useful when exiting curly braces, quotes, parens, etc in insert mode.
 " jumps to the next position after the closest closing char
-inoremap <leader>e <Esc>/[\]})"']<cr><Esc>:nohlsearch<cr>a
+inoremap <leader>e <Esc>/[\]})"'`]<cr><Esc>:nohlsearch<cr>a
 " exit the closest closing char and put a comma
-inoremap <leader>ee <Esc>/[\]})"']<cr><Esc>:nohlsearch<cr>A;
-inoremap <leader>e, <Esc>/[\]})"']<cr><Esc>:nohlsearch<cr>a,<Space>
+inoremap <leader>ee <Esc>/[\]})"'`]<cr><Esc>:nohlsearch<cr>A;
+inoremap <leader>e, <Esc>/[\]})"'`]<cr><Esc>:nohlsearch<cr>a,<Space>
 " inoremap <leader>eb <Esc>/[\]})"']<cr><Esc>:nohlsearch<cr>a<Space>{}<C-o>i<CR><Esc>O
 
 " window resize mappings (ctrl + arrow key)
@@ -185,6 +214,7 @@ vnoremap { "zdi{<C-R>z}<ESC>
 vnoremap [ "zdi[<C-R>z]<ESC>
 vnoremap ' "zdi'<C-R>z'<ESC>
 vnoremap " "zdi"<C-R>z"<ESC>
+vnoremap ` "zdi`<C-R>z`<ESC>
 
 " paste from system clipboard as in termimal
 " if has("gui_running")
@@ -227,8 +257,11 @@ cnoremap <C-x> <del>
 " Browse home
 cnoremap eh e ~/
 
-" Close buffer without messing layout.
-nnoremap <Leader>q :Bdelete<CR>
+" Close buffer
+nnoremap <leader>q :bd<CR>
+" " Using bbye plugin
+" " This removes the close file from jump list.
+" nnoremap <leader>q :Bwipeout<CR>
 
 " View git log history for current file.
 " https://www.reddit.com/r/vim/comments/8w3udw/topnotch_vim_file_backup_history_with_no_plugins/
@@ -254,10 +287,10 @@ augroup WPFuzzy
 augroup END
 
 " Disable line splitting in PHP files.
-augroup PHPManual
-    autocmd!
-    autocmd FileType php silent! nunmap <S-k>
-augroup END
+" augroup PHPManual
+"     autocmd!
+"     autocmd FileType php silent! nunmap <S-k>
+" augroup END
 
 if executable("piknik")
     command! Pkp :r!piknik -paste
@@ -266,4 +299,44 @@ endif
 
 nnoremap <leader>sn :Snippets<CR>
 
+" Do an exact whole word search using /\<keyword\>
+nnoremap <leader>/ /\<\><left><left>
 
+" bufferline plugin provides mappings for switching by ordinal buffer numbers
+nnoremap <Leader>1 <Plug>lightline#bufferline#go(1)
+nnoremap <Leader>2 <Plug>lightline#bufferline#go(2)
+nnoremap <Leader>3 <Plug>lightline#bufferline#go(3)
+nnoremap <Leader>4 <Plug>lightline#bufferline#go(4)
+nnoremap <Leader>5 <Plug>lightline#bufferline#go(5)
+nnoremap <Leader>6 <Plug>lightline#bufferline#go(6)
+nnoremap <Leader>7 <Plug>lightline#bufferline#go(7)
+nnoremap <Leader>8 <Plug>lightline#bufferline#go(8)
+nnoremap <Leader>9 <Plug>lightline#bufferline#go(9)
+nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
+" nnoremap <Leader>1 :b1<cr>
+" nnoremap <Leader>2 :b2<cr>
+" nnoremap <Leader>3 :b3<cr>
+" nnoremap <Leader>4 :b4<cr>
+" nnoremap <Leader>5 :b5<cr>
+" nnoremap <Leader>6 :b6<cr>
+" nnoremap <Leader>7 :b7<cr>
+" nnoremap <Leader>8 :b8<cr>
+" nnoremap <Leader>9 :b9<cr>
+" nnoremap <Leader>0 :b0<cr>
+
+" floaterm mappings
+" nnoremap   <silent>   <space>r :FloatermNew ranger<CR>
+" nnoremap   <silent>   <space>r :FloatermNew lf -command 'set nopreview'<CR>
+nnoremap   <silent>   <space>r :Lf<CR>
+nnoremap   <silent>   <F7>    :FloatermNew<CR>
+tnoremap   <silent>   <F7>    <C-\><C-n>:FloatermNew<CR>
+nnoremap   <silent>   <F8>    :FloatermPrev<CR>
+tnoremap   <silent>   <F8>    <C-\><C-n>:FloatermPrev<CR>
+nnoremap   <silent>   <F9>    :FloatermNext<CR>
+tnoremap   <silent>   <F9>    <C-\><C-n>:FloatermNext<CR>
+nnoremap   <silent>   <F12>   :FloatermToggle<CR>
+tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
+
+" Jump between folds
+nnoremap <C-j> zj
+nnoremap <C-k> zk

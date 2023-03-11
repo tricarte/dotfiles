@@ -1,0 +1,28 @@
+session_name: MYTMUX
+start_directory: '~'
+windows:
+- layout: d2c1,170x33,0,0{92x33,0,0,1,77x33,93,0[77x16,93,0,2,77x16,93,17,3]}
+  panes:
+  - shell_command:
+    - sleep 2
+    - /usr/bin/vim --servername vim
+    focus: true
+  - shell_command:
+    - null
+  - shell_command:
+    - null
+  window_name: Coding
+- layout: 28ed,170x33,0,0[170x19,0,0{91x19,0,0,4,78x19,92,0,5},170x13,0,20{43x13,0,20,6,49x13,44,20,7,76x13,94,20,8}]
+  panes:
+  - shell_command:
+    - htop
+  - shell_command:
+    - sudo iftop -nBP -i change_iface
+  - shell_command:
+    - sudo dnstop change_iface -p -b 'host change_ip' -l6
+  - shell_command:
+    - sudo iotop -oPa
+  - shell_command:
+    - cd "${HOME}/repos/nettop"
+    - sudo ./nettop -r1 --filter-zero --tcp-udp-split
+  window_name: Sysinfo

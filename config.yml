@@ -1,0 +1,16 @@
+valet new:
+  ## Uncomment or update the relevant lines when necessary to set your own defaults.
+  project: wp # or bedrock
+  # in: # override - defaults to current directory
+  version: latest
+  # locale:  # use if not English
+  db: mysql # or sqlite
+  # dbname: # defaults to wp_name
+  dbuser: admin # or any other local user capable of creating databases (MySQL only)
+  dbpass: password
+  dbprefix: wp_
+  admin_user: admin
+  admin_password: admin
+  ## Boolean options can also be configured, too.
+  # unsecure: false # set to true to override
+  # portable: false # set to true to override
