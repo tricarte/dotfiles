@@ -1092,7 +1092,17 @@ cmd img2vid ${{
 
 # Display image info
 map gm %{{
-    info=$(gm identify "$(basename "${f}")")
+    mime=$(mimetype --output-format '%d' "${f}")
+
+    if [[ "${mime}" =~ image$ ]]; then
+        info=$(gm identify "$(basename "${f}")")
+    elif [[ "${mime}" =~ video$ ]]; then
+        info=$(mediainfo --Inform="Summary" "${f}")
+    else
+        lf -remote "send $id echoerr Not a media file!"
+        exit
+    fi
+
     printf "${info}"
 }}
 
