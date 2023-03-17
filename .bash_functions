@@ -513,5 +513,24 @@ function fzf-man() {
 function fzf-env-vars() {
   local out
   out=$(env | fzf)
-  echo $(echo $out | cut -d= -f2)
+  echo "${out}" | cut -d= -f2
+}
+
+# reinit a git repository:
+# Commit a last one and merge all previous commits
+# except the first one into a single commit.
+function grinit() {
+  printf "Enter commit msg: "
+  read -r msg
+
+  if [[ $1 == 'd' ]]; then
+    GIT="dfiles"
+  else
+    GIT=$(command -v git)
+  fi
+
+  count=$($GIT rev-list HEAD --count)
+  count=$((count-1))
+  $GIT reset --soft HEAD~${count}
+  $GIT commit -m"${msg}"
 }
