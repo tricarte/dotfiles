@@ -30,6 +30,8 @@ set icons
 set shell bash
 set mouse on
 set nopreview
+set selmode dir
+set hidden true
 # set filesep "\n"
 
 # Invoke rename command with F2
@@ -1090,7 +1092,39 @@ cmd img2vid ${{
     fi
 }}
 
-# Display image info
+# Info: Encode video using x264 fast preset
+cmd optimize-video !{{
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d optimized ]]; then
+        mkdir optimized
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -i "${item}" -c:v libx264 \
+            -vsync vfr -preset fast \
+            -movflags +faststart -c:a copy \
+            "optimized/${filename%.*}.mp4"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "optimized" ]]; then
+        lf -remote "send $id select \"optimized\""
+    fi
+}}
+
+# Display media info
 map gm %{{
     mime=$(mimetype --output-format '%d' "${f}")
 
@@ -1134,7 +1168,7 @@ map gp ${{
         if [[ $c1 == $c2 ]]; then
             action=$(paste -d':' <(printf "${cmds}") <(printf "${infos}") | column -t -s':' | sort | tee /tmp/lf_cmd_palette_cache | $FZF)
         else
-            lf -remote "send $id echoerr Info strings does not match the count of cmds."
+            lf -remote "send $id echoerr Info strings do not match the count of cmds."
             exit
         fi
     fi
