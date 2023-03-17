@@ -54,15 +54,6 @@ fi
 
 user=$(getent passwd 1000 | cut -d':' -f1)
 
-# mounted=$(find /media/"${user}"/* -maxdepth 0)
-# -d1: max depth 1
-mounted=$(fd . /media/"${user}"/ -d1)
-
-if [[ -n $mounted ]]; then
-  echo "Other storage devices are mounted."
-  exit 1
-fi
-
 if [[ ! -f /etc/.container.gpg ]]; then
   echo "/etc/.container.gpg does not exist. Now creating..."
   read -rsp "Enter the container password: " pass

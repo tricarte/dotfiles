@@ -537,6 +537,15 @@ cmd st &{{
     # /run/user/1000/lf.${USER}.sock
     sleep 1
 
+    mounted=$(fd . /media/"${USER}"/ -d1)
+
+    # We expect to find media only in container directories
+    # not also in storage devices those are under /media/user.
+    if [[ -n $mounted ]]; then
+        lf -remote "send $id echoerr Other storage devices are mounted!"
+        exit 1
+    fi
+
     lf -remote "send $id select /media"
     lf -remote "send $id push gr"
     lf -remote "send $id push gv"
@@ -749,7 +758,7 @@ cmd mountc !{{
 
   function mount() {
     # TODO: > /dev/null thing
-    printf -v vcommand "sudo conta --text --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$f"
+    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$f"
 
     $vcommand
     output=$(conta --text --non-interactive --volume-properties "$f")
