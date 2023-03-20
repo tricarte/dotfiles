@@ -534,3 +534,7 @@ function grinit() {
   $GIT reset --soft HEAD~${count}
   $GIT commit -m"${msg}"
 }
+
+function pd() {
+    perldoc "perl${1}"
+}
