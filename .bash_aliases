@@ -86,7 +86,7 @@ alias ports="sudo lsof -i -n -P" # List of open ports
 # alias myip='LANG=c ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}''
 alias whatismyip="curl ifconfig.co"
 alias iptall="sudo iptables -L -vn --line-numbers"
-alias serverhere="python -m SimpleHTTPServer 8080"
+alias serverhere="python3 -m http.server 8080"
 alias phpserver="php -S 0.0.0.0:8080"
 alias heybench="hey -n 100 -c 20" # HTTP Benchmark
 alias spd="speedtest --simple --no-upload" # Download speed test
