@@ -1,6 +1,6 @@
 # backup usage: "rustic -P local backup
 # cleanup:      "rustic -P local forget --prune
-[global]
+[repository]
 repository = "/media/change_me_username/change_me_deviceID/rustic-backups/quick-notes"
 # password-file =  "/root/key-rustic"
 no-cache = true # no cache needed for local repository
@@ -14,9 +14,6 @@ keep-daily = 3
 # keep-weekly = 8
 # keep-monthly = 24
 # keep-yearly = 10
-
-[backup]
-one-filesystem = true
 
 [[backup.sources]]
 source = "/home/change_me_username/.quick"
