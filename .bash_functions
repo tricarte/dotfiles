@@ -464,7 +464,7 @@ n() {
   fi
 }
 
-# Just like rgr, but for lf
+# Just like rgr, but for lf as directory picker
 lfc() {
   tmp="$(mktemp)"
   lf -command 'set nopreview' -last-dir-path="$tmp" "$@"

@@ -505,11 +505,11 @@ cmd slideshow &{{
 map gs :slideshow
 map gr :slideshow recursive
 
-# Info: Play current directory as a playlist with vlc
+# Info: Play current directory as a playlist with VLC
 cmd playvideos &{{
     VLC=$(command -v vlc)
     if [[ -z $VLC ]]; then
-        lf -remote "send $id echoerr vlc player is not installed."
+        lf -remote "send $id echoerr VLC player is not installed."
     fi
 
     if [[ $@ == "recursive" ]]; then
@@ -705,7 +705,7 @@ cmd fixname &{{
 }}
 
 # Info: Add selected item to an existing rustic backup profile
-cmd backup ${{
+cmd add-to-backup-profile ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -732,6 +732,26 @@ EOT
             fi
         done < <(printf "${fx}\n")
     fi
+}}
+
+# Info: Restore selected backup profile to a destination of your choice
+cmd restore-backup ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    FD=$(command -v fd)
+    if [[ -z $FD ]]; then
+        lf -remote "send $id echoerr fd is not installed."
+    fi
+
+    res="$($FD toml --base-directory ~/.config/rustic -x printf "{/.}\n" | $FZF +m --header='Select backup profile to restore')"
+
+    if [[ -f "${HOME}/.config/rustic/${res}.toml" ]]; then
+        lf -remote "send $id echo You selected $res"
+    fi
+
 }}
 
 # Info: Go to the most recent file in current directory
@@ -782,6 +802,32 @@ cmd mountc !{{
 cmd umountc !{{
     clear
     sudo conta --text --non-interactive --dismount "$f"
+}}
+
+# Info: Unmount USB drives mounted to /media/${USER}
+cmd umountu !{{
+    clear
+    # fd -t d . "/media/${USER}" -d1
+    # fd adds trailing slash
+    storages=$(find /media/"${USER}"/* -maxdepth 0 -type d 2>/dev/null)
+
+    if [[ -z ${storages} ]]; then
+        lf -remote "send $id echoerr No external storage attached to the system!"
+        exit
+    fi
+
+    storage=$(printf '%s' "${storages}" | fzf)
+    if [[ -d "${storage}" ]]; then
+        device=$(mount | grep "$storage" | cut -c 1-8)
+        mapfile -t AllPartitions < <(mount | grep "$device" | cut -c 1-9)
+
+        # There may be multiple partitions of a storage
+        for i in "${AllPartitions[@]}"; do
+            udisksctl unmount -b "$i"
+        done
+        # Power off the related storage
+        udisksctl power-off -b "${device}"
+    fi
 }}
 
 # Info: Share selected files using kdeconnect-cli
