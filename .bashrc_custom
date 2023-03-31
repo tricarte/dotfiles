@@ -97,19 +97,17 @@ if [ -f ~/.wpsite-completion.bash ]; then
     source ~/.wpsite-completion.bash
 fi
 
-# load backupstic completion
-if [ -f ~/.backupstic-completion.bash ]; then
-    source ~/.backupstic-completion.bash
+# load rstc completion
+if [ -f ~/.rstc-completion.bash ]; then
+    source ~/.rstc-completion.bash
 fi
 
 # Load ssh key for github/gitlab
 # FIXME: This supposes that only one key is added to the agent
 # and it is github/gitlab key.
 ssh-add -l > /dev/null 2>&1
-if [ $? -eq 1 ]
-then
-  if [ -f ~/.ssh/github-id_rsa.pub ]
-  then
+if [ $? -eq 1 ]; then
+  if [ -f ~/.ssh/github-id_rsa.pub ]; then
       ssh-add ~/.ssh/github-id_rsa > /dev/null 2>&1
   fi
 fi
