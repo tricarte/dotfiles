@@ -7,6 +7,19 @@
 
 %[ $LF_LEVEL -eq 1 ] || printf "Warning: You're in a nested lf instance!"
 
+set anchorfind
+set autoquit true
+set findlen 4
+set incsearch true
+set incfilter true
+set icons
+set shell bash
+set mouse on
+set nopreview
+set selmode dir
+set hidden true
+# set filesep "\n"
+
 # Right now this looks useless.
 # It is this that causes the below error message when you exit lf.
 # listen: send: no such client id is connected
@@ -20,19 +33,6 @@ ${{
         lf -remote "send $id set ratios 1:2:3:5"
     fi
 }}
-
-set anchorfind
-set autoquit true
-set findlen 4
-set incsearch true
-set incfilter true
-set icons
-set shell bash
-set mouse on
-set nopreview
-set selmode dir
-set hidden true
-# set filesep "\n"
 
 # Invoke rename command with F2
 map <f-2> :rename
@@ -87,10 +87,10 @@ map <c-o> &{{
 
 # Open with menu
 # Uppercase letter o
-map O ${{
+map O !{{
     # Requires libfile-mimeinfo-perl package
     clear
-    mimeopen --ask "$f"
+    open-with.pl "${f}"
 }}
 
 map +x &{{
@@ -219,16 +219,22 @@ cmd fzf_jump ${{
         lf -remote "send $id echoerr fzf is not installed."
     fi
 
+    FD=$(command -v fd)
+    if [[ -z $FD ]]; then
+        lf -remote "send $id echoerr fd is not installed."
+    fi
+
     # NOTE: In order to make fd ignore items in gitignore files,
     # it must contain a .git directory.
-    res="$(fd -H --ignore | $FZF +m --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
-    if [ -d "$res" ] ; then
+    res="$(fd --exclude '.git' -H --ignore | $FZF +m --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+    if [[ -d "${res}" ]]; then
         cmd="cd"
-    elif [ -f "$res" ] ; then
+    elif [[ -f "${res}" ]] ; then
         cmd="select"
     else
         exit 0
     fi
+
     if [[ -n $res ]]; then
         lf -remote "send $id $cmd \"$res\""
     fi
@@ -706,6 +712,11 @@ cmd fixname &{{
 
 # Info: Add selected item to an existing rustic backup profile
 cmd add-to-backup-profile ${{
+    RSTC=$(command -v rstc)
+    if [[ -z $RSTC ]]; then
+        lf -remote "send $id echoerr rstc script is not installed."
+    fi
+
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -716,9 +727,32 @@ cmd add-to-backup-profile ${{
         lf -remote "send $id echoerr fd is not installed."
     fi
 
-    res="$($FD toml --base-directory ~/.config/rustic -x printf "{/.}\n" | $FZF +m --header='Select backup profile')"
+    res="$($FD toml --base-directory ~/.config/rustic -x printf "{/.}\n" | sed '$s/$/\nCreate a new profile.../' | $FZF +m --header='Select backup profile')"
 
     if [[ -n "${res}" ]]; then
+        if [[ $res =~ ^Create ]]; then
+            read -rp "Enter the new profile name: " ans
+            if [[ -z "${ans}" ]]; then
+                lf -remote "send $id echoerr You did not specify a profile name!"
+                exit
+            fi
+
+            if [[ -n "${ans}" ]]; then
+                if [[ -f "${HOME}/.config/rustic/${ans}.toml" ]]; then
+                    lf -remote "send $id echoerr Profile already exists!"
+                    exit
+                else
+                    rstc create "${ans}"
+                    if [[ -f "${HOME}/.config/rustic/${ans}.toml" ]]; then
+                        res="${ans}"
+                    else
+                        lf -remote "send $id echoerr Profile could not be created!"
+                        exit
+                    fi
+                fi
+            fi
+        fi
+
         while IFS=$'\n' read item
         do
             check=$(grep "${item}" "${HOME}/.config/rustic/${res}.toml")
