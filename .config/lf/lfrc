@@ -812,7 +812,7 @@ cmd mountc !{{
 
   function mount() {
     # TODO: > /dev/null thing
-    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$f"
+    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "${f}"
 
     $vcommand
     output=$(conta --text --non-interactive --volume-properties "$f")
