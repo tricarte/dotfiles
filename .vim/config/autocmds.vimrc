@@ -211,3 +211,8 @@ augroup setFormatters
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
+
+augroup MojoCommentString
+  autocmd!
+  autocmd FileType 'html.epl' set commentstring=\\%s
+augroup end

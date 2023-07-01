@@ -467,6 +467,7 @@ let g:indentLine_faster = 1
 
 " Default is float window, but other plugins that create floats will get below
 " let g:context_presenter = 'preview'
+let g:context_enabled = 0
 
 " lf.vim
 " open lf instead of netrw

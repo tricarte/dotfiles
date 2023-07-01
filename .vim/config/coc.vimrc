@@ -149,9 +149,9 @@ let g:coc_global_extensions = [
     \ 'coc-tsserver',
     \ 'coc-snippets',
     \ 'coc-lists',
-    \ 'coc-perl',
     \ '@yaegassy/coc-intelephense',
     \]
+    " \ 'coc-perl',
     " \ 'coc-sh',
     "  coc-lists: provides additional lists such as buffers, lines, registers
 

@@ -7,15 +7,15 @@
 
 %[ $LF_LEVEL -eq 1 ] || printf "Warning: You're in a nested lf instance!"
 
-set anchorfind
+set anchorfind true
 set autoquit true
 set findlen 4
 set incsearch true
 set incfilter true
-set icons
+set icons true
 set shell bash
-set mouse on
-set nopreview
+set mouse true
+set preview false
 set selmode dir
 set hidden true
 # set filesep "\n"

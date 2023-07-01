@@ -321,6 +321,9 @@ Plug 'gcmt/breeze.vim' " Html tag jump
 " PHP
 Plug 'arnaud-lb/vim-php-namespace'
 
+" PERL
+Plug 'yko/mojo.vim'
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
 
 call plug#end()
