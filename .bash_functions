@@ -538,3 +538,23 @@ function grinit() {
 function pd() {
     perldoc "perl${1}"
 }
+
+# rcsync backup-directory-name
+function rcsync() {
+    dir="${1}"
+    user=$(getent passwd 1000 | cut -d':' -f1)
+    source="/media/${user}/D892E34792E32928/rustic-backups/${dir}/"
+    target="/media/${user}/sandisk32/rustic-backups/${dir}/"
+
+    if [[ ! -d "${source}" ]]; then
+        echo "${source} does not exist."
+        return 1
+    fi
+
+    if [[ ! -d "${target}" ]]; then
+        echo "${target} does not exist."
+        return 1
+    fi
+
+    rclone sync "${source}" "${target}"
+}
