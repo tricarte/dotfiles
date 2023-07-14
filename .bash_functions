@@ -540,21 +540,23 @@ function pd() {
 }
 
 # rcsync backup-directory-name
+# Sync two rustic repositories on different external storages.
 function rcsync() {
+    RCLONE=$(command -v rclone)
     dir="${1}"
     user=$(getent passwd 1000 | cut -d':' -f1)
-    source="/media/${user}/D892E34792E32928/rustic-backups/${dir}/"
+    src="/media/${user}/D892E34792E32928/rustic-backups/${dir}/"
     target="/media/${user}/sandisk32/rustic-backups/${dir}/"
 
-    if [[ ! -d "${source}" ]]; then
-        echo "${source} does not exist."
+    if [[ ! -d "${src}" ]]; then
+        echo "${src} is not reachable."
         return 1
     fi
 
     if [[ ! -d "${target}" ]]; then
-        echo "${target} does not exist."
+        echo "${target} is not reachable."
         return 1
     fi
 
-    rclone sync "${source}" "${target}"
+    $RCLONE sync "${src}" "${target}"
 }
