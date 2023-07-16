@@ -558,5 +558,5 @@ function rcsync() {
         return 1
     fi
 
-    $RCLONE sync "${src}" "${target}"
+    $RCLONE sync --progress "${src}" "${target}"
 }
