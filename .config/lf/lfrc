@@ -832,6 +832,52 @@ cmd mountc !{{
   fi
 }}
 
+# Info: Mount iso image
+cmd mountiso !{{
+  clear
+mime=$(mimetype --output-format '%m' "${f}")
+
+if [[ "${mime}" =~ x-cd-image$ ]]; then
+    mpoint=$(mkslug $(basename "${f}"))
+
+    if [[ ! -d "/tmp/${mpoint}" ]]; then
+        mkdir "/tmp/${mpoint}"
+    fi
+
+    if [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
+        sudo mount -o loop "${f}" "/tmp/${mpoint}"
+        lf -remote "send $id cd "/tmp/${mpoint}""
+    else
+        lf -remote "send $id echoerr Mount directory "/tmp/${mpoint}" is not empty!"
+    fi
+else
+    lf -remote "send $id echoerr Not an image file!"
+    exit
+fi
+}}
+
+# Info: Unmount iso image or mount point
+cmd umountiso !{{
+# TODO: Use fzf to select mount points
+  clear
+
+    if [[ -n $(mount | grep "${f}") ]]; then
+        mpoint=$(mkslug $(basename "${f}"))
+
+        if [[ -z "${mpoint}" ]]; then
+            exit
+        fi
+
+        sudo umount "${mpoint}"
+
+        if [[ -d "/tmp/${mpoint}" ]] && [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
+            lf -remote "send $id cd ~"
+            rmdir "/tmp/${mpoint}"
+        fi
+        exit
+    fi
+}}
+
 # Info: Unmount veracrypt container
 cmd umountc !{{
     clear
