@@ -878,6 +878,18 @@ cmd umountiso !{{
     fi
 }}
 
+# Info: Batch rename items in current directory using vimv
+cmd batch-rename !{{
+    clear
+    VIMV=$(command -v vimv)
+    if [[ -z $VIMV ]]; then
+        lf -remote "send $id echoerr vimv is not installed."
+        exit
+    fi
+
+    $VIMV
+}}
+
 # Info: Unmount veracrypt container
 cmd umountc !{{
     clear
@@ -1293,6 +1305,11 @@ cmd md2pdf !{{
 # TODO: This is VERY fragile.
 map gp ${{
     FZF=$(command -v fzf)
+
+    if [[ -f "/tmp/lf_cmd_palette_cache" ]] && [[ "/tmp/lf_cmd_palette_cache" -ot "${HOME}/.config/lf/lfrc" ]]; then
+        rm "/tmp/lf_cmd_palette_cache"
+    fi
+
     if [[ -f /tmp/lf_cmd_palette_cache ]]; then
         action=$(cat /tmp/lf_cmd_palette_cache | $FZF)
     else

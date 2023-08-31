@@ -22,7 +22,7 @@ done
 # ${EDITOR:-vi} "${FILENAMES_FILE}"
 # 'command -v vim' returns the user function.
 # So using 'which' here.
-$(which vi) "${FILENAMES_FILE}"
+$(which vim) "${FILENAMES_FILE}"
 
 IFS=$'\r\n' GLOBIGNORE='*' command eval 'dest=($(cat "${FILENAMES_FILE}"))'
 
