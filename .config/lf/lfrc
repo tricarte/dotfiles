@@ -46,7 +46,7 @@ map <f-5> :reload
 # Disabled preview and use i key for previewing
 # set nopreview
 # map i $/usr/local/bin/pistol $f | less -R
-map i &{{
+map i !{{
     # if [[ -f "$f" ]]; then
     #     BAT_PAGER='less -R --incsearch -i -J -g' $(command -v bat) "$f"
     # else
@@ -60,15 +60,18 @@ map i &{{
         exit
     fi
 
-    if [[ $TERM == "xterm-kitty" ]]; then
-        if [[ -S /tmp/mykitty ]]; then
-            kitty @ --to unix:/tmp/mykitty launch \
-                --keep-focus --type=overlay-main \
-                --hold /usr/local/bin/pistol "$f"
-        fi
-    else
-        clear && /usr/local/bin/pistol "$f"
-    fi
+    # if [[ $TERM == "xterm-kitty" ]]; then
+    #     if [[ -S /tmp/mykitty ]]; then
+    #         kitty @ --to unix:/tmp/mykitty launch \
+    #             --keep-focus --type=overlay-main \
+    #             --hold $PISTOL "$f"
+    #             # since kitty v29, --hold drops to a command prompt.
+    #     fi
+    # else
+    #     clear && $PISTOL "$f"
+    # fi
+
+    clear && /usr/local/bin/pistol "$f"
 }}
 
 # Open hovered directory in GUI file manager
@@ -1300,7 +1303,7 @@ cmd md2pdf !{{
 
 # Display a command palette
 # Every cmd description must be in this format:
-# "Info: Description goes here..."
+# "# Info: Description goes here..."
 # "cmd cmd_name &{{ }}"
 # TODO: This is VERY fragile.
 map gp ${{

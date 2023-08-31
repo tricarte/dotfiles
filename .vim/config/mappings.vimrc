@@ -340,3 +340,9 @@ tnoremap   <silent>   <F12>   <C-\><C-n>:FloatermToggle<CR>
 " Jump between folds
 nnoremap <C-j> zj
 nnoremap <C-k> zk
+
+" On each invoke, in insert mode, fix the last misspelled word
+" using the first result from correction list (z=)
+" Spell must be enabled using:
+" :set spell
+inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u

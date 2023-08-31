@@ -24,7 +24,6 @@ endif
 call plug#begin(expand('~/.vim/plugged'))
 Plug 'mhinz/vim-startify' " Start screen for VIM
 " Plug 'Exafunction/codeium.vim'
-Plug 'windwp/vim-floaterm-repl'
 " Plug 'moll/vim-bbye' " <leader>q to close buffer without messing layout.
 " Plug 'scrooloose/nerdtree'
 " Plug 'jistr/vim-nerdtree-tabs'

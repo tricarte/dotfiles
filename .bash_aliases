@@ -132,6 +132,7 @@ alias str="vlc -vvv -I ncurses --recursive expand --quiet --random --sout '#http
 alias ger="mcon mount-only && sstart gerbera.service"
 alias gers="sstop gerbera.service && cd ~ && sudo conta -d && cc"
 alias uud="unmount-usb-drives"
+alias mp4="fd mp4 /media | shuf | mpv --playlist=-"
 
 ##############
 #  Composer  #
