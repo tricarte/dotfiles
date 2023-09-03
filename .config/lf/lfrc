@@ -381,7 +381,23 @@ cmd bookmark_create ${{
 map B :bookmark_create
 
 # Info: Open selected file with a manually entered application
-cmd open-with &"$@" "$fx"
+# TODO: handles flatpaks but not snaps
+cmd open-with &{{
+    if [[ -z "$@" ]]; then
+        lf -remote "send $id echoerr Err: Enter an application name."
+    fi
+    APP=$(command -v "$@")
+    if [[ -n "${APP}" ]]; then
+        "${APP}" "${fx}"
+    else
+        ISFLATPAK=$(flatpak list --app --columns=application | grep -i "$@")
+        if [[ -n "$ISFLATPAK" ]]; then
+            flatpak run "${ISFLATPAK}" "${fx}"
+        else
+            lf -remote "send $id echoerr Err: Application could not be found in PATH."
+        fi
+    fi
+}}
 map ` push :open-with<space>
 
 # Preview images with sxiv
@@ -1329,7 +1345,7 @@ map gp ${{
     fi
 
     if [[ -n "${action}" ]]; then
-        lf -remote "send $id push :${action%%\ *}"
+        lf -remote "send $id push :${action%%\ *}<space>"
     fi
 
 }}
