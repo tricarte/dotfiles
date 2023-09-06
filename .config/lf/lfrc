@@ -88,15 +88,21 @@ map <c-o> &{{
     fi
 }}
 
-# Open with menu
-# Uppercase letter o
-map O !{{
+# Info: Open selected file with the associated application <O>
+cmd open-with-menu !{{
     # Requires libfile-mimeinfo-perl package
     clear
     open-with.pl "${f}"
 }}
 
-map +x &{{
+# Open with menu
+# Uppercase letter o
+map O &{{
+    lf -remote "send $id open-with-menu"
+}}
+
+# Info: Make selection executable <+x>
+cmd make-selection-executable &{{
     # Make selection executable
     list=""
     while IFS=$'\n' read item; do
@@ -107,9 +113,12 @@ map +x &{{
     printf "$list" | xargs --delimiter='\n' chmod +x
     lf -remote "send $id reload"
 }}
+map +x &{{
+    lf -remote "send $id make-selection-executable"
+}}
 
-map -x &{{
-    # Remove executable bit from selection
+# Info: Remove executable bit from selection <-x>
+cmd make-selection-nonexecutable &{{
     list=""
     while IFS=$'\n' read item; do
         if [[ -f "${item}" ]] && [[ -x "${item}" ]]; then
@@ -118,6 +127,9 @@ map -x &{{
     done < <(printf "${fx}\n")
     printf "$list" | xargs --delimiter='\n' chmod -x
     lf -remote "send $id reload"
+}}
+map -x &{{
+    lf -remote "send $id make-selection-nonexecutable"
 }}
 
 # Another command based version
@@ -134,7 +146,8 @@ map -x &{{
 # Can output in json.
 # Horizontal bar chart.
 # Can display all items, not just big ones with --min-ratio=0
-map U !{{
+# Info: Display size of the selected item(s) <U>
+cmd size-usage !{{
     PDU=$(command -v pdu)
     if [[ -n $PDU ]]; then
         # clear && echo -ne "Calculating... \r"
@@ -143,6 +156,9 @@ map U !{{
     else
         lf -remote "send $id echoerr pdu is not installed."
     fi
+}}
+map U !{{
+    lf -remote "send $id size-usage"
 }}
 
 # This may be the one you'll want to use.
@@ -206,13 +222,16 @@ cmd drop ${{
 }}
 
 
-# Info: Autojump to directory
+# Info: Autojump to directory <gj>
 cmd j &{{
     J=$(command -v autojump)
     if [[ -z $J ]]; then
         lf -remote "send $id echoerr autojump is not installed."
     fi
     lf -remote "send $id cd $($J $@)"
+}}
+map gj &{{
+    lf -remote "send $id push :j<space>"
 }}
 
 # Info: FZF integration using <c-f>
@@ -324,7 +343,7 @@ cmd move2newdir ${{
     lf -remote "send $id select \"${newd}\""
 }}
 
-# Info: Create symlinks/hardlinks
+# Info: Create symlinks/hardlinks (y to copy, d to cut) <P>
 cmd link %{{
     # y (select for copy) and P to paste soft-link
     # d (select for cut) and P to paste hard-link
@@ -346,7 +365,7 @@ cmd link %{{
 }}
 map P :link
 
-# Info: Go to a bookmarked directory
+# Info: Go to a bookmarked directory <b>
 cmd bookmark_jump ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
@@ -361,7 +380,7 @@ cmd bookmark_jump ${{
 }}
 map b :bookmark_jump
 
-# Info: Bookmark the working directory ( not the selected one )
+# Info: Bookmark the working directory ( not the selected one ) <B>
 cmd bookmark_create ${{
     LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
     clear
@@ -400,9 +419,8 @@ cmd open-with &{{
 }}
 map ` push :open-with<space>
 
-# Preview images with sxiv
-# What you mark in sxiv will also be selected in lf.
-map gq &{{
+# Info: Quicklook single image with sxiv <gq>
+cmd quicklook-single-image &{{
     iv=$(command -v nsxiv)
 
     if [[ -z $iv ]]; then
@@ -424,10 +442,11 @@ map gq &{{
     #     lf -remote "send $id toggle $(echo ${items})"
     # fi
 }}
+map gq :quicklook-single-image
 
-# View current directory in thumbnail mode.
+# Info: View current directory in thumbnail mode <gb>
 # What you mark in sxiv will also be selected in lf.
-map gb &{{
+cmd browse-images &{{
     iv=$(command -v nsxiv)
 
     if [[ -z $iv ]]; then
@@ -451,8 +470,9 @@ map gb &{{
         lf -remote "send $id toggle $(echo ${items})"
     fi
 }}
+map gb :browse-image-single-images
 
-# Info: Create archive using atool
+# Info: Create archive using atool <gz>
 cmd archive &{{
     APACK=$(command -v apack)
 
@@ -472,6 +492,7 @@ cmd archive &{{
         lf -remote "send $id echo $@ created."
     fi
 }}
+map gz push :archive<space>
 
 # Info: Extract archive with atool
 cmd extract &{{
@@ -502,7 +523,7 @@ cmd paths &{{
     fi
 }}
 
-# Info: Slideshow with feh image viewer
+# Info: Slideshow with feh image viewer <gs> <gr>
 cmd slideshow &{{
     FEH=$(command -v feh)
     if [[ -z $FEH ]]; then
@@ -530,7 +551,7 @@ cmd slideshow &{{
 map gs :slideshow
 map gr :slideshow recursive
 
-# Info: Play current directory as a playlist with VLC
+# Info: Play current directory as a playlist with VLC <gv>
 cmd playvideos &{{
     VLC=$(command -v vlc)
     if [[ -z $VLC ]]; then
@@ -713,7 +734,8 @@ c: Decrypt\n\
 
 map <delete> delete
 
-# Info: Fix filenames such as converting spaces to underscores
+# Info: Fix (slugify) filenames such as converting spaces to underscores
+# TODO: Use an external program, change name to slugify
 cmd fixname &{{
     while IFS=$'\n' read item
     do
@@ -819,6 +841,7 @@ cmd last &{{
         lf -remote "send $id select ${ITEM}"
     fi
 }}
+
 # Info: Go to the most recently downloaded item in ~/Downloads
 cmd lastdown &{{
     lf -remote "send $id :last \"${HOME}/Downloads\""
@@ -854,47 +877,47 @@ cmd mountc !{{
 # Info: Mount iso image
 cmd mountiso !{{
   clear
-mime=$(mimetype --output-format '%m' "${f}")
+  mime=$(mimetype --output-format '%m' "${f}")
 
-if [[ "${mime}" =~ x-cd-image$ ]]; then
-    mpoint=$(mkslug $(basename "${f}"))
+  if [[ "${mime}" =~ x-cd-image$ ]]; then
+      mpoint=$(mkslug $(basename "${f}"))
 
-    if [[ ! -d "/tmp/${mpoint}" ]]; then
-        mkdir "/tmp/${mpoint}"
-    fi
+      if [[ ! -d "/tmp/${mpoint}" ]]; then
+          mkdir "/tmp/${mpoint}"
+      fi
 
-    if [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
-        sudo mount -o loop "${f}" "/tmp/${mpoint}"
-        lf -remote "send $id cd "/tmp/${mpoint}""
-    else
-        lf -remote "send $id echoerr Mount directory "/tmp/${mpoint}" is not empty!"
-    fi
-else
-    lf -remote "send $id echoerr Not an image file!"
-    exit
-fi
+      if [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
+          sudo mount -o loop "${f}" "/tmp/${mpoint}"
+          lf -remote "send $id cd "/tmp/${mpoint}""
+      else
+          lf -remote "send $id echoerr Mount directory "/tmp/${mpoint}" is not empty!"
+      fi
+  else
+      lf -remote "send $id echoerr Not an image file!"
+      exit
+  fi
 }}
 
 # Info: Unmount iso image or mount point
 cmd umountiso !{{
-# TODO: Use fzf to select mount points
+  # TODO: Use fzf to select mount points
   clear
 
-    if [[ -n $(mount | grep "${f}") ]]; then
-        mpoint=$(mkslug $(basename "${f}"))
+  if [[ -n $(mount | grep "${f}") ]]; then
+      mpoint=$(mkslug $(basename "${f}"))
 
-        if [[ -z "${mpoint}" ]]; then
-            exit
-        fi
+      if [[ -z "${mpoint}" ]]; then
+          exit
+      fi
 
-        sudo umount "${mpoint}"
+      sudo umount "${mpoint}"
 
-        if [[ -d "/tmp/${mpoint}" ]] && [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
-            lf -remote "send $id cd ~"
-            rmdir "/tmp/${mpoint}"
-        fi
-        exit
-    fi
+      if [[ -d "/tmp/${mpoint}" ]] && [[ -z "$(ls -A "/tmp/${mpoint}")" ]]; then
+          lf -remote "send $id cd ~"
+          rmdir "/tmp/${mpoint}"
+      fi
+      exit
+  fi
 }}
 
 # Info: Batch rename items in current directory using vimv
@@ -961,9 +984,10 @@ cmd kshare !{{
 cmd run &{{
     if [[ -x "${f}" ]]; then
         # --type=overlay
-        kitty @ --to unix:/tmp/mykitty launch --hold --self "${@:+sudo}" "${f}"
+        kitty @ --to unix:/tmp/mykitty launch --self "${@:+sudo}" "${f}"
     fi
 }}
+
 # Info: Run command with sudo
 cmd runs &{{
     lf -remote "send $id :run s"
@@ -1194,7 +1218,7 @@ EOF
 }}
 
 # Info: Convert still image to a video
-cmd img2vid ${{
+cmd image2video ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -1290,13 +1314,15 @@ cmd optimize-video !{{
     fi
 }}
 
-# Display media info
-map gm %{{
+# Info: Display media information in status bar
+cmd mediainfo %{{
     mime=$(mimetype --output-format '%d' "${f}")
 
     if [[ "${mime}" =~ image$ ]]; then
         info=$(gm identify "$(basename "${f}")")
     elif [[ "${mime}" =~ video$ ]]; then
+        info=$(mediainfo --Inform="Summary" "${f}")
+    elif [[ "${mime}" =~ audio$ ]]; then
         info=$(mediainfo --Inform="Summary" "${f}")
     else
         lf -remote "send $id echoerr Not a media file!"
@@ -1305,6 +1331,7 @@ map gm %{{
 
     printf "${info}"
 }}
+map gm :mediainfo
 
 # Info: Convert markdown to pdf using pandoc
 cmd md2pdf !{{
@@ -1318,6 +1345,7 @@ cmd md2pdf !{{
 }}
 
 # Display a command palette
+# Every cmd must have an information line
 # Every cmd description must be in this format:
 # "# Info: Description goes here..."
 # "cmd cmd_name &{{ }}"
