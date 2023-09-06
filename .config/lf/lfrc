@@ -734,16 +734,14 @@ c: Decrypt\n\
 
 map <delete> delete
 
-# Info: Fix (slugify) filenames such as converting spaces to underscores
-# TODO: Use an external program, change name to slugify
-cmd fixname &{{
+# Info: Slugify filenames using mkslug script
+cmd slugify &{{
     while IFS=$'\n' read item
     do
         parent="$(dirname "${item}")"
         base="$(basename "${item}")"
 
-        fixed=$(printf "$base" | tr -s ' ' | tr ' ' '_')
-        fixed=$(printf "$fixed" | sed 's/[^(^(-_)a-zA-Z0-9)]//g' | tr -s '_-')
+        fixed=$(mkslug "${base}")
         if [[ "$fixed" != "$base" ]]; then
             mv "${parent}/${base}" "${parent}/${fixed}"
         fi
