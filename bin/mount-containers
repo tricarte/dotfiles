@@ -101,15 +101,16 @@ if [[ $RTONLY ]]; then
   conta --text --fs-options="umask=022" --non-interactive --mount --password="$pass" ./*rd.iso
 else
   for file in *.iso; do
+    SLOT=$(basename "${file}" | cut -d'_' -f1)
 
     if [[ $(basename "$file" .iso) =~ -t$ ]]; then
-      conta --text --fs-options="umask=022" --non-interactive --mount -tc --password="$pass" "$file"
+      conta --text --fs-options="umask=022" --non-interactive --mount --slot="${SLOT}" -tc --password="$pass" "$file"
       if [[ $? == 1 ]]; then
         echo "Something went wrong!"
         exit 1
       fi
     else
-      conta --text --fs-options="umask=022" --non-interactive --mount --password="$pass" "$file"
+      conta --text --fs-options="umask=022" --non-interactive --mount --slot="${SLOT}" --password="$pass" "$file"
       if [[ $? == 1 ]]; then
         echo "Something went wrong!"
         exit 1
