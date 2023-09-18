@@ -97,9 +97,10 @@ cmd open-with-menu !{{
 
 # Open with menu
 # Uppercase letter o
-map O &{{
-    lf -remote "send $id open-with-menu"
-}}
+map O :open-with-menu
+# map O &{{
+#     lf -remote "send $id open-with-menu"
+# }}
 
 # Info: Make selection executable <+x>
 cmd make-selection-executable &{{
@@ -113,9 +114,10 @@ cmd make-selection-executable &{{
     printf "$list" | xargs --delimiter='\n' chmod +x
     lf -remote "send $id reload"
 }}
-map +x &{{
-    lf -remote "send $id make-selection-executable"
-}}
+map +x :make-selection-executable
+# map +x &{{
+#     lf -remote "send $id make-selection-executable"
+# }}
 
 # Info: Remove executable bit from selection <-x>
 cmd make-selection-nonexecutable &{{
@@ -128,9 +130,10 @@ cmd make-selection-nonexecutable &{{
     printf "$list" | xargs --delimiter='\n' chmod -x
     lf -remote "send $id reload"
 }}
-map -x &{{
-    lf -remote "send $id make-selection-nonexecutable"
-}}
+map -x :make-selection-nonexecutable
+# map -x &{{
+#     lf -remote "send $id make-selection-nonexecutable"
+# }}
 
 # Another command based version
 # cmd open &xdg-open $f
@@ -157,9 +160,10 @@ cmd size-usage !{{
         lf -remote "send $id echoerr pdu is not installed."
     fi
 }}
-map U !{{
-    lf -remote "send $id size-usage"
-}}
+map U :size-usage
+# map U &{{
+#     lf -remote "send $id size-usage"
+# }}
 
 # This may be the one you'll want to use.
 # It is the go port of ncdu, but colorized.
@@ -287,8 +291,13 @@ cmd mkdir %{{
         exit
     fi
 
-    mkdir -- "$@"
-    lf -remote "send $id select $@"
+    if [[ -w "${PWD}" ]]; then
+      mkdir -- "$@"
+      lf -remote "send $id select $@"
+    else
+        lf -remote "send $id echoerr Current working directory is not writable."
+    fi
+
 }}
 
 # Info: Create new file
@@ -298,8 +307,12 @@ cmd touch %{{
         exit
     fi
 
-    touch "$@"
-    lf -remote "send $id select \"${@}\""
+    if [[ -w "${PWD}" ]]; then
+      touch "$@"
+      lf -remote "send $id select \"${@}\""
+    else
+      lf -remote "send $id echoerr Current working directory is not writable."
+    fi
 }}
 
 # Info: Create new directory or file
@@ -470,7 +483,7 @@ cmd browse-images &{{
         lf -remote "send $id toggle $(echo ${items})"
     fi
 }}
-map gb :browse-image-single-images
+map gb :browse-images
 
 # Info: Create archive using atool <gz>
 cmd archive &{{
@@ -622,7 +635,7 @@ cmd st &{{
 cmd decrypt !{{
     clear
     gpg -qd --pinentry-mode loopback "${f}"
-    printf "\n"
+    printf '%s' "\n"
 }}
 
 # Info: Provide basic encryption/decryption with gpg
@@ -736,6 +749,7 @@ map <delete> delete
 
 # Info: Slugify filenames using mkslug script
 cmd slugify &{{
+    # TODO: PERL candidate
     while IFS=$'\n' read item
     do
         parent="$(dirname "${item}")"
@@ -1195,6 +1209,7 @@ EOF
                     fi
 
                     if [[ "${item##*.}" == 'gif' ]]; then
+                        # TODO: Another alternative may be gifski
                         cmds+="gifsicle --optimize=3 --lossy=30 -o \"optimized/$(basename ${item})\" -i \"${item}\"\n"
                     fi
                 done < <(printf "${fx}\n")
@@ -1375,3 +1390,13 @@ map gp ${{
     fi
 
 }}
+
+# Info: Add hc_ to the selected filenames
+cmd hc &{{
+    # printf '%s' "${fx}" | xargs --delimiter='\n' -I '{}' basename '{}' | xargs --delimiter='\n' -I '{}' mv '{}' hc_'{}'
+    # Lets' apply some PERL
+    # printf '%s' "${fx}" | perl -wnlaF'/' -e 'use File::Copy ('move'); move $F[-1], "hc_$F[-1]" or die "Move failed: $!";'
+    printf '%s' "${fx}" | perl -wnlaF'/' -e 'rename $F[-1], "hc_$F[-1]" or die "Rename failed: $!";'
+    lf -remote "send $id reload"
+}}
+map hc :hc
