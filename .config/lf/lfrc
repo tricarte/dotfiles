@@ -823,6 +823,7 @@ EOT
 
 # Info: Restore selected backup profile to a destination of your choice
 cmd restore-backup ${{
+    # TODO: Not implemented yet.
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."

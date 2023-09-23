@@ -167,6 +167,7 @@ alias garchive="git archive -o ~/latest.zip HEAD"
 alias gpush="git push"
 alias gcommit="git add -u && git commit -m"
 alias gstat="git status"
+alias glist="git ls-tree -r main --name-only" # List git tracked files
 alias gcm="git checkout main"
 alias dfiles="/usr/bin/git --git-dir=\$HOME/.dotfiles/ --work-tree=\$HOME" # Dotfiles management with git
 alias ddiff="dfiles diff"
