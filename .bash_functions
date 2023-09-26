@@ -560,3 +560,9 @@ function rcsync() {
 
     $RCLONE sync --progress "${src}" "${target}"
 }
+
+# Check perl module is installed
+function pmodi() {
+    MOD="${1}"
+    perl -M"$MOD" -e 'exit;' && echo "Module is available!" || echo "Module is not available!"
+}
