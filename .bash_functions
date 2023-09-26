@@ -79,16 +79,17 @@ tm() {
   # exit
 }
 
+# Using lf's custom function: paths
 # Copy filename into bucket
-function fb() {
-  if ! [[ -f "$1" ]]; then
-    $1 | bucket
-  else
-    file=$(readlink -f "$1")
-    bucket "$file"
-  fi
-}
-export -f fb
+# function fb() {
+#   if ! [[ -f "$1" ]]; then
+#     $1 | bucket
+#   else
+#     file=$(readlink -f "$1")
+#     bucket "$file"
+#   fi
+# }
+# export -f fb
 
 # Go up one directory in file system.
 up() {
@@ -167,17 +168,17 @@ __davms() {
 
 }
 
-man() {
-  env \
-    LESS_TERMCAP_mb=$'\e[01;31m' \
-    LESS_TERMCAP_md=$'\e[01;31m' \
-    LESS_TERMCAP_me=$'\e[0m' \
-    LESS_TERMCAP_se=$'\e[0m' \
-    LESS_TERMCAP_so=$'\e[01;44;33m' \
-    LESS_TERMCAP_ue=$'\e[0m' \
-    LESS_TERMCAP_us=$'\e[01;32m' \
-    man "$@"
-}
+# man() {
+#   env \
+#     LESS_TERMCAP_mb=$'\e[01;31m' \
+#     LESS_TERMCAP_md=$'\e[01;31m' \
+#     LESS_TERMCAP_me=$'\e[0m' \
+#     LESS_TERMCAP_se=$'\e[0m' \
+#     LESS_TERMCAP_so=$'\e[01;44;33m' \
+#     LESS_TERMCAP_ue=$'\e[0m' \
+#     LESS_TERMCAP_us=$'\e[01;32m' \
+#     man "$@"
+# }
 
 # Use pager in ls output
 lsp() { ls -ah --color=always "$@" | less -R -X -F; }
@@ -363,6 +364,8 @@ pws() {
   # xdg-open "http://localhost:8080"
 }
 
+# Below two fzf_* functions allows using <C-a>
+# as a way to list and choose from your bash aliases.
 fzf_alias_select() {
   local cmd opts
   cmd="command grep -E ^alias ~/.bash_aliases | cut -d' ' -f2-"
@@ -499,8 +502,8 @@ export -f enc
 
 # https://github.com/beauwilliams/awesome-fzf
 # Man without options will use fzf to select a page
-function fzf-man() {
-  MAN="/usr/bin/man"
+function fman() {
+  MAN=$(command -v man)
   if [ -n "$1" ]; then
     $MAN "$@"
     return $?
@@ -510,7 +513,8 @@ function fzf-man() {
   fi
 }
 
-function fzf-env-vars() {
+# Fuzzy search environment variables
+function fenv() {
   local out
   out=$(env | fzf)
   echo "${out}" | cut -d= -f2
@@ -535,12 +539,15 @@ function grinit() {
   $GIT commit -m"${msg}"
 }
 
-function pd() {
-    perldoc "perl${1}"
-}
+# Deprecated
+# Use fman instead since perl documentation can be reached with man.
+# function pd() {
+#     perldoc "perl${1}"
+# }
 
 # rcsync backup-directory-name
 # Sync two rustic repositories on different external storages.
+# TODO: Storages are hardcoded.
 function rcsync() {
     RCLONE=$(command -v rclone)
     dir="${1}"
@@ -562,6 +569,7 @@ function rcsync() {
 }
 
 # Check perl module is installed
+# pmodi Devel::REPL
 function pmodi() {
     MOD="${1}"
     perl -M"$MOD" -e 'exit;' && echo "Module is available!" || echo "Module is not available!"
