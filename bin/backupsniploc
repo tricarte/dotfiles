@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sniploc="${HOME}/valet-park/sniploc"
+sniploc="${HOME}/repos/sniploc-bulma-carton"
 backupDest="${HOME}/backups/sites"
 
 PIGZ=$(command -v pigz)
@@ -15,13 +15,13 @@ if [[ -d "${sniploc}" ]]; then
         mkdir -p "${backupDest}"
     fi
 
-    if [[ -f "${backupDest}/sniploc.tar.gz" ]]; then
-        rm -f "${backupDest}/sniploc.tar.gz"
+    if [[ -f "${backupDest}/sniploc-bulma-carton.tar.gz" ]]; then
+        rm -f "${backupDest}/sniploc-bulma-carton.tar.gz"
     fi
 
-    $TAR "${backupDest}/sniploc.tar.gz" --checkpoint=.100 "${sniploc}"
+    $TAR "${backupDest}/sniploc-bulma-carton.tar.gz" --checkpoint=.100 "${sniploc}"
 
-    if [[ -f "${backupDest}/sniploc.tar.gz" ]]; then
+    if [[ -f "${backupDest}/sniploc-bulma-carton.tar.gz" ]]; then
         echo -e "\nSniploc backup created."
     else
         echo "Sniploc backup could not be created." 
