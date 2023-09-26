@@ -24,7 +24,8 @@ chomp $input;
 my ($mime, $qstring) = $input =~ /:/ ? ( split /:/, $input ) : ( '', $input );
 
 # Connect to database
-my $dsn = "dbi:SQLite:dbname=$ENV{'HOME'}/repos/sniploc-bulma-carton/src/db/dbase.sqlite";
+my $dbase = $ENV{'HOME'} . '/repos/sniploc-bulma-carton/src/db/dbase.sqlite';
+my $dsn = "dbi:SQLite:dbname=$dbase";
 my $dbh = DBI->connect($dsn, "", "", {
         PrintError => 1,
         RaiseError => 1,
@@ -79,7 +80,9 @@ my $command = <<"END_CMD";
 printf "${fzfinput}" \\
 | fzf --with-nth=2.. \\
 --nth=1.. --delimiter='::' \\
---query="${mime} ${qstring}"
+--query="${mime} ${qstring}" \\
+--preview='sqlite3 $dbase "select content from snpy_items where snpy_items.uuid={1};" -noheader' \\
+--preview-window=up
 END_CMD
 # --select-1
 
