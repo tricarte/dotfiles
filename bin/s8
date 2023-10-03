@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use warnings FATAL => "all";
+use utf8;
 use 5.34.0;
 # use diagnostics; # When encountering an error, it will try to explain it.
 # use Data::Dumper qw(Dumper);
@@ -71,20 +72,32 @@ my $max_width = max (map length, map { $$_[4] } @records);
 
 for my $row ( @records ) {
     $results{$$row[2]} = $$row[5]; # uuid => snippet_content pair
-    # uuid::Parents Title<tab>Snippet Title
-    $fzfinput .= sprintf "%s::%-${max_width}s\t%s\n",
-        $$row[2], $$row[4], $$row[0];
+    # ParentTabTitleTabUUIDTabType
+    $fzfinput .= sprintf "%-${max_width}s\t%s\t%s\t%s\n",
+        $$row[4], $$row[0], $$row[2], $$row[1];
+        # 4 parent
+        # 0 title
+        # 2 uuid
+        # 1 type
 }
 
+# --nth is the search scope
+# --with-nth: which fields to display
 my $command = <<"END_CMD";
 printf "${fzfinput}" \\
-| fzf --with-nth=2.. \\
---nth=1.. --delimiter='::' \\
+| fzf --delimiter='\t' \\
+--with-nth=1,2 \\
+--nth=1.. \\
 --query="${mime} ${qstring}" \\
---preview='sqlite3 $dbase "select content from snpy_items where snpy_items.uuid={1};" -noheader' \\
+--preview='sqlite3 $dbase "SELECT content FROM snpy_items WHERE snpy_items.uuid IS {3};" -noheader' \\
 --preview-window=up
 END_CMD
+#  | bat --language {4} --pager=never
 # --select-1
 
-my ( $chosen ) = split /::/, `${command}`, 2;
+my ( undef, undef, $chosen ) = split /\t/, `${command}`;
+system('printf \'%s\' ' . "\"$results{$chosen}\"" . ' | $(command -v xclip) -selection clipboard') if $chosen;
+# open(XCLIP, '| xclip -selection clipboard');
+# print XCLIP $results{$chosen};
+# close XCLIP;
 say $results{$chosen} if $chosen;
