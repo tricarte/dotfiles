@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# A simple shell script to tell how much time to the next SafeEyes break
+# A simple shell script to tell how much time till the next SafeEyes break
 # is left.
+
+clear
 
 NOTIFYBIN=$(command -v notify-send)
 
@@ -42,7 +44,7 @@ else
     message="Current date: ${currdate}"
 fi
 
-if [ -t 0 ]; then
+if [[ -t 0 ]]; then
   echo "${message}"
 else
   if [[ -n $NOTIFYBIN ]]; then
