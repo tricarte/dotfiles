@@ -438,6 +438,7 @@ set wildignorecase
 set fileformats=unix,dos,mac
 
 if exists('$SHELL')
+    " set shell=/bin/bash\ --norc
     set shell=$SHELL
 else
     set shell=/bin/sh
@@ -810,14 +811,6 @@ endif
 set noerrorbells visualbell t_vb=
 if has('autocmd')
   autocmd GUIEnter * set visualbell t_vb=
-endif
-
-"" Copy/Paste/Cut
-if has('unnamedplus')
-    vnoremap <c-x> "+d
-    vnoremap <c-v> "+p
-    imap <c-v> <esc>"+p0gv<esc>0
-    vnoremap <c-c> "+y
 endif
 
 "*****************************************************************************
