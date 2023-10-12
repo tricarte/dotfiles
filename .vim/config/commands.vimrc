@@ -65,11 +65,16 @@ command! Reload :source ~/.vim/sessions/default.vim
 command! Y :exe 'CocList registers'
 
 " Read any shell command's output into the current line
-command! -nargs=1 Read :r !<args>
+command! -nargs=1 Read :0r !<args>
 
 " TODO: Can we handle calling multiple times?
 " Run a PHP builtin server in localhost:8080
 command! Playground :e ~/sites/pws-playground/public/index.php | :exe 'FloatermNew --title=Playground --silent "./pws"'
+
+" TODO: Snp command in Floaterm window
+" -nargs=1
+command! Snp2 :exe 'FloatermNew --title=Snippets s10 <args>'
+
 
 " Ranger wrapper with floaterm
 command! Ranger FloatermNew ranger
@@ -77,3 +82,6 @@ command! Ranger FloatermNew ranger
 command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-mode <args>
 " FIXME: Handle args in a function
 " command! -nargs=1 -range=% FindAndReplaceExact  <line1>,<line2>:!sd --string-mode <args>
+
+" Select from available filetypes
+command! Filetype :exe 'CocList filetypes'
