@@ -77,6 +77,15 @@ if has('macunix')
   vmap <C-c> :w !pbcopy<CR><CR>
 endif
 
+"" Copy/Paste/Cut
+if has('unnamedplus')
+    vnoremap <c-x> "+d
+    vnoremap <c-v> "+p
+    imap <c-v> <esc>"+p0gv<esc>0
+    vnoremap <c-c> "+y
+endif
+
+
 " if has('unnamedplus')
 "   " pbcopy for OSX copy/paste
 "   vmap <C-x> :!pbcopy<CR>
@@ -346,3 +355,5 @@ nnoremap <C-k> zk
 " Spell must be enabled using:
 " :set spell
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+nnoremap <space>oo :call MySnippets("")<CR>
