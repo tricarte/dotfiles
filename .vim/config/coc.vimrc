@@ -151,9 +151,9 @@ let g:coc_global_extensions = [
     \ 'coc-lists',
     \ '@yaegassy/coc-intelephense',
     \]
-    " \ 'coc-perl',
     " \ 'coc-sh',
     "  coc-lists: provides additional lists such as buffers, lines, registers
+    " \ 'coc-perl',
 
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
 " position. Coc only does snippet and additional edit on confirm.
