@@ -195,7 +195,7 @@ let g:syntastic_style_warning_symbol = '⚠'
 
 " if you prefer to use ale
 let g:ale_set_quickfix = 1
-let g:ale_set_loclist = 0
+let g:ale_set_loclist = 1
 let g:ale_open_list = 0
 let g:ale_lint_on_save = 1
 let g:ale_set_highlights = 1
@@ -211,9 +211,12 @@ let g:ale_sign_error = '✗'
 " let g:ale_sign_error = 'X'
 let g:ale_sign_warning = '⚠'
 let g:ale_disable_lsp = 1
-let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [] }
-let g:ale_fixers = { 'php': [ 'phpcbf', 'php_cs_fixer'], 'html': ['prettier'], 'css': ['prettier'], 'sh': ['shfmt'] }
+" Linters are syntax error and best practices checkers.
+" Fixers are anything that changes the code including beautifying.
+let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [], 'perl': ['perl', 'perlcritic'] }
+let g:ale_fixers = { 'php': [ 'phpcbf', 'php_cs_fixer'], 'html': ['prettier'], 'css': ['prettier'], 'sh': ['shfmt'], 'perl': ['perltidy'] }
 let g:ale_sh_shfmt_options = '-ln bash -i 2'
+let g:ale_perl_perl_options = '-c'
 
 let g:prettier#config#tab_width = 2
 
