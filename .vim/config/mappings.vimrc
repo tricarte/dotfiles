@@ -355,5 +355,3 @@ nnoremap <C-k> zk
 " Spell must be enabled using:
 " :set spell
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
-
-nnoremap <space>oo :call MySnippets("")<CR>
