@@ -40,6 +40,7 @@ map <f-2> :rename
 # Reload
 map <f-5> :reload
 
+map <f-4> :filter
 # set previewer /usr/local/bin/pistol
 # set previewer ~/.config/ranger/scope.sh
 
