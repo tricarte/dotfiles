@@ -135,6 +135,8 @@ alias str="vlc -vvv -I ncurses --recursive expand --quiet --random --sout '#http
 alias ger="mcon mount-only && sstart gerbera.service"
 alias gers="sstop gerbera.service && cd ~ && sudo conta -d && cc"
 alias uud="unmount-usb-drives"
+alias die="shutdown -h now"
+alias killdnsm="sudo killall -s SIGKILL dnsmasq"
 
 ##############
 #  Composer  #
