@@ -993,7 +993,7 @@ cmd kshare !{{
   fi
 }}
 
-# Info: Run any executable in a new kitty window
+# Info: Run any executable in a new kitty window <go>
 # Usage: :run or :runs for sudo
 cmd run &{{
     if [[ -x "${f}" ]]; then
@@ -1001,11 +1001,13 @@ cmd run &{{
         kitty @ --to unix:/tmp/mykitty launch --self "${@:+sudo}" "${f}"
     fi
 }}
+map go :run
 
-# Info: Run command with sudo
+# Info: Run command with sudo <gO>
 cmd runs &{{
     lf -remote "send $id :run s"
 }}
+map gO :runs
 
 # Info: Basic image operations using GraphicsMagick and ffmpeg
 cmd gm !{{
