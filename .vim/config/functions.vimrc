@@ -95,3 +95,25 @@ function! NeatFoldText()
     " return foldtextstart . repeat(foldchar, winwidth(0) - foldtextlength) . foldtextend
     return foldtextstart . " " . foldtextend
 endfunction
+
+function! Scratch()
+    noswapfile enew!
+    " setlocal buftype=nofile
+    setlocal buftype=nowrite
+    " setlocal bufhidden=hide
+    " setlocal nobuflisted
+    setlocal filetype=perl
+    lcd ~
+    file PERL
+    let content =<< trim END
+                use strict;
+                use warnings;
+                use warnings FATAL => 'all';
+                use 5.34.0;
+                # use diagnostics; # When encountering an error, it will try to explain it.
+                # use Data::Dumper qw(Dumper);"
+                
+    END
+    call setline(1, content)
+    :7
+endfunction

@@ -84,4 +84,10 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 " command! -nargs=1 -range=% FindAndReplaceExact  <line1>,<line2>:!sd --string-mode <args>
 
 " Select from available filetypes
-command! Filetype :exe 'CocList filetypes'
+" FZF already provides 'Filetypes'
+" command! Filetype :exe 'CocList filetypes'
+
+" Run current buffer as Perl code
+command! RP :w !perl -w
+" command! NP :enew!|setlocal filetype=perl
+command! NP :call Scratch()

@@ -249,7 +249,7 @@ Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
 
 " Auto add colon or semicolon at the end of the line using <LEADER>;
-Plug 'lfilho/cosco.vim', {'for': ['python', 'php', 'javascript']}
+Plug 'lfilho/cosco.vim', {'for': ['python', 'php', 'javascript', 'perl']}
 
 " :{Chrome,Firefox,Opera,AllBrowser}Reload
 " On last try, it was running buggy, requires xdotool.
