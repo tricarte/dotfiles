@@ -1404,3 +1404,9 @@ cmd hc &{{
     lf -remote "send $id reload"
 }}
 map hc :hc
+
+# Info: Go to the original file of symlink
+cmd follow_symlink &{{
+    real=$(realpath "${f}")
+    lf -remote "send $id select ${real}"
+}}

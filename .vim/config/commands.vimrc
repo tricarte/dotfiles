@@ -88,6 +88,7 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 " command! Filetype :exe 'CocList filetypes'
 
 " Run current buffer as Perl code
-command! RP :w !perl -w
+command! RP :w !perl
+" command! RP :w !perl -w
 " command! NP :enew!|setlocal filetype=perl
 command! NP :call Scratch()

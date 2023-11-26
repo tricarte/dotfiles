@@ -37,7 +37,7 @@ alias iostatps="pidstat -d" # pidstat can show lots of things about system usage
 alias vnlive="vnstat -l 1"
 alias free="free -mh" # Shows in 1024 format
 alias clock="tty-clock -scrbC 3"
-alias iscoremodule="corelist --upstream" # Is this module in perl core?
+# alias iscoremodule="corelist --upstream" # Is this module in perl core?
 
 ##############################################
 # archive management based on file extension #

@@ -1,4 +1,6 @@
 iabbrev <expr> dts strftime("%c")
+iabbrev *t* **TODO**
+iabbrev imp IMPORTANT
 
 iabbrev THis This
 iabbrev teh the

@@ -120,8 +120,6 @@ fi
 # [[ $BASHRC_CUSTOM_LOADED != "yes" && -f ~/.bashrc_custom ]] && source ~/.bashrc_custom
 source "$HOME/.bashrc_custom"
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
-
 # pnpm
 export PNPM_HOME="$HOME/.local/share/pnpm"
 export PATH="$PNPM_HOME:$PATH"
