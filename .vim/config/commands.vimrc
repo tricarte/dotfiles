@@ -92,3 +92,6 @@ command! RP :w !perl
 " command! RP :w !perl -w
 " command! NP :enew!|setlocal filetype=perl
 command! NP :call Scratch()
+
+command! RunRust :!clear && cargo run --quiet
+

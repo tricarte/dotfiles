@@ -132,6 +132,11 @@
     },
     "markdown-preview-enhanced.previewTheme": "one-dark.css",
     "snippets.ultisnips.pythonPrompt": false,
+    "workspace.ignoredFolders": [
+        "$HOME",
+        "$HOME/.cargo/**",
+        "$HOME/.rustup/**"
+    ],
     // "perl.enable": true,
     // "perl.p::ls.enable": true,
 }

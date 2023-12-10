@@ -14,3 +14,6 @@ cnoreabbrev yrs YRShow
 
 cnoreabbrev j J
 cnoreabbrev jo Jo
+cnoreabbrev jo Jo
+
+cnoreabbrev rr RunRust

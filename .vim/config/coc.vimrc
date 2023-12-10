@@ -150,6 +150,7 @@ let g:coc_global_extensions = [
     \ 'coc-snippets',
     \ 'coc-lists',
     \ '@yaegassy/coc-intelephense',
+    \ 'coc-rust-analyzer',
     \]
     " \ 'coc-sh',
     "  coc-lists: provides additional lists such as buffers, lines, registers
