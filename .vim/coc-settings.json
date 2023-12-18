@@ -137,6 +137,17 @@
         "$HOME/.cargo/**",
         "$HOME/.rustup/**"
     ],
+    "rust-analyzer.enable": true,
+    "rust-analyzer.checkOnSave": false,
+    "rust-analyzer.diagnostics.enable": false,
+    "rust-analyzer.disableProgressNotifications": false,
+    "rust-analyzer.server.path": "$HOME/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rust-analyzer",
+    "rust-analyzer.inlayHints.chainingHints.enable": false,
+    "rust-analyzer.inlayHints.closingBraceHints.enable": false,
+    "rust-analyzer.inlayHints.parameterHints.enable": true,
+    "rust-analyzer.inlayHints.typeHints.enable": false,
+    "rust-analyzer.inlayHints.typeHints.hideClosureInitialization": true,
+    "rust-analyzer.lens.enable": false
     // "perl.enable": true,
     // "perl.p::ls.enable": true,
 }
