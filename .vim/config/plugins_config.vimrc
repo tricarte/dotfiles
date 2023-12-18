@@ -213,8 +213,8 @@ let g:ale_sign_warning = '⚠'
 let g:ale_disable_lsp = 1
 " Linters are syntax error and best practices checkers.
 " Fixers are anything that changes the code including beautifying.
-let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [], 'perl': ['perl', 'perlcritic'] }
-let g:ale_fixers = { 'php': [ 'phpcbf', 'php_cs_fixer'], 'html': ['prettier'], 'css': ['prettier'], 'sh': ['shfmt'], 'perl': ['perltidy'] }
+let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [], 'perl': ['perl', 'perlcritic']}
+let g:ale_fixers = { 'php': [ 'phpcbf', 'php_cs_fixer'], 'html': ['prettier'], 'css': ['prettier'], 'sh': ['shfmt'], 'perl': ['perltidy'], 'rust': ['rustfmt'] }
 let g:ale_sh_shfmt_options = '-ln bash -i 2'
 let g:ale_perl_perl_options = '-c'
 
