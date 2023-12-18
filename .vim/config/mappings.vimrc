@@ -192,7 +192,7 @@ nnoremap <c-p>$ :Floaterms<cr>
 
 " http://code.tutsplus.com/articles/top-10-pitfalls-when-switching-to-vim--net-18113
 " shortcut to fold tags with leader
-nnoremap <leader>ft vatzf
+" nnoremap <leader>ft vatzf
 
 " visually reselect the text that was last edited/pasted
 nnoremap gv `[v`]
@@ -336,6 +336,7 @@ nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
 " floaterm mappings
 " nnoremap   <silent>   <space>r :FloatermNew ranger<CR>
 " nnoremap   <silent>   <space>r :FloatermNew lf -command 'set nopreview'<CR>
+let g:lf_map_keys = 0 " By default, lf.vim uses <leader>f
 nnoremap   <silent>   <space>r :Lf<CR>
 nnoremap   <silent>   <F7>    :FloatermNew<CR>
 tnoremap   <silent>   <F7>    <C-\><C-n>:FloatermNew<CR>
