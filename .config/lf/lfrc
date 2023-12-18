@@ -868,24 +868,39 @@ cmd mountc !{{
 
   function mount() {
     # TODO: > /dev/null thing
-    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "${f}"
+    # FIXME: Does not handle paths with spaces
+    # $1 and $2 handles -tc and the file to be mounted
+    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$2"
 
     $vcommand
-    output=$(conta --text --non-interactive --volume-properties "$f")
+    output=$(conta --text --non-interactive --volume-properties "$@") # Handle both -tc and the filename using "$@"
     mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
     if [[ -d $mpoint ]]; then
-      printf "Successfully mounted.\n"
-      lf -remote "send $id select \"${mpoint}\""
+      printf "Successfully mounted: ${mpoint}\n"
     else
-      printf "Could not mount...\n"
+      printf "Could not mount one of the selected files...\n"
     fi
   }
 
-  if [[ $(basename "$f" .iso) =~ -t$ ]]; then
-    mount -tc
-  else
-    mount
-  fi
+  while IFS=$'\n' read item; do
+    if [[ $(basename "$f" .iso) =~ -t$ ]]; then
+        mount -tc "${item}"
+    else
+        mount "${item}"
+    fi
+  done < <(printf "${fx}\n")
+
+}}
+
+# Info:Go to the mount point of the selected veracrypt container
+cmd goto_container_mount_point &{{
+    output=$(conta --text --non-interactive --volume-properties "$f")
+    mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
+    if [[ -d $mpoint ]]; then
+      lf -remote "send $id select \"${mpoint}\""
+    else
+        lf -remote "send $id echoerr This item is not mounted..."
+    fi
 }}
 
 # Info: Mount iso image
@@ -949,7 +964,9 @@ cmd batch-rename !{{
 # Info: Unmount veracrypt container
 cmd umountc !{{
     clear
-    sudo conta --text --non-interactive --dismount "$f"
+    while IFS=$'\n' read item; do
+        sudo conta --text --non-interactive --dismount "${item}"
+    done < <(printf "${fx}\n")
 }}
 
 # Info: Unmount USB drives mounted to /media/${USER}
