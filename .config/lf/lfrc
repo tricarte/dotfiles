@@ -282,6 +282,7 @@ cmd grep ${{
             --ansi --layout=reverse --header 'Search in files' \
             | cut -d':' -f1
     )"
+    # TODO: Can this open the file in Vim at the corresponding line number?
     [ ! -z "$res" ] && lf -remote "send $id select \"$res\""
 }}
 
@@ -1426,4 +1427,18 @@ map hc :hc
 cmd follow_symlink &{{
     real=$(realpath "${f}")
     lf -remote "send $id select ${real}"
+}}
+
+# Info: Extract audio from video as uncompressed wav
+cmd extract_audio !{{
+    while IFS=$'\n' read item; do
+        channels=$(mediainfo --Inform="Audio;%Channels%" "${item}")
+        base=$(basename "$item")
+
+        if [[ "${channels}" -gt 0 ]]; then
+            ffmpeg -i "${item}" -vn -acodec pcm_s16le -ar 44100 -ac "${channels}" "${base%.*}.wav"
+        else
+            continue
+        fi
+    done < <(printf "${fx}\n")
 }}
