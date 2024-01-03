@@ -34,6 +34,10 @@ ${{
     fi
 }}
 
+cmd on-cd &{{
+    printf "\033]0;lf - $PWD\007" > /dev/tty
+}}
+
 # Invoke rename command with F2
 map <f-2> :rename
 
@@ -1416,7 +1420,7 @@ map gp ${{
 # Info: Add hc_ to the selected filenames
 cmd hc &{{
     # printf '%s' "${fx}" | xargs --delimiter='\n' -I '{}' basename '{}' | xargs --delimiter='\n' -I '{}' mv '{}' hc_'{}'
-    # Lets' apply some PERL
+    # Let's apply some PERL
     # printf '%s' "${fx}" | perl -wnlaF'/' -e 'use File::Copy ('move'); move $F[-1], "hc_$F[-1]" or die "Move failed: $!";'
     printf '%s' "${fx}" | perl -wnlaF'/' -e 'rename $F[-1], "hc_$F[-1]" or die "Rename failed: $!";'
     lf -remote "send $id reload"
