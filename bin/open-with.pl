@@ -20,7 +20,7 @@ my %seen;
 my @entries = grep { !$seen{ $_->Name }++ } @other;
 
 # Create the input to fzf in the form:
-# N:DesktopEnteryName such as
+# Number:DesktopEnteryName such as
 # 0:LibreOffice Writer
 my $output = "";
 for (0..$#entries) {
@@ -29,7 +29,16 @@ for (0..$#entries) {
 
 # Ask the user
 my ( $chosen ) = split /:/, `printf "${output}" | fzf --with-nth=2.. --delimiter ':'`, 2;
-# Finally run the selected desktop entry
-$entries[$chosen]->system($file) if $chosen;
+# Finally run the selected desktop entry.
+# We can already use ->run and ->exec, but interestingly, especially with flatpaks,
+# sometimes the chosen entry does not get executed.
+# $entries[$chosen]->system($file) if $chosen;
+# $entries[$chosen]->run($file) if $chosen;
+# $entries[$chosen]->exec($file) if $chosen;
+my $exec = $entries[$chosen]->parse_Exec($file);
 
-exit;
+# print $exec, "\n";
+exec $exec;
+
+# Because 'exec' will never return!
+# exit;
