@@ -137,6 +137,7 @@ alias gers="sstop gerbera.service && cd ~ && sudo conta -d && cc"
 alias uud="unmount-usb-drives"
 alias die="shutdown -h now"
 alias killdnsm="sudo killall -s SIGKILL dnsmasq"
+alias q="exit"
 
 ##############
 #  Composer  #
