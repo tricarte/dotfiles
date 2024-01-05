@@ -1,6 +1,6 @@
 iabbrev <expr> dts strftime("%c")
 iabbrev *t* **TODO**
-iabbrev imp IMPORTANT
+iabbrev *i* **IMPORTANT**
 
 iabbrev THis This
 iabbrev teh the
@@ -16,4 +16,9 @@ cnoreabbrev j J
 cnoreabbrev jo Jo
 cnoreabbrev jo Jo
 
+cnoreabbrev nr NewRust
+cnoreabbrev rc RunCargo
 cnoreabbrev rr RunRust
+
+cnoreabbrev np NewPerl
+cnoreabbrev rp RunPerl

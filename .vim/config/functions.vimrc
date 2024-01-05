@@ -96,7 +96,7 @@ function! NeatFoldText()
     return foldtextstart . " " . foldtextend
 endfunction
 
-function! Scratch()
+function! ScratchPERL()
     noswapfile enew!
     " setlocal buftype=nofile
     setlocal buftype=nowrite
@@ -116,4 +116,40 @@ function! Scratch()
     END
     call setline(1, content)
     :7
+endfunction
+
+function! ScratchRUST()
+    e! /tmp/rust-scratch-file.rs
+    setlocal filetype=rust
+    :% norm die
+    let content =<< trim END
+                ```cargo
+                [dependencies]
+                # clap = { version = "4.2", features = ["derive"] }
+                # rand = "0.8.5"
+                ```
+
+                fn main() {
+                    println!("Hello World!");
+                }
+    END
+    call setline(1, content)
+    :8
+    w!
+endfunction
+
+function! RunRustScript()
+    write %
+    " sleep 900m
+    " :!clear;cargo +nightly -Zscript --quiet %
+    FloatermNew
+        \ --height=0.98 --width=0.95
+        \ --position=center
+        \ --disposable
+        \ --name=rustconsole
+        \ --title=RustPlayground
+        \ --autoclose=0
+        \ bash --norc -c "cargo +nightly -Zscript --quiet /tmp/rust-scratch-file.rs"
+    " :!kitty @ --to unix:/tmp/mykitty launch --no-response --hold --type=window cargo +nightly -Zscript /tmp/rust-scratch-file.rs
+    " :silent! !kitty @ --to unix:/tmp/mykitty launch --hold cargo +nightly -Zscript /tmp/rust-scratch-file.rs
 endfunction
