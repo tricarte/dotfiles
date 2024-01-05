@@ -34,6 +34,7 @@ ${{
     fi
 }}
 
+# Info: Noop
 cmd on-cd &{{
     printf "\033]0;lf - $PWD\007" > /dev/tty
 }}
