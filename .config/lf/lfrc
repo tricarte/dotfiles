@@ -34,7 +34,7 @@ ${{
     fi
 }}
 
-# Info: Noop
+# Info: Noop>on-cd
 cmd on-cd &{{
     printf "\033]0;lf - $PWD\007" > /dev/tty
 }}
@@ -898,7 +898,7 @@ cmd mountc !{{
 
 }}
 
-# Info:Go to the mount point of the selected veracrypt container
+# Info: Go to the mount point of the selected veracrypt container
 cmd goto_container_mount_point &{{
     output=$(conta --text --non-interactive --volume-properties "$f")
     mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
@@ -1389,6 +1389,10 @@ cmd md2pdf !{{
 # Every cmd description must be in this format:
 # "# Info: Description goes here..."
 # "cmd cmd_name &{{ }}"
+# If you want to create a cmd that should not be listed,
+# create it like this:
+# # Info: Noop>cmd_name
+# cmd cmd_name ${{}}
 # TODO: This is VERY fragile.
 map gp ${{
     FZF=$(command -v fzf)
@@ -1402,6 +1406,14 @@ map gp ${{
     else
         cmds=$(grep -E ^cmd "${HOME}/.config/lf/lfrc" | cut -d' ' -f2)
         infos=$(grep -E '^# Info:' "${HOME}/.config/lf/lfrc" | cut -d' ' -f3-)
+        noops=$(echo "$infos" | grep "Noop" | cut -d'>' -f2)
+        infos=$(echo "$infos" | grep -v "Noop")
+        # TODO: Improve this ugliness
+        cmds=$(
+                while IFS=$'\n' read item; do
+                    echo "$cmds" | grep -v "${item}"
+                done < <(printf "${noops}\n")
+        )
         c1=$(printf "$cmds" | wc -l)
         c2=$(printf "$infos" | wc -l)
         if [[ $c1 == $c2 ]]; then
