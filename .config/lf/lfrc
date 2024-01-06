@@ -394,8 +394,10 @@ cmd bookmark_jump ${{
     LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
     res=$(cat $LF_BOOKMARK_PATH/$(ls "$LF_BOOKMARK_PATH" | $FZF))
     res=$(eval "echo -e ${res}")
-    if [[ -n "$res" ]]; then
-        lf -remote "send $id cd "$res""
+    if [[ -d "${res}" ]]; then
+        lf -remote "send $id cd "${res}""
+    else
+        lf -remote "send $id echoerr Err: Target directory does not exist."
     fi
 }}
 map b :bookmark_jump
@@ -1021,7 +1023,7 @@ cmd kshare !{{
 cmd run &{{
     if [[ -x "${f}" ]]; then
         # --type=overlay
-        kitty @ --to unix:/tmp/mykitty launch --self "${@:+sudo}" "${f}"
+        kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" --self "${@:+sudo}" "${f}"
     fi
 }}
 map go :run
