@@ -459,6 +459,8 @@ set relativenumber
 set number
 set noshowmode                    " We use lightline to show the mode
 set cmdheight=2
+set smoothscroll
+
 
 if has('termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
