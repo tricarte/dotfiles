@@ -517,7 +517,7 @@ cmd archive &{{
 map gz push :archive<space>
 
 # Info: Extract archive with atool
-cmd extract &{{
+cmd extract !{{
     AUNPACK=$(command -v aunpack)
 
     if [[ -z $AUNPACK ]]; then
@@ -525,6 +525,7 @@ cmd extract &{{
         exit
     fi
 
+    # TODO: Select the extracted item
     ( $AUNPACK "$f" && lf -remote "send $id load" ) || lf -remote "send $id echoerr Archive could not be extracted."
 
 }}
