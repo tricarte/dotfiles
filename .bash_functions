@@ -574,3 +574,45 @@ function pmodi() {
     MOD="${1}"
     perl -M"$MOD" -e 'exit;' && echo "Module is available!" || echo "Module is not available!"
 }
+
+# cl 8080 -> curl 127.0.0.1:8080
+# cl 8080/login -> curl 127.0.0.1:8080/login
+# cl example.com -> curl example.com
+function cl() {
+    CURL_CMD="$(command -v curl) --silent --include"
+    PAGER=$(command -v bat)
+    if [[ -z $PAGER ]]; then
+        PAGER="$(command -v less)"
+    fi
+    address="${1}"
+    if [[ -f './.curl' ]]; then
+        curl_file=$(cat ./.curl)
+        address="${curl_file}${address}"
+        ${CURL_CMD} "${address}" | $PAGER
+        return
+    fi
+
+    if [[ -z "${address}" ]]; then
+        echo "Curl to a port on localhost or to a specific domain directly."
+        echo "Or you can create a file named '.curl' in project root"
+        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+        echo ""
+        echo "Usage:"
+        echo "  cl 8080        -> 'curl 127.0.0.1:8080'"
+        echo "  cl example.com -> 'curl example.com'"
+        echo ""
+        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+        echo "  cl route       -> 'curl host:port/route'"
+        return
+    fi
+
+    if [[ ! "$address" =~ ^[[:digit:]] ]]; then
+        echo "${address}"
+        ${CURL_CMD} "${address}" | $PAGER
+        return
+    else
+        echo "${address}"
+        ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
+        return
+    fi
+}
