@@ -48,6 +48,9 @@ Plug 'mhinz/vim-signify'
 " Plug 'bronson/vim-trailing-whitespace'
 Plug 'cohama/lexima.vim' " Auto pair and pairs with new lines
 Plug 'preservim/tagbar'
+" An alternative to tagbar
+" Both ctags and coc display is not as good as tagbar
+" Plug 'liuchengxu/vista.vim'
 " Plug 'scrooloose/syntastic', { 'for': ['php', 'javascript', 'css', 'jsx', 'html', 'json', 'sh', 'blade'] }
 Plug 'dense-analysis/ale'
 Plug 'sheerun/vim-polyglot'
@@ -138,7 +141,9 @@ Plug 'brooth/far.vim'
 Plug 'ryanoasis/vim-devicons'
 
 " PHP support for tagbar using phpctags
-Plug 'vim-php/tagbar-phpctags.vim'
+" Disabled to see how well Universal ctags performs
+" because this one is written in PHP.
+" Plug 'vim-php/tagbar-phpctags.vim'
 
 " " ' ( { on visuals also works using a config in this file (vnoremap with zdi)
 " cst : Change surrounding tab
@@ -182,7 +187,7 @@ Plug 'fvictorio/vim-textobj-backticks'
 Plug 'ap/vim-css-color'
 
 " Tags management
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 
 " Search files using silver search :Ags searchTerm,
 " r R: forward backward results, p P forward backward paths, u key-mappings
@@ -327,6 +332,7 @@ Plug 'yko/mojo.vim'
 Plug 'rust-lang/rust.vim'
 
 Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
+Plug 'antoinemadec/coc-fzf'
 
 call plug#end()
 " matchup.vim will replace both matchit.vim and matchparen

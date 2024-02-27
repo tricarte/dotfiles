@@ -22,3 +22,6 @@ cnoreabbrev rr RunRust
 
 cnoreabbrev np NewPerl
 cnoreabbrev rp RunPerl
+
+cnoreabbrev nh NewPHP
+cnoreabbrev rh RunPHP

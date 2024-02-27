@@ -26,9 +26,13 @@
     "diagnostic.messageTarget": "float",
     "intelephense": {
         "format": {
-            "braces": "k&r"
+            // "braces": "k&r"
+            "braces": "psr12"
         },
         "completion": {
+            "insertUseDeclaration": true,
+            "triggerParameterHints": true,
+            "maxItems": 25,
             "fullyQualifyGlobalConstantsAndFunctions": true
         },
         "inlineParameters": {
@@ -147,7 +151,13 @@
     "rust-analyzer.inlayHints.parameterHints.enable": true,
     "rust-analyzer.inlayHints.typeHints.enable": false,
     "rust-analyzer.inlayHints.typeHints.hideClosureInitialization": true,
-    "rust-analyzer.lens.enable": false
+    "rust-analyzer.lens.enable": false,
+    "php-cs-fixer": {
+        "enable": true,
+        "toolPath": "/home/sagirbas/.composer/vendor/bin/php-cs-fixer",
+        "enableFormatProvider": false
+        // "config": "/home/sagirbas/.php-cs-fixer-global.php"
+    }
     // "perl.enable": true,
     // "perl.p::ls.enable": true,
 }

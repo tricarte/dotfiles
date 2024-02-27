@@ -91,6 +91,13 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 command! RunPerl :w !perl
 command! NewPerl :call ScratchPERL()
 
+" Run current buffer as PHP code
+" Command abbreviation: rh
+command! RunPHP :w !phpo
+" command! RunPHP :up | w !phpo
+" Command abbreviation: nh
+command! NewPHP :call ScratchPHP()
+
 " There is :rc command abbreviation for this command
 " in abbreviations.vimrc
 command! RunCargo :w | !clear && cargo run --quiet
@@ -101,4 +108,3 @@ command! RunCargo :w | !clear && cargo run --quiet
 command! RunRust :silent! call RunRustScript()
 " Create a new rust single file buffer
 command! NewRust :call ScratchRUST()
-

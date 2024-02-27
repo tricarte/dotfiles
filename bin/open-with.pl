@@ -35,10 +35,13 @@ my ( $chosen ) = split /:/, `printf "${output}" | fzf --with-nth=2.. --delimiter
 # $entries[$chosen]->system($file) if $chosen;
 # $entries[$chosen]->run($file) if $chosen;
 # $entries[$chosen]->exec($file) if $chosen;
-my $exec = $entries[$chosen]->parse_Exec($file);
+if ($chosen) {
+    my $exec = $entries[$chosen]->parse_Exec($file);
 
-# print $exec, "\n";
-exec $exec;
+    # print $exec, "\n";
+    exec $exec;
 
-# Because 'exec' will never return!
-# exit;
+    # Because 'exec' will never return!
+    # exit;
+}
+

@@ -153,6 +153,7 @@ let g:coc_global_extensions = [
     \ '@yaegassy/coc-intelephense',
     \ 'coc-rust-analyzer',
     \]
+    " \ 'coc-php-cs-fixer',
     " \ 'coc-sh',
     "  coc-lists: provides additional lists such as buffers, lines, registers
     " \ 'coc-perl',

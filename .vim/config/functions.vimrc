@@ -118,6 +118,41 @@ function! ScratchPERL()
     :7
 endfunction
 
+" Using it like ScratchRUST
+" in order to make use of completion.
+" Otherwise, unlike in ScratchPERL, the completion does not work.
+function! ScratchPHP()
+    " e! /tmp/php-scratch-file.php
+    e! $HOME/repos/php-playground/php-scratch.php
+    setlocal filetype=php
+    :% norm die
+    let content =<< trim END
+                <?php
+                declare(strict_types=1);
+
+                namespace Scratch;
+
+                require_once __DIR__ . '/vendor/autoload.php';
+
+                use Carbon\Carbon;
+
+                /**
+                * Echo with new line
+                *
+                * @param mixed $output
+                *
+                * @return void
+                */
+                function writeln(mixed $output): void {
+                    echo $output . PHP_EOL;
+                }
+
+
+    END
+    call setline(1, content)
+    :21
+endfunction
+
 function! ScratchRUST()
     e! /tmp/rust-scratch-file.rs
     setlocal filetype=rust

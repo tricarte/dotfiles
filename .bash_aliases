@@ -37,7 +37,10 @@ alias iostatps="pidstat -d" # pidstat can show lots of things about system usage
 alias vnlive="vnstat -l 1"
 alias free="free -mh" # Shows in 1024 format
 alias clock="tty-clock -scrbC 3"
+alias abrt="mysql -uadmin -ppassword -e 'SHOW STATUS WHERE Variable_name LIKE \"Aborted_clients\"'" # Aborted MySQL/MariaDB clients
+alias prcl="mysql -uadmin -ppassword -e 'SHOW FULL PROCESSLIST'" # MySQL/MariaDB process list
 # alias iscoremodule="corelist --upstream" # Is this module in perl core?
+#
 
 ##############################################
 # archive management based on file extension #
@@ -85,11 +88,20 @@ alias ping="ping -c3"
 # alias ports='netstat -tulanp'
 alias ports="sudo lsof -i -n -P" # List of open ports
 # alias myip='LANG=c ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}''
-alias whatismyip="curl ifconfig.co"
+alias whatismyip="curl ifconfig.co" # WAN IP address
 alias iptall="sudo iptables -L -vn --line-numbers"
-alias serverhere="python3 -m http.server 8080"
-alias phpserver="php -S 0.0.0.0:8080"
-alias heybench="hey -n 100 -c 20" # HTTP Benchmark
+alias pyserver="python3 -m http.server 8080" # HTTP web server with Python
+alias phpserver="phpo -S 0.0.0.0:8080" # HTTP web server with PHP
+alias phpo="php \
+    -d opcache.enable=1 \
+    -d opcache.enable_cli=1 \
+    -d opcache.jit_buffer_size=256M \
+    -d opcache.validate_timestamps=0 \
+    -d opcache.fast_shutdown=1 \
+    -d opcache.jit=tracing \
+    -d mysqlnd.collect_statistics=0"
+alias heyb="hey -n 100 -c 20" # HTTP Benchmark with hey
+alias wrkb="wrk -c128 -t3 -d10s" # HTTP Benchmark with wrk
 alias spd="speedtest --simple --no-upload" # Download speed test
 alias onl="sudo systemctl restart dnsmasq && sudo systemctl restart valet-dns"
 alias metal="host metallica.com"
@@ -118,7 +130,7 @@ alias y2mp3="youtube-dl \
   --prefer-ffmpeg \
   --metadata-from-title '%(artist)s - %(title)s' \
   "
-alias qk="vim ~/.quick"
+alias qk="vim ~/.quick" # Open quick notes file in vim
 alias weather="curl http://wttr.in/kayseri"
 alias mcon="sudo mount-containers"
 alias mcons="sudo mount-containers single"
@@ -138,6 +150,7 @@ alias uud="unmount-usb-drives"
 alias die="shutdown -h now"
 alias killdnsm="sudo killall -s SIGKILL dnsmasq"
 alias q="exit"
+alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die" # Backup with rstc and shutdown
 
 ##############
 #  Composer  #

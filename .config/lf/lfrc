@@ -394,6 +394,11 @@ cmd bookmark_jump ${{
     LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
     res=$(cat $LF_BOOKMARK_PATH/$(ls "$LF_BOOKMARK_PATH" | $FZF))
     res=$(eval "echo -e ${res}")
+
+    if [[ -z "${res}" ]]; then
+        exit
+    fi
+
     if [[ -d "${res}" ]]; then
         lf -remote "send $id cd "${res}""
     else
@@ -1221,7 +1226,7 @@ EOF
                 mkdir optimized
             fi
 
-            images=$(printf "${fx}" | grep -E '.(jpg|jpeg|png|webp|gif)$')
+            images=$(printf "${fx}" | grep -E '.(jpg|jpeg|png|webp|gif|svg)$')
 
             if [[ -n "${images}" ]]; then
                 cmds=""
@@ -1241,6 +1246,11 @@ EOF
                     if [[ "${item##*.}" == 'gif' ]]; then
                         # TODO: Another alternative may be gifski
                         cmds+="gifsicle --optimize=3 --lossy=30 -o \"optimized/$(basename ${item})\" -i \"${item}\"\n"
+                    fi
+
+                    if [[ "${item##*.}" == 'svg' ]]; then
+                        # cmds+="gifsicle --optimize=3 --lossy=30 -o \"optimized/$(basename ${item})\" -i \"${item}\"\n"
+                        cmds+="svgo \"${item}\" -o \"optimized/$(basename ${item})\"\n"
                     fi
                 done < <(printf "${fx}\n")
             fi

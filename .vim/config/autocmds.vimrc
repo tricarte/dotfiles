@@ -89,8 +89,8 @@ augroup END
 " Now using a plugin to insert the semicolon at the end of the line.
 augroup semiColon
     au!
-    autocmd FileType javascript,css,php nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
-    autocmd FileType javascript,css,php imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
+    autocmd FileType javascript,css,php,sql,perl nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon)
+    autocmd FileType javascript,css,php,sql,perl imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
 augroup END
 
 " html
@@ -215,4 +215,9 @@ augroup end
 augroup MojoCommentString
   autocmd!
   autocmd FileType 'html.epl' set commentstring=\\%s
+augroup end
+
+augroup intelephenseDocRoot
+  autocmd!
+  autocmd FileType php let b:coc_root_patterns = ['.git', '.env', 'composer.json', 'artisan']
 augroup end
