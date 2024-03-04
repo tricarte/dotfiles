@@ -108,3 +108,8 @@ command! RunCargo :w | !clear && cargo run --quiet
 command! RunRust :silent! call RunRustScript()
 " Create a new rust single file buffer
 command! NewRust :call ScratchRUST()
+
+" Some closed buffers will come back when you restore a session
+" event you closed them with bd
+" Use BW instead
+command -nargs=? -bang BW :silent! argd % | bw<bang><args>
