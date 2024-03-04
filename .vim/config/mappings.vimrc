@@ -101,6 +101,8 @@ endif
 " use bufkill instead of default :bd
 " nnoremap <leader>bd :BD!<cr>
 
+cnoremap bd BW
+
 "" Vmap for maintain Visual Mode after shifting > and <
 vmap < <gv
 vmap > >gv
@@ -267,7 +269,11 @@ cnoremap <C-x> <del>
 cnoremap eh e ~/
 
 " Close buffer
-nnoremap <leader>q :bd<CR>
+" nnoremap <leader>q :bd<CR>
+" Using custom BW command instead of default bd
+" Because otherwise some closed buffers come back
+" after session reload
+nnoremap <leader>q :BW<CR>
 " " Using bbye plugin
 " " This removes the close file from jump list.
 " nnoremap <leader>q :Bwipeout<CR>
