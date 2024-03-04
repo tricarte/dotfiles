@@ -423,7 +423,9 @@ set foldenable
 " set showbreak=<ctrl-v>u21aa
 set showbreak=⇇
 " Session settings to remember (to be used in :mksession)
-set sessionoptions=resize,winpos,winsize,buffers,tabpages,folds,curdir,help
+" set sessionoptions=resize,winpos,winsize,buffers,tabpages,folds,curdir,help
+" Let's not remember the window size and position for session reloading
+set sessionoptions=buffers,tabpages,folds,curdir,help
 set showcmd " Show (partial) command in the status line
 set nojoinspaces " Use one space, not two, after punctuation.
 set nrformats=
