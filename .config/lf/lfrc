@@ -259,6 +259,11 @@ cmd fzf_jump ${{
     # NOTE: In order to make fd ignore items in gitignore files,
     # it must contain a .git directory.
     res="$(fd --exclude '.git' -H --ignore | $FZF +m --header='Jump to location' | sed 's/\\/\\\\/g;s/"/\\"/g')"
+
+    if [[ -z "${res}" ]]; then
+        exit 0
+    fi
+
     if [[ -d "${res}" ]]; then
         cmd="cd"
     elif [[ -f "${res}" ]] ; then
