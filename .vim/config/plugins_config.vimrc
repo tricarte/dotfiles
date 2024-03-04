@@ -463,9 +463,9 @@ let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 
 let g:doge_enable_mappings = 0
 let g:doge_buffer_mappings = 1
-let g:doge_php_settings = {
-\  'resolve_fqn': 1
-\}
+" let g:doge_php_settings = {
+" \  'resolve_fqn': 1
+" \}
 
 " floaterm settings
 let g:floaterm_width = 0.8
