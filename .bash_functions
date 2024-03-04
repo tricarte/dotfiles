@@ -627,7 +627,22 @@ function phpm() {
 # Total memory usage of process by process name case-insensitively
 # Requires ps_mem script and pgrep
 # Usage: memo firefox
+#      : memo -t firefox
 function memo() {
-    process="${1}"
-    ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
+    if [[ $# == 2 ]]; then
+        if [[ $1 != '-t' ]]; then
+            echo "Usage: memo [-t] firefox"
+            return 1
+        fi
+
+        numfmt --to=iec --suffix=B --format="%.3f" \
+            "$(ps_mem -t -p "$(pgrep -i --full "${2}" -d,)")"
+        return
+    fi
+
+    if [[ $# == 1 ]]; then
+        process="${1}"
+        ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
+    fi
+
 }
