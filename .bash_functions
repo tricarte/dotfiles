@@ -629,6 +629,11 @@ function phpm() {
 # Usage: memo firefox
 #      : memo -t firefox
 function memo() {
+    if [[ $# == 0 ]]; then
+        echo "Usage: memo [-t] firefox"
+        return 1
+    fi
+
     if [[ $# == 2 ]]; then
         if [[ $1 != '-t' ]]; then
             echo "Usage: memo [-t] firefox"
