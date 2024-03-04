@@ -10,6 +10,7 @@
     //         "ignoredRootPaths": ["~"]
     //     }
     // },
+    "session.saveOnVimLeave": false,
     "snippets.userSnippetsDirectory": "~/.vim/my-snippets",
     "suggest.noselect": false,
     "coc.preferences.currentFunctionSymbolAutoUpdate": true,
@@ -59,6 +60,7 @@
             "unusedSymbols": false
         },
         "stubs": [
+            "relay",
             "apcu",
             "wordpress",
             "apache",
