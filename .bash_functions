@@ -616,3 +616,18 @@ function cl() {
         return
     fi
 }
+
+# Search for PHP extensions in available and active ones
+# Usage: phpm exif
+function phpm() {
+    package="${1}"
+    php -m | grep "${package}"
+}
+
+# Total memory usage of process by process name case-insensitively
+# Requires ps_mem script and pgrep
+# Usage: memo firefox
+function memo() {
+    process="${1}"
+    ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
+}
