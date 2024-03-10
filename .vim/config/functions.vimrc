@@ -136,21 +136,11 @@ function! ScratchPHP()
 
                 use Carbon\Carbon;
 
-                /**
-                * Echo with new line
-                *
-                * @param mixed $output
-                *
-                * @return void
-                */
-                function writeln(mixed $output): void {
-                    echo $output . PHP_EOL;
-                }
 
 
     END
     call setline(1, content)
-    :21
+    :10
 endfunction
 
 function! ScratchRUST()

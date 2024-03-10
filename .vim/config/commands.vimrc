@@ -110,6 +110,6 @@ command! RunRust :silent! call RunRustScript()
 command! NewRust :call ScratchRUST()
 
 " Some closed buffers will come back when you restore a session
-" event you closed them with bd
+" even you closed them with bd
 " Use BW instead
 command -nargs=? -bang BW :silent! argd % | bw<bang><args>
