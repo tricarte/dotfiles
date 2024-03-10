@@ -12,6 +12,8 @@ cnoreabbrev yrs YRShow
 " cnoreabbrev rgr Ranger
 " cnoreabbrev rgw RangerWorkingDirectory
 
+cnoreabbrev bo BOnly
+
 cnoreabbrev j J
 cnoreabbrev jo Jo
 cnoreabbrev jo Jo
