@@ -23,16 +23,16 @@ set hidden true
 # Right now this looks useless.
 # It is this that causes the below error message when you exit lf.
 # listen: send: no such client id is connected
-${{
-    w=$(tput cols)
-    if [ $w -le 80 ]; then
-        lf -remote "send $id set ratios 1:2"
-    elif [ $w -le 160 ]; then
-        lf -remote "send $id set ratios 1:2:3"
-    else
-        lf -remote "send $id set ratios 1:2:3:5"
-    fi
-}}
+# cmd recol %{{
+#     w=$(tput cols)
+#     if [ $w -le 80 ]; then
+#         lf -remote "send $id set ratios 1:2"
+#     elif [ $w -le 160 ]; then
+#         lf -remote "send $id set ratios 1:2:3"
+#     else
+#         lf -remote "send $id set ratios 1:2:3:5"
+#     fi
+# }}
 
 # Info: Noop>on-cd
 cmd on-cd &{{
@@ -1083,6 +1083,35 @@ EOF
                     fi
                     cmd="gm convert -loop 10 -delay ${delay} $(echo $(wrap-with-quotes "${fx}")) converted/output.gif"
                     bash -c "${cmd}"
+                elif [[ "${ext}" == 'avif' ]]; then
+                    # imagemagick mogrify and convert commands suck cpu and memory with jpeg images
+                    # printf "${fx}" | xargs --delimiter='\n' mogrify -format avif -quality 90 -auto-orient -path ./converted
+                    count=$(printf "${fx}\n" | wc -l)
+
+                    while read item; do
+                        count=$((count - 1))
+                        filename="$(basename "${item}")"
+                        printf "Processing ${item}: "
+
+                        if [[ ! "${filename}" =~ \.(jp[e]?g|png)$ ]]; then
+                            echo "${filename}: Input must be either png or jpg for avif conversion."
+                            continue
+                        fi
+
+                        avifenc -j all -a cq-level=23 \
+                        --min 0 --max 63 --minalpha 0 --maxalpha 63 \
+                        -a end-usage=q -a tune=ssim \
+                        "${item}" "converted/${filename%.*}.avif" &> /dev/null
+
+                        if [[ $count -gt 0 ]]; then
+                            printf "DONE - remaining ${count}.\n"
+                        else
+                            printf "FINISHED.\n"
+                        fi
+                    done < <(printf "${fx}\n")
+                    if [[ -d "converted" ]]; then
+                        lf -remote "send $id select converted"
+                    fi
                 elif [[ "${ext}" == 'mp4' ]]; then
                     printf "Enter the delay amount (Default is 1 second): "
                     read delay
@@ -1382,6 +1411,9 @@ cmd mediainfo %{{
         info=$(mediainfo --Inform="Summary" "${f}")
     elif [[ "${mime}" =~ audio$ ]]; then
         info=$(mediainfo --Inform="Summary" "${f}")
+    elif [[ "${f}" =~ \.avif$ ]]; then
+        # mimetype cannot handle avif
+        info=$(mediainfo --Inform="Summary" "${f}")
     else
         lf -remote "send $id echoerr Not a media file!"
         exit
@@ -1477,3 +1509,9 @@ cmd extract_audio !{{
         fi
     done < <(printf "${fx}\n")
 }}
+
+# Info: Create a new kitty window with cwd
+cmd new_kitty_window &{{
+    kitty @ --to unix:/tmp/mykitty launch --type window --cwd current
+}}
+map gn :new_kitty_window
