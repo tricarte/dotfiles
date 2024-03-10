@@ -155,10 +155,15 @@ alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die" # Backup with rstc an
 ##############
 #  Composer  #
 ##############
+alias phpoc="phpo -n -dextension=phar.so -dextension=iconv.so /usr/bin/composer"
 alias cgu="composer global update" # Update globally installed packages
-alias cdo="composer dump-autoload --optimize"
-alias cgs="composer global show" # List globally installed packages
-alias csu="sudo composer self-update" # Upgrade composer
+# alias cdo="composer dump-autoload --optimize"
+# alias cgs="composer global show" # List globally installed packages
+# alias csu="sudo composer self-update" # Upgrade composer
+alias cdo="phpoc dump-autoload --optimize"
+alias cgs="phpoc global show" # List globally installed packages
+alias csu="sudo php -n -dextension=phar.so -dextension=iconv.so /usr/bin/composer self-update" # Upgrade composer
+alias csd="phpoc show --direct" # List required packages of root package
 
 ###########
 # Laravel #
