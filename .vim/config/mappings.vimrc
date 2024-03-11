@@ -345,7 +345,8 @@ nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
 let g:lf_map_keys = 0 " By default, lf.vim uses <leader>f
 " Below setting applies <leader>q to everywhere, not just the terminal
 " let g:floaterm_keymap_kill = '<leader>q'
-nnoremap   <silent>   <space>r :Lf<CR>
+nnoremap   <silent>   <space>r :LfWorkingDirectory<CR>
+nnoremap   <silent>   <space>f :LfCurrentFile<CR>
 nnoremap   <silent>   <F7>    :FloatermNew<CR>
 tnoremap   <silent>   <F7>    <C-\><C-n>:FloatermNew<CR>
 nnoremap   <silent>   <F8>    :FloatermPrev<CR>
