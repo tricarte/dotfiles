@@ -1515,3 +1515,39 @@ cmd new_kitty_window &{{
     kitty @ --to unix:/tmp/mykitty launch --type window --cwd current
 }}
 map gn :new_kitty_window
+
+# Info: Convert mp4 to animated avif
+cmd mp4_to_avif !{{
+    echo 'Converted videos will be in "./converted" directory.'
+    echo 'Warning: AVIF conversion can take some time depending on the input video!'
+    if [[ ! -d './converted' ]]; then
+        mkdir './converted'
+    fi
+    count=$(printf "${fx}\n" | wc -l)
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner -i "${item}" -pix_fmt yuv420p -f yuv4mpegpipe output.y4m
+
+        avifenc -j all -a cq-level=23 \
+        --min 0 --max 63 --minalpha 0 --maxalpha 63 \
+        -a end-usage=q -a tune=ssim \
+        output.y4m "converted/${filename%.*}.avif" &> /dev/null
+
+        if [[ -f './output.y4m' ]]; then
+            rm -f './output.y4m'
+        fi
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+    if [[ -d "converted" ]]; then
+        lf -remote "send $id select converted"
+    fi
+}}
