@@ -12,12 +12,6 @@ nnoremap - <C-x>
 nnoremap <silent> <F2> :NERDTreeFind<CR>
 nnoremap <silent> <F3> :NERDTreeToggle<CR>
 
-" grep.vim
-" nnoremap <silent> <leader>f :Rgrep<CR>
-" let Grep_Default_Options = '-IR'
-" let Grep_Skip_Files = '*.log *.db'
-" let Grep_Skip_Dirs = '.git node_modules'
-
 "*****************************************************************************
 "" Mappings
 "*****************************************************************************
@@ -81,7 +75,8 @@ endif
 if has('unnamedplus')
     vnoremap <c-x> "+d
     vnoremap <c-v> "+p
-    imap <c-v> <esc>"+p0gv<esc>0
+    " inoremap <c-v> <esc>"+pgv<esc>$
+    inoremap <c-v> <esc>"+p
     vnoremap <c-c> "+y
 endif
 
