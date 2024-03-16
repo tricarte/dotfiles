@@ -287,13 +287,20 @@ cmd grep ${{
     res="$( \
         RG_PREFIX="rg --hidden --column --line-number --no-heading --color=always \
             --smart-case "
+        # FIXME: This fzf command does not do fuzzy search
         FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
             $FZF --bind "change:reload:$RG_PREFIX {q} || true" \
-            --ansi --layout=reverse --header 'Search in files' \
-            | cut -d':' -f1
+            --ansi --header 'Search in files' \
+            | cut -d':' -f1-2
     )"
-    # TODO: Can this open the file in Vim at the corresponding line number?
-    [ ! -z "$res" ] && lf -remote "send $id select \"$res\""
+    # Read FZF response into $file and $line
+    IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
+    [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
+    pid=$(pgrep -f '^sh -c lf')
+    # DON'T run VIM if lf is inside VIM
+    if [[ -z "${pid}" ]]; then
+        vim +"${line}" "${file}"
+    fi
 }}
 
 # Info: Create new directory
@@ -337,7 +344,6 @@ cmd new !{{
 
     res=$(printf "Directory\nFile" | $FZF)
     case "${res}" in
-        # symbolically copy mode is indicating a soft link
         File)
             printf "New file name: "
             read newf
@@ -368,22 +374,51 @@ cmd move2newdir ${{
     lf -remote "send $id select \"${newd}\""
 }}
 
-# Info: Create symlinks/hardlinks (y to copy, d to cut) <P>
+# Info: Create symlinks(y)/hardlinks(d) then <P> to create
 cmd link %{{
     # y (select for copy) and P to paste soft-link
     # d (select for cut) and P to paste hard-link
+
+    # This converts the contents of the file into script arguments
     set -- $(cat ~/.local/share/lf/files)
     mode="$1"
-    shift
+    shift # Rest is the list of file to be linked.
     if [ "$#" -lt 1 ]; then
-        lf -remote "send $id echoerr First select the item to be linked to by pressing y(soft link) or d(hard link)."
+        # lf -remote "send $id echoerr First select the item to be linked to by pressing y(soft link) or d(hard link)."
         exit 0
     fi
     case "$mode" in
+        # # symbolically copy mode is indicating a soft link
+        # copy) ln -sr -t . -- "$@";;
+        # # while a move mode is indicating a hard link
+        # move) ln -t . -- "$@";;
+
         # symbolically copy mode is indicating a soft link
-        copy) ln -sr -t . -- "$@";;
+        copy)
+            # ln -sr -t . -- "$@";;
+            for i in "$@"; do
+                file="$(basename "${i}")"
+                if [[ ! -f "./${file}" ]]; then
+                    ln -sr -t . -- "$i"
+                else
+                    # we are in the same directory as the target
+                    ln -sr  "${i}" "./${file}.soft"
+                fi
+            done
+            ;;
         # while a move mode is indicating a hard link
-        move) ln -t . -- "$@";;
+        move)
+            # ln -t . -- "$@";;
+            for i in "$@"; do
+                file="$(basename "${i}")"
+                if [[ ! -f "./${file}" ]]; then
+                    ln -t . -- "$i"
+                else
+                    # we are in the same directory as the target
+                    ln "${i}" "./${file}.hard"
+                fi
+            done
+            ;;
     esac
     rm ~/.local/share/lf/files
     lf -remote "send $id clear"
@@ -1550,4 +1585,10 @@ cmd mp4_to_avif !{{
     if [[ -d "converted" ]]; then
         lf -remote "send $id select converted"
     fi
+}}
+
+# Info: Calculate total number of lines of selected file(s)
+cmd total_line_number &{{
+    output=$(total_line_numbers.php $fx)
+    lf -remote "send $id echo ${output}"
 }}
