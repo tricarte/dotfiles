@@ -27,3 +27,5 @@ cnoreabbrev rp RunPerl
 
 cnoreabbrev nh NewPHP
 cnoreabbrev rh RunPHP
+
+cnoreabbrev RM RemoveFileAndBuffer
