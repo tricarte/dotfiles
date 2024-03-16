@@ -189,10 +189,6 @@ Plug 'ap/vim-css-color'
 " Tags management
 " Plug 'ludovicchabant/vim-gutentags'
 
-" Search files using silver search :Ags searchTerm,
-" r R: forward backward results, p P forward backward paths, u key-mappings
-Plug 'gabesoft/vim-ags', {'on': 'Ags'}
-
 " In your default tmux pane layout, ( 4 panel layout )
 " when you run slime for the first time,
 " accept the default socket name
