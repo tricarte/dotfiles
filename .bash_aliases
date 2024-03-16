@@ -164,6 +164,8 @@ alias cdo="phpoc dump-autoload --optimize"
 alias cgs="phpoc global show" # List globally installed packages
 alias csu="sudo php -n -dextension=phar.so -dextension=iconv.so /usr/bin/composer self-update" # Upgrade composer
 alias csd="phpoc show --direct" # List required packages of root package
+alias cse="phpoc search" # Search for composer packages
+alias cre="composer require" # Install composer package
 
 ###########
 # Laravel #
