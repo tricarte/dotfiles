@@ -48,7 +48,8 @@ command! -bang Valet call fzf#vim#files('~/valet-park', <bang>0)
 command! -bang Sites call fzf#vim#files('~/sites', <bang>0)
 command! -bang Repos call fzf#vim#files('~/repos', <bang>0)
 command! -bang Etc call fzf#vim#files('/etc', <bang>0)
-command! -bang Dotf call fzf#run({'source': 'dotfiles ls-files ~', 'sink': 'e'})
+" command! -bang Dotf call fzf#run({'source': 'dfiles ls-files', 'sink': 'e'})
+command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
 
 if executable('shfmt')
     " command! -bang ShellFormat :%!shfmt -ln bash -i 2
@@ -59,7 +60,7 @@ endif
 command! -nargs=1 -range=% Macro  <line1>,<line2>:norm! @<args>
 
 " Reload last session that is saved by coc-lists
-command! Reload :source ~/.vim/sessions/default.vim
+" command! Reload :source ~/.vim/sessions/default.vim
 
 " List yank registers using CocList
 command! Y :exe 'CocList registers'
@@ -112,4 +113,8 @@ command! NewRust :call ScratchRUST()
 " Some closed buffers will come back when you restore a session
 " even you closed them with bd
 " Use BW instead
-command -nargs=? -bang BW :silent! argd % | bw<bang><args>
+command! -nargs=? -bang BW :silent! argd % | bw<bang><args>
+
+" Delete file from filesystem and remove the buffer
+" Command abbreviation: RM
+command! RemoveFileAndBuffer :call delete(expand('%')) | bdelete!
