@@ -256,22 +256,6 @@ let g:NERDTreeChDirMode=2
 let NERDTreeQuitOnOpen=1
 let g:nerdtree_tabs_open_on_gui_startup=0
 
-" Ags config
-let g:ags_agargs = {
-            \ '--break'             : [ '', '' ],
-            \ '--color'             : [ '', '' ],
-            \ '--color-line-number' : [ '"1;30"', '' ],
-            \ '--color-match'       : [ '"32;40"', '' ],
-            \ '--color-path'        : [ '"1;31"', '' ],
-            \ '--column'            : [ '', '' ],
-            \ '--context'           : [ 'g:ags_agcontext', '-C', '3' ],
-            \ '--group'             : [ '', '' ],
-            \ '--smart-case'        : [ '', '' ],
-            \ '--hidden'            : [ '', '' ],
-            \ '--heading'           : [ '', '-H' ],
-            \ '--max-count'         : [ 'g:ags_agmaxcount', '-m', '2000' ]
-            \ }
-
 " Startify config
 "let g:startify_change_to_dir = 0
 " let g:startify_custom_header = 'startify#fortune#quote()'
