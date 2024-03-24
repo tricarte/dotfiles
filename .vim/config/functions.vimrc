@@ -178,3 +178,15 @@ function! RunRustScript()
     " :!kitty @ --to unix:/tmp/mykitty launch --no-response --hold --type=window cargo +nightly -Zscript /tmp/rust-scratch-file.rs
     " :silent! !kitty @ --to unix:/tmp/mykitty launch --hold cargo +nightly -Zscript /tmp/rust-scratch-file.rs
 endfunction
+
+" Serve current buffer's working directory using PHP's built-in server
+" FIXME: Calling multiple times
+function! PHPServer()
+    let cwd  = getcwd()
+    let port = system('get_random_port.sh')
+    let file = buffer_name('%')
+    let cmd  = printf('FloatermNew --title=PHPServer --silent /usr/bin/php -n -S localhost:%s -t %s', port, cwd)
+    " echo cmd
+    execute cmd
+    call system(printf('xdg-open http://localhost:%s/%s', port, file))
+endfunction
