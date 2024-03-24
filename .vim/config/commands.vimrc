@@ -68,9 +68,9 @@ command! Y :exe 'CocList registers'
 " Read any shell command's output into the current line
 command! -nargs=1 Read :0r !<args>
 
-" TODO: Can we handle calling multiple times?
 " Run a PHP builtin server in localhost:8080
 command! Playground :e ~/sites/pws-playground/public/index.php | :exe 'FloatermNew --title=Playground --silent "./pws"'
+command! PHPServer :call PHPServer()
 
 " TODO: Snp command in Floaterm window
 " -nargs=1
@@ -117,4 +117,4 @@ command! -nargs=? -bang BW :silent! argd % | bw<bang><args>
 
 " Delete file from filesystem and remove the buffer
 " Command abbreviation: RM
-command! RemoveFileAndBuffer :call delete(expand('%')) | bdelete!
+command! RemoveFileAndBuffer  :call delete(expand('%')) | bdelete!
