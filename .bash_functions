@@ -606,13 +606,47 @@ function cl() {
         return
     fi
 
-    if [[ ! "$address" =~ ^[[:digit:]] ]]; then
-        echo "${address}"
-        ${CURL_CMD} "${address}" | $PAGER
+    if [[ "$address" =~ ^[[:digit:]] ]]; then
+        ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
         return
     else
-        echo "${address}"
-        ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
+        ${CURL_CMD} "${address}" | $PAGER
+        return
+    fi
+}
+
+# wrkb 8080 -> wrk -c128 -t3 -d10s 127.0.0.1:8080
+# wrkb 8080/login -> wrk -c128 -t3 -d10s 127.0.0.1:8080/login
+# wrkb example.com -> wrk -c128 -t3 -d10s example.com
+function wrkb() {
+    WRK_CMD="$(command -v wrk) -c128 -t3 -d10s"
+    address="${1}"
+    if [[ -f './.curl' ]]; then
+        curl_file=$(cat ./.curl)
+        address="${curl_file}${address}"
+        ${CURL_CMD} "${address}" | $PAGER
+        return
+    fi
+
+    if [[ -z "${address}" ]]; then
+        echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
+        echo "Or you can create a file named '.curl' in project root"
+        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+        echo ""
+        echo "Usage:"
+        echo "  wrkb 8080        -> 'wrk -c128 -t3 -d10s 127.0.0.1:8080'"
+        echo "  wrkb example.com -> 'wrk -c128 -t3 -d10s example.com'"
+        echo ""
+        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+        echo "  wrkb route       -> 'wrk -c128 -t3 -d10s host:port/route'"
+        return
+    fi
+
+    if [[ "$address" =~ ^[[:digit:]] ]]; then
+        ${WRK_CMD} "http://127.0.0.1:${address}"
+        return
+    else
+        ${WRK_CMD} "http://${address}"
         return
     fi
 }
