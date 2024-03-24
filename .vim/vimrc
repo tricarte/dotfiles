@@ -280,6 +280,7 @@ Plug 'vim-voom/VOoM', {'on': ['Voom', 'VoomToggle']}
 " <c-g>c in insert mode or gC in normal mode.
 " Why is it useful? You forgot you pressed capslock
 " and your favorite keybindings started to not work.
+" It also overrides tcomment's gC mapping
 Plug 'tpope/vim-capslock'
 
 " Provides new text objects or extends existing ones.
@@ -385,6 +386,7 @@ set ttimeoutlen=100
 " set pastetoggle=<f12>
 set splitbelow " puts new splits to the bottom
 set splitright " ensures new splits are to the right of current
+set confirm " Confirm saving of unsaved buffers when quitting
 
 " The last semicolon is the key here. When Vim tries to locate the 'tags'
 " file, it first looks at the current directory, then the parent directory,
