@@ -101,7 +101,6 @@ alias phpo="php \
     -d opcache.jit=tracing \
     -d mysqlnd.collect_statistics=0"
 alias heyb="hey -n 100 -c 20" # HTTP Benchmark with hey
-alias wrkb="wrk -c128 -t3 -d10s" # HTTP Benchmark with wrk
 alias spd="speedtest --simple --no-upload" # Download speed test
 alias onl="sudo systemctl restart dnsmasq && sudo systemctl restart valet-dns"
 alias metal="host metallica.com"
