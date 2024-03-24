@@ -280,6 +280,7 @@ map <c-f> :fzf_jump
 
 # Info: Grep files using fzf and ripgrep
 cmd grep ${{
+    # This version is not capable of fuzzy search, use grep2 instead
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -287,13 +288,36 @@ cmd grep ${{
     res="$( \
         RG_PREFIX="rg --hidden --column --line-number --no-heading --color=always \
             --smart-case "
-        # FIXME: This fzf command does not do fuzzy search
         FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
             $FZF --bind "change:reload:$RG_PREFIX {q} || true" \
             --ansi --header 'Search in files' \
             | cut -d':' -f1-2
     )"
     # Read FZF response into $file and $line
+    IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
+    [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
+    pid=$(pgrep -f '^sh -c lf')
+    # DON'T run VIM if lf is inside VIM
+    if [[ -z "${pid}" ]]; then
+        vim +"${line}" "${file}"
+    fi
+}}
+
+# Info: Grep files using fzf and ripgrep
+cmd grep2 ${{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+    fi
+
+    # TODO: Limit fuzzy search to line content
+    res="$(rg --hidden --column --color=always --line-number --no-heading --smart-case "${*:-}" |
+        $FZF --ansi \
+        --color "hl:-1:underline,hl+:-1:underline:reverse" \
+        --delimiter : \
+        | cut -d':' -f1-2
+        )"
+    # echo "${res}"
     IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
     [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
     pid=$(pgrep -f '^sh -c lf')
@@ -1591,4 +1615,16 @@ cmd mp4_to_avif !{{
 cmd total_line_number &{{
     output=$(total_line_numbers.php $fx)
     lf -remote "send $id echo ${output}"
+}}
+
+# Info: Fuzzy search in command history
+cmd hist ${{
+    clear
+    cmd=$(
+            lf -remote "query $id history" |
+            awk -F'\t' 'NR > 1 { print $NF}' |
+            sort -u |
+            fzf --prompt='Execute command: '
+         )
+    lf -remote "send $id $cmd"
 }}
