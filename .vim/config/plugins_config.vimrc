@@ -299,7 +299,8 @@ let g:startify_bookmarks=['~/.vim/vimrc',
             \ '/etc/services',
             \ '/etc/sysctl.conf',
             \ '/etc/timezone',
-            \ '/etc/vnstat.conf']
+            \ '/etc/vnstat.conf',
+            \ '~/.valet/Log/nginx-error.log']
 
 
 " closetag configuration
