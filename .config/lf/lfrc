@@ -1617,6 +1617,16 @@ cmd total_line_number &{{
     lf -remote "send $id echo ${output}"
 }}
 
+# Info: Count number of sub files and directories under selected directory
+cmd count &{{
+    if [[ -d "${f}" ]]; then
+        # Count is a symlink to PHP script in ~/bin
+        lf -remote "send $id echo Calculating..."
+        output=$(count "${f}")
+        lf -remote "send $id echo ${output}"
+    fi
+}}
+
 # Info: Fuzzy search in command history
 cmd hist ${{
     clear
