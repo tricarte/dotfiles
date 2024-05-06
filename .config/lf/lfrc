@@ -1460,6 +1460,49 @@ cmd optimize-video !{{
     fi
 }}
 
+# Info: Resize video using ffmpeg
+cmd resize-video !{{
+    printf "Non power of 2 resolutions may error!\n"
+    printf "Supported formats:\n"
+    printf "    * 640:480\n"
+    printf "    * 640:-1 or -1:480 Use -1 for keeping the aspect for width or height\n"
+    printf "Enter the new resolution: "
+    read format
+
+    # TODO check the format
+    # TODO Convert to power of two when using -1
+
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d resized ]]; then
+        mkdir resized
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -i "${item}" -c:v libx264 \
+            -vsync vfr -vf scale="${format}" \
+            -movflags +faststart -c:a copy \
+            "resized/${filename%.*}.mp4"
+            # -vsync vfr -preset fast \
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "resized" ]]; then
+        lf -remote "send $id select \"resized\""
+    fi
+}}
+
 # Info: Display media information in status bar
 cmd mediainfo %{{
     mime=$(mimetype --output-format '%d' "${f}")
