@@ -463,8 +463,10 @@ cmd bookmark_jump ${{
         exit
     fi
 
+    echo "${res}"
+
     if [[ -d "${res}" ]]; then
-        lf -remote "send $id cd "${res}""
+        lf -remote "send $id cd \"${res}\""
     else
         lf -remote "send $id echoerr Err: Target directory does not exist."
     fi
@@ -479,10 +481,10 @@ cmd bookmark_create ${{
     if [[ -n "${ans}" ]]; then
         if [[ "$PWD" == ${HOME}* ]]; then
             current=${PWD/#${HOME}/\$HOME}
-            printf $current > "${LF_BOOKMARK_PATH}/${ans}"
+            printf "${current}" > "${LF_BOOKMARK_PATH}/${ans}"
         elif [[ "$PWD" == /media/${USER}* ]]; then
             current=${PWD//${USER}/\$USER}
-            printf $current > "${LF_BOOKMARK_PATH}/${ans}"
+            printf "${current}" > "${LF_BOOKMARK_PATH}/${ans}"
         else
             printf "${PWD}" > "${LF_BOOKMARK_PATH}/${ans}"
         fi
@@ -1612,7 +1614,7 @@ cmd extract_audio !{{
     done < <(printf "${fx}\n")
 }}
 
-# Info: Create a new kitty window with cwd
+# Info: Create a new kitty shell window with cwd <gn>
 cmd new_kitty_window &{{
     kitty @ --to unix:/tmp/mykitty launch --type window --cwd current
 }}
@@ -1680,4 +1682,38 @@ cmd hist ${{
             fzf --prompt='Execute command: '
          )
     lf -remote "send $id $cmd"
+}}
+
+# Info: Mount Android phone through mtp
+cmd mount-mtp &{{
+    GOMTPFS=$(command -v go-mtpfs)
+    if [[ -z "${GOMTPFS}" ]]; then
+        lf -remote "send $id echoerr 'go-mtpfs binary is not accessible!'"
+        exit
+    fi
+
+    if [[ ! -d "~/mtp" ]]; then
+        mkdir ~/mtp || lf -remote "send $id echoerr 'Mount point ~/mtp could not be created!'"
+    fi
+
+    "${GOMTPFS}" ~/mtp &
+    if [[ $? == 0 ]]; then
+        lf -remote "send $id select ~/mtp"
+    else
+        lf -remote "send $id echoerr 'Phone could not be mounted! Check mtp is enabled and the phone is unlocked.'"
+    fi
+    exit
+}}
+
+# Info: Unmount Android phone connected with mtp
+cmd umount-mtp &{{
+    if [[ -d ~/mtp ]]; then
+        lf -remote "send $id :cd ~"
+        fusermount -u ~/mtp
+        if [[ $? != 0 ]]; then
+            lf -remote "send $id echoerr 'Unmount error!. Probably not mounted or currently in use.'"
+            exit
+        fi
+        lf -remote "send $id echo 'Phone succesfully unmounted!'"
+    fi
 }}
