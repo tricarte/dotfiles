@@ -204,6 +204,7 @@ alias dpushgh="dfiles push -u github_remote main"
 alias dpushall="dpush && dpushgh"
 alias darchive="dfiles archive -o dotfiles-gitlab-repo.zip HEAD"
 alias dlog="dfiles log"
+alias drevert="dfiles reset --hard HEAD" # Revert changes to last commit of dotfiles
 
 #########################
 #  Docker and Devilbox  #
