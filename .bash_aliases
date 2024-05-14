@@ -37,8 +37,8 @@ alias iostatps="pidstat -d" # pidstat can show lots of things about system usage
 alias vnlive="vnstat -l 1"
 alias free="free -mh" # Shows in 1024 format
 alias clock="tty-clock -scrbC 3"
-alias abrt="mysql -uadmin -ppassword -e 'SHOW STATUS WHERE Variable_name LIKE \"Aborted_clients\"'" # Aborted MySQL/MariaDB clients
-alias prcl="mysql -uadmin -ppassword -e 'SHOW FULL PROCESSLIST'" # MySQL/MariaDB process list
+alias abrt="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW STATUS WHERE Variable_name LIKE \"Aborted_clients\"'" # Aborted MySQL/MariaDB clients
+alias prcl="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW FULL PROCESSLIST'" # MySQL/MariaDB process list
 # alias iscoremodule="corelist --upstream" # Is this module in perl core?
 #
 
@@ -204,7 +204,7 @@ alias dpushgh="dfiles push -u github_remote main"
 alias dpushall="dpush && dpushgh"
 alias darchive="dfiles archive -o dotfiles-gitlab-repo.zip HEAD"
 alias dlog="dfiles log"
-alias drevert="dfiles reset --hard HEAD && dfiles clean -df" # Revert changes to last commit of dotfiles
+alias drevert="dfiles reset --hard HEAD" # Revert changes to last commit of dotfiles
 
 #########################
 #  Docker and Devilbox  #
