@@ -946,30 +946,21 @@ cmd mountc !{{
   clear
   pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
 
-  function mount() {
-    # TODO: > /dev/null thing
-    # FIXME: Does not handle paths with spaces
-    # $1 and $2 handles -tc and the file to be mounted
-    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --password=%b %b %b" "$pass" "$1" "$2"
+  while IFS=$'\n' read item; do
+    BASENAME=$(basename "${item}")
+    SLOT=$(echo "${BASENAME%%.*}" | cut -d'_' -f2)
+    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --slot=%b --password=%b %b" "${SLOT}" "${pass}" "${item}"
 
     $vcommand
-    output=$(conta --text --non-interactive --volume-properties "$@") # Handle both -tc and the filename using "$@"
+
+    output=$(conta --text --non-interactive --volume-properties "${item}")
     mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
     if [[ -d $mpoint ]]; then
       printf "Successfully mounted: ${mpoint}\n"
     else
       printf "Could not mount one of the selected files...\n"
     fi
-  }
-
-  while IFS=$'\n' read item; do
-    if [[ $(basename "$f" .iso) =~ -t$ ]]; then
-        mount -tc "${item}"
-    else
-        mount "${item}"
-    fi
   done < <(printf "${fx}\n")
-
 }}
 
 # Info: Go to the mount point of the selected veracrypt container
@@ -1717,3 +1708,8 @@ cmd umount-mtp &{{
         lf -remote "send $id echo 'Phone succesfully unmounted!'"
     fi
 }}
+
+# Info: Open selected file with $EDITOR (usually, vim)
+cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
+map e open-with-vim
+
