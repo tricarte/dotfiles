@@ -224,3 +224,6 @@ export LESS_TERMCAP_us=$'\e[01;32m' \
 if [[ ! $PATH =~ /usr/local/go/bin ]]; then
     export PATH=$PATH:/usr/local/go/bin
 fi
+
+# To get rid of the vaapi errors for some apps like mpv
+export LIBVA_DRIVER_NAME=i965
