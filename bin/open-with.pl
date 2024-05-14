@@ -34,12 +34,12 @@ my ( $chosen ) = split /:/, `printf "${output}" | fzf --with-nth=2.. --delimiter
 # sometimes the chosen entry does not get executed.
 # $entries[$chosen]->system($file) if $chosen;
 # $entries[$chosen]->run($file) if $chosen;
-# $entries[$chosen]->exec($file) if $chosen;
-if ($chosen) {
-    my $exec = $entries[$chosen]->parse_Exec($file);
+if (defined $chosen) {
+    # $entries[$chosen]->exec($file);
+    $entries[$chosen]->run($file);
 
-    # print $exec, "\n";
-    exec $exec;
+    # my $exec = $entries[$chosen]->parse_Exec($file);
+    # exec $exec;
 
     # Because 'exec' will never return!
     # exit;
