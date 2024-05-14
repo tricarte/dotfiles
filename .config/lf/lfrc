@@ -1713,18 +1713,28 @@ cmd umount-mtp &{{
 
 # Info: Split video by duration
 cmd split-video-by-duration !{{
-    # Does not obey the duration somehow
-    # TODO: Ask for duration
+    # FIXME: Output durations may all be different.
     clear
+    read -rp "Enter the duration in MM::SS format (default: 00:11): " duration
+
+    # TODO: check the format
+    if [[ -z "${duration}" ]]; then
+        duration="00:11"
+    fi
+
     while IFS=$'\n' read item; do
-        BASENAME=$(basename "${item}")
-        NAME="${BASENAME%.*}"
-        EXT="${BASENAME##*.}"
-        echo "${BASENAME}" "${NAME}" "${EXT}"
-        ffmpeg -i "${item}" \
-            -threads "$(nproc)" -vcodec copy \
-            -f segment -segment_time 00:11 \
-            -reset_timestamps 1 "${NAME}"_%02d."${EXT}"
+        mime=$(mimetype --output-format '%m' "${item}")
+
+        if [[ "${mime}" =~ video ]]; then
+            BASENAME=$(basename "${item}")
+            NAME="${BASENAME%.*}"
+            EXT="${BASENAME##*.}"
+            printf "Splitting ${item}\n"
+            ffmpeg -nostdin -loglevel panic -hide_banner -i "${item}" \
+                -threads "$(nproc)" -vcodec copy \
+                -f segment -segment_time "${duration}" \
+                -reset_timestamps 1 "${NAME}"_%02d."${EXT}"
+        fi
     done < <(printf "${fx}\n")
 }}
 
