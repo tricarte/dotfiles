@@ -60,25 +60,28 @@ let g:polyglot_disabled = ['markdown', 'php']
 Plug 'edkolev/promptline.vim' , { 'on': 'PromptlineSnapshot' }
 
 " Colorschemes
-Plug 'ntk148v/komau.vim'
-Plug 'fenetikm/falcon'
-Plug 'n1ghtmare/noirblaze-vim'
-Plug 'kaicataldo/material.vim'
-Plug 'chriskempson/base16-vim'
-Plug 'cormacrelf/vim-colors-github'
+" Not installed ones
 " Plug 'kabbamine/yowish.vim'
-Plug 'NLKNguyen/papercolor-theme'
-Plug 'fneu/breezy'
-Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-Plug 'joshdick/onedark.vim'
-Plug 'rakr/vim-one'
 " Plug 'aonemd/kuroi.vim'
 " Plug 'huyvohcmc/atlas.vim' " Full grey on dark only
 " Plug 'davidosomething/vim-colors-meh' " Dark only, a tiny bit colored, low contrast
-Plug 'preservim/vim-colors-pencil' " Both dark and light is GOOD.
-Plug 'drewtempelmeyer/palenight.vim'
-Plug 'stefanvanburen/rams.vim' " Light is pretty good, but it needs markdown improvements.
 " Plug 'pgdouyon/vim-yin-yang' " This has both dark(yin) and light(yang), yin is good.
+" Used one
+Plug 'chriskempson/base16-vim'
+" Installed ones
+" Plug 'ntk148v/komau.vim'
+" Plug 'fenetikm/falcon'
+" Plug 'n1ghtmare/noirblaze-vim'
+" Plug 'kaicataldo/material.vim'
+" Plug 'cormacrelf/vim-colors-github'
+" Plug 'NLKNguyen/papercolor-theme'
+" Plug 'fneu/breezy'
+" Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+" Plug 'joshdick/onedark.vim'
+" Plug 'rakr/vim-one'
+" Plug 'preservim/vim-colors-pencil' " Both dark and light is GOOD.
+" Plug 'drewtempelmeyer/palenight.vim'
+" Plug 'stefanvanburen/rams.vim' " Light is pretty good, but it needs markdown improvements.
 
 " Plug 'shawncplus/phpcomplete.vim'
 " Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
