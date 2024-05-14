@@ -1023,6 +1023,8 @@ cmd umountiso !{{
 # Info: Batch rename items in current directory using vimv
 cmd batch-rename !{{
     clear
+    # This is the vimv script source
+    # https://github.com/thameera/vimv
     VIMV=$(command -v vimv)
     if [[ -z $VIMV ]]; then
         lf -remote "send $id echoerr vimv is not installed."
@@ -1707,6 +1709,23 @@ cmd umount-mtp &{{
         fi
         lf -remote "send $id echo 'Phone succesfully unmounted!'"
     fi
+}}
+
+# Info: Split video by duration
+cmd split-video-by-duration !{{
+    # Does not obey the duration somehow
+    # TODO: Ask for duration
+    clear
+    while IFS=$'\n' read item; do
+        BASENAME=$(basename "${item}")
+        NAME="${BASENAME%.*}"
+        EXT="${BASENAME##*.}"
+        echo "${BASENAME}" "${NAME}" "${EXT}"
+        ffmpeg -i "${item}" \
+            -threads "$(nproc)" -vcodec copy \
+            -f segment -segment_time 00:11 \
+            -reset_timestamps 1 "${NAME}"_%02d."${EXT}"
+    done < <(printf "${fx}\n")
 }}
 
 # Info: Open selected file with $EDITOR (usually, vim)
