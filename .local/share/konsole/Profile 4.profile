@@ -2,7 +2,7 @@
 AntiAliasFonts=true
 BoldIntense=true
 ColorScheme=Material Palenight
-Font=JetBrainsMono Nerd Font Mono,9.8,-1,5,50,0,0,0,0,0
+Font=JetBrains Mono Medium,9.8,-1,5,57,0,0,0,0,0,Regular
 LineSpacing=4
 TabColor=128,0,128
 UseFontLineChararacters=true
@@ -28,4 +28,4 @@ ScrollBarPosition=2
 [Terminal Features]
 BidiRenderingEnabled=false
 BlinkingCursorEnabled=false
-VerticalLine=false
+VerticalLine=true
