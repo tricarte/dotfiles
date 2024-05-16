@@ -716,7 +716,7 @@ cmd st &{{
 cmd decrypt !{{
     clear
     gpg -qd --pinentry-mode loopback "${f}"
-    printf '%s' "\n"
+    printf "\n"
 }}
 
 # Info: Provide basic encryption/decryption with gpg
