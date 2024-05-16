@@ -60,7 +60,7 @@ alias agall="agupdate && agc && aga"
 alias ags="apt search"
 alias agc="sudo apt-get clean -y"
 alias aga="sudo apt-get autoremove -y"
-alias agi="sudo apt install"
+alias agi="sudo apt install -y"
 alias agsh="apt show"
 alias alu="apt list --upgradable"
 
