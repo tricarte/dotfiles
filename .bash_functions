@@ -488,7 +488,7 @@ enc() {
   read -rp "Name of the encrypted output file: " name
   if [[ -n $name ]]; then
     echo -e "Now type the content, press the Enter key and then Ctrl+D to exit.\n"
-    gpg --output "$name" --symmetric -
+    gpg -q --pinentry-mode loopback --output "$name" --symmetric -
     if [[ -f "$name" ]]; then
       echo "Encrypted file successfully created."
       return
