@@ -944,6 +944,11 @@ cmd lastdown &{{
 # Info: Mount veracrypt container
 cmd mountc !{{
   clear
+  if [[ ! -f /etc/.container.gpg ]]; then
+    lf -remote "send $id echoerr '/etc/.container.gpg' file does not exist. Use 'enc' function to create it."
+    exit
+  fi
+
   pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
 
   while IFS=$'\n' read item; do
