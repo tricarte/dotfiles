@@ -227,3 +227,6 @@ fi
 
 # To get rid of the vaapi errors for some apps like mpv
 export LIBVA_DRIVER_NAME=i965
+
+GPG_TTY=$(tty)
+export GPG_TTY
