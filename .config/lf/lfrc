@@ -954,9 +954,8 @@ cmd mountc !{{
   while IFS=$'\n' read item; do
     BASENAME=$(basename "${item}")
     SLOT=$(echo "${BASENAME%%.*}" | cut -d'_' -f2)
-    printf -v vcommand "sudo conta --text --fs-options=umask=022 --non-interactive --mount --slot=%b --password=%b %b" "${SLOT}" "${pass}" "${item}"
 
-    $vcommand
+    sudo conta --text --fs-options=umask=022 --non-interactive --mount --slot="${SLOT}" --password="${pass}" "${item}"
 
     output=$(conta --text --non-interactive --volume-properties "${item}")
     mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
@@ -1740,6 +1739,14 @@ cmd split-video-by-duration !{{
                 -f segment -segment_time "${duration}" \
                 -reset_timestamps 1 "${NAME}"_%02d."${EXT}"
         fi
+    done < <(printf "${fx}\n")
+}}
+
+# Info: Sync container iso to its backup counterpart
+cmd sync-isos !{{
+    clear
+    while IFS=$'\n' read item; do
+        sync-isos2 "${item}"
     done < <(printf "${fx}\n")
 }}
 
