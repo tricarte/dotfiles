@@ -1598,7 +1598,7 @@ cmd follow_symlink &{{
 }}
 
 # Info: Extract audio from video as uncompressed wav
-cmd extract_audio !{{
+cmd extract-audio !{{
     while IFS=$'\n' read item; do
         channels=$(mediainfo --Inform="Audio;%Channels%" "${item}")
         base=$(basename "$item")
@@ -1748,6 +1748,23 @@ cmd sync-isos !{{
     while IFS=$'\n' read item; do
         sync-isos2 "${item}"
     done < <(printf "${fx}\n")
+}}
+
+# Info: Convert audio to another format
+cmd convert-audio !{{
+    clear
+    base="$(basename "${f}")"
+    read -rp "Enter the extension: " ans
+    output="${base%.*}.${ans}"
+    printf "Converting...\n"
+    ffmpeg -loglevel panic -hide_banner -i "${f}" "${output}"
+    if [[ -f "${output}" ]]; then
+        lf -remote "send $id select \"${output}\""
+        lf -remote "send $id echo Successfully converted!."
+    else
+        lf -remote "send $id echoerr Conversion could not be done!."
+    fi
+    printf "Done!\n"
 }}
 
 # Info: Open selected file with $EDITOR (usually, vim)
