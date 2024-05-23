@@ -123,7 +123,7 @@ endfunction
 " Otherwise, unlike in ScratchPERL, the completion does not work.
 function! ScratchPHP()
     " e! /tmp/php-scratch-file.php
-    e! $HOME/repos/php-playground/php-scratch.php
+    e! $HOME/repos/php-playground/src/php-scratch.php
     setlocal filetype=php
     :% norm die
     let content =<< trim END

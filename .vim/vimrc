@@ -331,8 +331,16 @@ Plug 'yko/mojo.vim'
 " Rustlang
 Plug 'rust-lang/rust.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
-Plug 'antoinemadec/coc-fzf'
+" Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
+" Plug 'antoinemadec/coc-fzf'
+
+" Using vimcomplete instead of CoC
+Plug 'girishji/vimcomplete'
+Plug 'girishji/ngram-complete.vim' " ngram and bigram completion instead of dictionary
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'rafamadriz/friendly-snippets'
+Plug 'yegappan/lsp'
 
 call plug#end()
 " matchup.vim will replace both matchit.vim and matchparen

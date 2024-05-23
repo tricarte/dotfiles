@@ -26,6 +26,7 @@
     },
     "diagnostic.messageTarget": "float",
     "intelephense": {
+        "runtime": "$HOME/.bun/bin/bun"
         "format": {
             // "braces": "k&r"
             "braces": "psr12"
