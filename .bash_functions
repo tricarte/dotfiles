@@ -624,7 +624,6 @@ function wrkb() {
     if [[ -f './.curl' ]]; then
         curl_file=$(cat ./.curl)
         address="${curl_file}${address}"
-        ${CURL_CMD} "${address}" | $PAGER
         return
     fi
 
@@ -647,6 +646,41 @@ function wrkb() {
         return
     else
         ${WRK_CMD} "http://${address}"
+        return
+    fi
+}
+
+# ohab 8080 -> oha -c128 --no-tui -z10s --disable-keepalive 127.0.0.1:8080
+# ohab 8080/login
+# ohab example.com
+function ohab() {
+    OHA_CMD="$(command -v oha) -c128 --no-tui -z10s --disable-keepalive"
+    address="${1}"
+    if [[ -f './.curl' ]]; then
+        curl_file=$(cat ./.curl)
+        address="${curl_file}${address}"
+        return
+    fi
+
+    if [[ -z "${address}" ]]; then
+        echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
+        echo "Or you can create a file named '.curl' in project root"
+        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+        echo ""
+        echo "Usage:"
+        echo "  ohab 8080        -> 'oha -c128 --no-tui -z10s --disable-keepalive 127.0.0.1:8080'"
+        echo "  ohab example.com -> 'oha -c128 --no-tui -z10s --disable-keepalive example.com'"
+        echo ""
+        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+        echo "  ohab route       -> 'oha -c128 --no-tui -z10s --disable-keepalive host:port/route'"
+        return
+    fi
+
+    if [[ "$address" =~ ^[[:digit:]] ]]; then
+        ${OHA_CMD} "http://127.0.0.1:${address}"
+        return
+    else
+        ${OHA_CMD} "http://${address}"
         return
     fi
 }
