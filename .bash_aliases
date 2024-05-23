@@ -133,9 +133,10 @@ alias y2mp3="youtube-dl \
   "
 alias qk="vim ~/.quick" # Open quick notes file in vim
 alias weather="curl http://wttr.in/kayseri"
-alias mcon="sudo mount-containers"
-alias mcons="sudo mount-containers single"
-alias mconu="sudo conta --text --non-interactive -d"
+# alias mcon="sudo mount-containers"
+# alias mcons="sudo mount-containers single"
+# alias mconu="sudo conta --text --non-interactive -d"
+alias mcon="mount-containers2"
 alias cc="rm -rf ~/.cache/thumbnails/*" # Clear thumbnail cache
 alias kssh="kitty +kitten ssh"
 alias sniploc="cd ~/valet-park/sniploc; pws"
@@ -228,6 +229,7 @@ alias sreload="sudo systemctl reload"
 alias srestart="sudo systemctl restart"
 alias senable="sudo systemctl enable"
 alias sdisable="sudo systemctl disable"
+alias slemp="sstart php8.3-fpm nginx mariadb redis-server" # Start LEMP
 
 alias sstatus="systemctl status"
 alias sshow="systemctl show"
