@@ -16,7 +16,8 @@ if [[ ! -f "${storage}/backup.iso" ]]; then
   exit 1
 fi
 
-pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+# pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+pass=$(gpg -q -d /etc/.container.gpg)
 sudo conta --text --non-interactive \
   --mount --password="${pass}" "${storage}/backup.iso" 2>/dev/null
 

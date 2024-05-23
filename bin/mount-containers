@@ -82,7 +82,8 @@ if [[ -z $res ]]; then
 fi
 
 if [[ -f /etc/.container.gpg ]]; then
-  pass=$(sudo -u "${user}" gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+  # pass=$(sudo -u "${user}" gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
+  pass=$(sudo -u "${user}" gpg -q -d /etc/.container.gpg)
 elif [[ -f "/home/${user}/.container" ]]; then
   pass=$(cat "/home/${user}/.container")
 else

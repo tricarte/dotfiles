@@ -25,12 +25,14 @@ if [[ ! -f "${HOME}/.mp4_list.gpg" ]] || [[ "${index}" == 0 ]]; then
       combined+="$(echo "${hc}" | sed -n "${counter}"p)\n"
     fi
   done < <(echo "${nonhc}")
-  gpg --yes --pinentry-mode loopback \
+  # gpg --yes --pinentry-mode loopback \
+  gpg --yes \
     --output "${HOME}/.mp4_list.gpg" \
     --symmetric < <(echo -e "${combined}" | sed -e '/^$/d')
 fi
 
-list=$(gpg --pinentry-mode loopback -qd "${HOME}/.mp4_list.gpg")
+# list=$(gpg --pinentry-mode loopback -qd "${HOME}/.mp4_list.gpg")
+list=$(gpg -qd "${HOME}/.mp4_list.gpg")
 count=$(echo "${list}" | wc -l)
 
 if [[ $index -ge $count ]]; then
