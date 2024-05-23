@@ -39,6 +39,7 @@ alias free="free -mh" # Shows in 1024 format
 alias clock="tty-clock -scrbC 3"
 alias abrt="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW STATUS WHERE Variable_name LIKE \"Aborted_clients\"'" # Aborted MySQL/MariaDB clients
 alias prcl="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW FULL PROCESSLIST'" # MySQL/MariaDB process list
+alias busy="lsof | { head -1 ; grep /media/\$(whoami) ; }" # Which process keeps the usb device busy
 # alias iscoremodule="corelist --upstream" # Is this module in perl core?
 #
 
