@@ -1459,6 +1459,36 @@ cmd optimize-video !{{
     fi
 }}
 
+# Info: Convert video to mp4 ( no encoding )
+cmd convert-video-to-mp4 !{{
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d converted ]]; then
+        mkdir converted
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -i "${item}" -codec copy -map 0 \
+            "converted/${filename%.*}.mp4"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "converted" ]]; then
+        lf -remote "send $id select \"converted\""
+    fi
+}}
+
 # Info: Resize video using ffmpeg
 cmd resize-video !{{
     printf "Non power of 2 resolutions may error!\n"
