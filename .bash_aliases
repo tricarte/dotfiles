@@ -90,6 +90,7 @@ alias ping="ping -c3"
 alias ports="sudo lsof -i -n -P" # List of open ports
 # alias myip='LANG=c ifconfig eth0 | grep "inet addr" | awk -F: '{print $2}' | awk '{print $1}''
 alias whatismyip="curl ifconfig.co" # WAN IP address
+alias lip="hostname -I" # Local IP address
 alias iptall="sudo iptables -L -vn --line-numbers"
 alias pyserver="python3 -m http.server 8080" # HTTP web server with Python
 alias phpserver="phpo -S 0.0.0.0:8080" # HTTP web server with PHP
@@ -139,6 +140,7 @@ alias weather="curl http://wttr.in/kayseri"
 alias mcon="mount-containers2"
 alias cc="rm -rf ~/.cache/thumbnails/*" # Clear thumbnail cache
 alias kssh="kitty +kitten ssh"
+alias kssha="kssh \$(ip neigh | cut -d' ' -f1) -p 8022" # Ssh into android
 alias sniploc="cd ~/valet-park/sniploc; pws"
 alias yt="ytfzf -T kitty -f -t"
 alias update-kitty="curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
