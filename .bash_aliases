@@ -139,8 +139,10 @@ alias weather="curl http://wttr.in/kayseri"
 # alias mconu="sudo conta --text --non-interactive -d"
 alias mcon="mount-containers2"
 alias cc="rm -rf ~/.cache/thumbnails/*" # Clear thumbnail cache
+alias nb="ip n | grep REACHABLE | cut -d' ' -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
-alias kssha="kssh \$(ip neigh | cut -d' ' -f1) -p 8022" # Ssh into android
+alias kssha="kssh \$(nb) -p 8022" # Ssh into android
+alias scpand="termscp \"\$(nb):8022:storage\"" # Scp file transfer with termscp to android
 alias sniploc="cd ~/valet-park/sniploc; pws"
 alias yt="ytfzf -T kitty -f -t"
 alias update-kitty="curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
@@ -232,6 +234,7 @@ alias srestart="sudo systemctl restart"
 alias senable="sudo systemctl enable"
 alias sdisable="sudo systemctl disable"
 alias slemp="sstart php8.3-fpm nginx mariadb redis-server" # Start LEMP
+alias snt="sudo nginx -t"
 
 alias sstatus="systemctl status"
 alias sshow="systemctl show"
@@ -239,7 +242,13 @@ alias sunits="systemctl list-units"
 alias sunitfiles="systemctl list-unit-files"
 alias stimers="systemctl list-timers"
 alias scat="systemctl cat"
+alias sedit="sudo systemctl edit"
 alias senabled="systemctl is-enabled"
+
+alias srp="srestart php\$(php -r \"printf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);\")-fpm"
+alias srn="srestart nginx"
+alias sro="srestart lshttpd"
+alias srm="srestart mariadb"
 
 alias oops="sudo \$(fc -ln -1)"
 
