@@ -54,6 +54,7 @@ Plug 'preservim/tagbar'
 " Plug 'scrooloose/syntastic', { 'for': ['php', 'javascript', 'css', 'jsx', 'html', 'json', 'sh', 'blade'] }
 Plug 'dense-analysis/ale'
 Plug 'sheerun/vim-polyglot'
+Plug 'ollykel/v-vim' " vlang syntax highlight support
 let g:polyglot_disabled = ['markdown', 'php']
 " Plug 'othree/html5.vim'
 " Plug 'StanAngeloff/php.vim' " Improved syntax highlighting for PHP.
