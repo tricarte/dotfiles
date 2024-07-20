@@ -1355,7 +1355,8 @@ EOF
             done
             ;;
         StillVideo)
-            lf -remote "send $id img2vid"
+            # TODO: 'Press any key to continue' interruption thing
+            lf -remote "send $id image2video"
             ;;
         *)
             lf -remote "send $id echoerr Unknown action."
@@ -1565,6 +1566,17 @@ cmd md2pdf !{{
     fi
 }}
 
+# Info: Convert markdown to pdf using pandoc with groff as PDF engine
+cmd md2pdf-groff !{{
+    pandoc --pdf-engine=pdfroff \
+        --toc-depth=1 \
+        --highlight-style zenburn "${f}" -o "${f}".pdf
+
+    if [[ -f "${f}".pdf ]]; then
+        lf -remote "send $id select \"${f}.pdf\""
+    fi
+}}
+
 # Display a command palette
 # Every cmd must have an information line
 # Every cmd description must be in this format:
@@ -1643,7 +1655,7 @@ cmd extract-audio !{{
 
 # Info: Create a new kitty shell window with cwd <gn>
 cmd new_kitty_window &{{
-    kitty @ --to unix:/tmp/mykitty launch --type window --cwd current
+    kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}"
 }}
 map gn :new_kitty_window
 
@@ -1800,4 +1812,9 @@ cmd convert-audio !{{
 # Info: Open selected file with $EDITOR (usually, vim)
 cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
 map e open-with-vim
+
+# Info: Add current working directory to autojump database
+cmd add-to-autojump &{{
+    autojump --add "${PWD}"
+}}
 
