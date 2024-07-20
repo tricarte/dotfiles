@@ -619,7 +619,7 @@ function cl() {
 # wrkb 8080/login -> wrk -c128 -t3 -d10s 127.0.0.1:8080/login
 # wrkb example.com -> wrk -c128 -t3 -d10s example.com
 function wrkb() {
-    WRK_CMD="$(command -v wrk) -c128 -t3 -d10s"
+    WRK_CMD="$(command -v wrk) -c128 -t3 -d10s --latency"
     address="${1}"
     if [[ -f './.curl' ]]; then
         curl_file=$(cat ./.curl)
@@ -633,11 +633,11 @@ function wrkb() {
         echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
         echo ""
         echo "Usage:"
-        echo "  wrkb 8080        -> 'wrk -c128 -t3 -d10s 127.0.0.1:8080'"
-        echo "  wrkb example.com -> 'wrk -c128 -t3 -d10s example.com'"
+        echo "  wrkb 8080        -> 'wrk -c128 -t3 -d10s --latency 127.0.0.1:8080'"
+        echo "  wrkb example.com -> 'wrk -c128 -t3 -d10s --latency example.com'"
         echo ""
         echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-        echo "  wrkb route       -> 'wrk -c128 -t3 -d10s host:port/route'"
+        echo "  wrkb route       -> 'wrk -c128 -t3 -d10s --latency host:port/route'"
         return
     fi
 
@@ -709,13 +709,13 @@ function memo() {
         fi
 
         numfmt --to=iec --suffix=B --format="%.3f" \
-            "$(ps_mem -t -p "$(pgrep -i --full "${2}" -d,)")"
+            "$(sudo ps_mem -t -p "$(pgrep -i --full "${2}" -d,)")"
         return
     fi
 
     if [[ $# == 1 ]]; then
         process="${1}"
-        ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
+        sudo ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
     fi
 
 }
