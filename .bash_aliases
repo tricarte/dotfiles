@@ -64,6 +64,11 @@ alias aga="sudo apt-get autoremove -y"
 alias agi="sudo apt install -y"
 alias agsh="apt show"
 alias alu="apt list --upgradable"
+alias ade="apt depends" # List dependencies of package
+alias ader="apt-cache rdepends" # List dependants (reverse dependencies) of package
+alias aderi="apt-cache rdepends --installed" # List installed dependants (reverse dependencies) of package
+alias aderio="aptitude why" # List installed dependants (reverse dependencies) of package in order
+
 
 #####################
 # shell environment #
@@ -233,7 +238,7 @@ alias sreload="sudo systemctl reload"
 alias srestart="sudo systemctl restart"
 alias senable="sudo systemctl enable"
 alias sdisable="sudo systemctl disable"
-alias slemp="sstart php8.3-fpm nginx mariadb redis-server" # Start LEMP
+alias slemp="sstart php\$(phv)-fpm nginx mariadb redis-server" # Start LEMP
 alias snt="sudo nginx -t"
 
 alias sstatus="systemctl status"
@@ -245,10 +250,15 @@ alias scat="systemctl cat"
 alias sedit="sudo systemctl edit"
 alias senabled="systemctl is-enabled"
 
-alias srp="srestart php\$(php -r \"printf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);\")-fpm"
+alias phv="php -n -r \"printf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);\"" #
+alias srp="srestart php\$(phv)-fpm"
+# alias srp="srestart php\$(php -r \"printf('%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION);\")-fpm"
 alias srn="srestart nginx"
-alias sro="srestart lshttpd"
+alias sro="srestart lshttpd" # Restart openlitespeed
 alias srm="srestart mariadb"
+alias srh="srestart haproxy"
+alias srl="srestart lighttpd"
+alias srv="srestart varnish"
 
 alias oops="sudo \$(fc -ln -1)"
 
