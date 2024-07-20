@@ -118,6 +118,17 @@ function! ScratchPERL()
     :7
 endfunction
 
+function! ScratchLUA()
+    noswapfile enew!
+    " setlocal buftype=nofile
+    setlocal buftype=nowrite
+    " setlocal bufhidden=hide
+    " setlocal nobuflisted
+    setlocal filetype=lua
+    lcd ~
+    file LUA
+endfunction
+
 " Using it like ScratchRUST
 " in order to make use of completion.
 " Otherwise, unlike in ScratchPERL, the completion does not work.
@@ -163,6 +174,35 @@ function! ScratchRUST()
     w!
 endfunction
 
+function! ScratchVLang()
+    e! /tmp/vlang-scratch-file.v
+    setlocal filetype=vlang
+    :% norm die
+    let content =<< trim END
+                fn main() {
+                    println("Hello World!");
+                }
+    END
+    call setline(1, content)
+    :2
+    w!
+endfunction
+
+function! RunVLangScript()
+    write %
+    " sleep 900m
+    " :!clear;cargo +nightly -Zscript --quiet %
+    FloatermNew
+        \ --height=0.98 --width=0.95
+        \ --position=center
+        \ --disposable
+        \ --name=rustconsole
+        \ --title=VLangPlayground
+        \ --autoclose=0
+        \ bash --norc -c "/usr/local/bin/v crun  /tmp/vlang-scratch-file.v"
+endfunction
+
+
 function! RunRustScript()
     write %
     " sleep 900m
@@ -190,3 +230,19 @@ function! PHPServer()
     execute cmd
     call system(printf('xdg-open http://localhost:%s/%s', port, file))
 endfunction
+
+function! RunBufferAsScript()
+    let b:mft = &filetype
+    if b:mft == "php"
+        :RunPHP
+    elseif b:mft == "perl"
+        :RunPerl
+    elseif b:mft == "lua"
+        :RunLua
+    elseif b:mft == "rust"
+        :RunRust
+    elseif b:mft == "vlang"
+        :RunVLang
+    endif
+endfunction
+nnoremap <leader>r :call RunBufferAsScript()<cr>
