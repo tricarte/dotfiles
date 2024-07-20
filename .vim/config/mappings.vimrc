@@ -360,3 +360,7 @@ nnoremap <C-k> zk
 " Spell must be enabled using:
 " :set spell
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
+
+" Switch to a light colorscheme
+nnoremap <space>l :colorscheme base16-github<CR>
+nnoremap <space>d :colorscheme base16-material-palenight<CR>
