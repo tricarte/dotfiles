@@ -120,6 +120,10 @@ command! RunVLang :w !v
 " Create a new vlang single file buffer
 command! NewVLang :call ScratchVLang()
 
+command! RunGolang :w !go run %
+" Create a new Golang single file buffer
+command! NewGolang :call ScratchGolang()
+
 " Some closed buffers will come back when you restore a session
 " even you closed them with bd
 " Use BW instead
@@ -131,3 +135,6 @@ command! RemoveFileAndBuffer  :call delete(expand('%')) | bdelete!
 
 " Open the last file downloaded in ~/Downloads
 command! Last let file = system('last $HOME/Downloads') | :execute ':e '. file
+
+" Replicate gn mapping in lf as a command in vim
+command! GN :call system('kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}"')

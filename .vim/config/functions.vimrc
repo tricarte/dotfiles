@@ -188,6 +188,24 @@ function! ScratchVLang()
     w!
 endfunction
 
+function! ScratchGolang()
+    e! /tmp/golang-scratch-file.go
+    setlocal filetype=go
+    :% norm die
+    let content =<< trim END
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("hello world")
+}
+    END
+    call setline(1, content)
+    :6
+    w!
+endfunction
+
 function! RunVLangScript()
     write %
     " sleep 900m
@@ -243,6 +261,8 @@ function! RunBufferAsScript()
         :RunRust
     elseif b:mft == "vlang"
         :RunVLang
+    elseif b:mft == "go"
+        :RunGolang
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
