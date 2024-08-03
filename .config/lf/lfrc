@@ -889,7 +889,7 @@ cmd add-to-backup-profile ${{
 
         while IFS=$'\n' read item
         do
-            check=$(grep "${item}" "${HOME}/.config/rustic/${res}.toml")
+            check=$(grep "\"${item}\"" "${HOME}/.config/rustic/${res}.toml")
 
             if [[ -z $check ]]; then
                 cat <<EOT >> "${HOME}/.config/rustic/${res}.toml"
