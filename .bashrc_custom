@@ -225,6 +225,10 @@ if [[ ! $PATH =~ /usr/local/go/bin ]]; then
     export PATH=$PATH:/usr/local/go/bin
 fi
 
+if [[ ! $PATH =~ $HOME/go/bin ]]; then
+    export PATH=$PATH:$HOME/go/bin
+fi
+
 # To get rid of the vaapi errors for some apps like mpv
 export LIBVA_DRIVER_NAME=i965
 
