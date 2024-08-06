@@ -1710,7 +1710,7 @@ cmd count &{{
         while IFS=$'\n' read item; do
             DIRS="${DIRS} '${item}'"
         done < <(printf "${fx}\n")
-        output=$(bash -c "count2 ${DIRS}")
+        output=$(bash -c "count ${DIRS}")
         lf -remote "send $id echo ${output}"
     fi
 }}
