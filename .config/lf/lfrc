@@ -1706,7 +1706,11 @@ cmd count &{{
     if [[ -d "${f}" ]]; then
         # Count is a symlink to PHP script in ~/bin
         lf -remote "send $id echo Calculating..."
-        output=$(count "${f}")
+        DIRS=""
+        while IFS=$'\n' read item; do
+            DIRS="${DIRS} '${item}'"
+        done < <(printf "${fx}\n")
+        output=$(bash -c "count2 ${DIRS}")
         lf -remote "send $id echo ${output}"
     fi
 }}
