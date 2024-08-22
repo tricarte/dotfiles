@@ -110,11 +110,17 @@ autocmd User LspSetup call LspOptionsSet(lspOpts)
             " \	  path: $HOME . '/.config/v-analyzer/bin/v-analyzer',
             " \	  args: []
             " \ },
-let lspServers = [#{
+let lspServers = [
+            \ #{
             \	  name: 'intelephense',
             \	  filetype: ['php'],
             \	  path: $HOME . '/.bun/bin/bun',
             \	  args: [ $HOME . '/.npm-global/bin/intelephense', '--stdio']
+            \ },
+            \ #{name: 'gopls',
+            \   filetype: 'go',
+            \   path: $HOME . '/go/bin/gopls',
+            \   args: ['serve']
             \ },
             \ #{
             \   name: 'luals',
