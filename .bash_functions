@@ -534,7 +534,7 @@ function grinit() {
   fi
 
   count=$($GIT rev-list HEAD --count)
-  count=$((count-1))
+  count=$((count - 1))
   $GIT reset --soft HEAD~${count}
   $GIT commit -m"${msg}"
 }
@@ -549,147 +549,147 @@ function grinit() {
 # Sync two rustic repositories on different external storages.
 # TODO: Storages are hardcoded.
 function rcsync() {
-    RCLONE=$(command -v rclone)
-    dir="${1}"
-    user=$(getent passwd 1000 | cut -d':' -f1)
-    src="/media/${user}/D892E34792E32928/rustic-backups/${dir}/"
-    target="/media/${user}/sandisk32/rustic-backups/${dir}/"
+  RCLONE=$(command -v rclone)
+  dir="${1}"
+  user=$(getent passwd 1000 | cut -d':' -f1)
+  src="/media/${user}/D892E34792E32928/rustic-backups/${dir}/"
+  target="/media/${user}/sandisk32/rustic-backups/${dir}/"
 
-    if [[ ! -d "${src}" ]]; then
-        echo "${src} is not reachable."
-        return 1
-    fi
+  if [[ ! -d "${src}" ]]; then
+    echo "${src} is not reachable."
+    return 1
+  fi
 
-    if [[ ! -d "${target}" ]]; then
-        echo "${target} is not reachable."
-        return 1
-    fi
+  if [[ ! -d "${target}" ]]; then
+    echo "${target} is not reachable."
+    return 1
+  fi
 
-    $RCLONE sync --progress "${src}" "${target}"
+  $RCLONE sync --progress "${src}" "${target}"
 }
 
 # Check perl module is installed
 # pmodi Devel::REPL
 function pmodi() {
-    MOD="${1}"
-    perl -M"$MOD" -e 'exit;' && echo "Module is available!" || echo "Module is not available!"
+  MOD="${1}"
+  perl -M"$MOD" -e 'exit;' && echo "Module is available!" || echo "Module is not available!"
 }
 
 # cl 8080 -> curl 127.0.0.1:8080
 # cl 8080/login -> curl 127.0.0.1:8080/login
 # cl example.com -> curl example.com
 function cl() {
-    CURL_CMD="$(command -v curl) --silent --include"
-    PAGER=$(command -v bat)
-    if [[ -z $PAGER ]]; then
-        PAGER="$(command -v less)"
-    fi
-    address="${1}"
-    if [[ -f './.curl' ]]; then
-        curl_file=$(cat ./.curl)
-        address="${curl_file}${address}"
-        ${CURL_CMD} "${address}" | $PAGER
-        return
-    fi
+  CURL_CMD="$(command -v curl) --silent --include"
+  PAGER=$(command -v bat)
+  if [[ -z $PAGER ]]; then
+    PAGER="$(command -v less)"
+  fi
+  address="${1}"
+  if [[ -f './.curl' ]]; then
+    curl_file=$(cat ./.curl)
+    address="${curl_file}${address}"
+    ${CURL_CMD} "${address}" | $PAGER
+    return
+  fi
 
-    if [[ -z "${address}" ]]; then
-        echo "Curl to a port on localhost or to a specific domain directly."
-        echo "Or you can create a file named '.curl' in project root"
-        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
-        echo ""
-        echo "Usage:"
-        echo "  cl 8080        -> 'curl 127.0.0.1:8080'"
-        echo "  cl example.com -> 'curl example.com'"
-        echo ""
-        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-        echo "  cl route       -> 'curl host:port/route'"
-        return
-    fi
+  if [[ -z "${address}" ]]; then
+    echo "Curl to a port on localhost or to a specific domain directly."
+    echo "Or you can create a file named '.curl' in project root"
+    echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+    echo ""
+    echo "Usage:"
+    echo "  cl 8080        -> 'curl 127.0.0.1:8080'"
+    echo "  cl example.com -> 'curl example.com'"
+    echo ""
+    echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+    echo "  cl route       -> 'curl host:port/route'"
+    return
+  fi
 
-    if [[ "$address" =~ ^[[:digit:]] ]]; then
-        ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
-        return
-    else
-        ${CURL_CMD} "${address}" | $PAGER
-        return
-    fi
+  if [[ "$address" =~ ^[[:digit:]] ]]; then
+    ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
+    return
+  else
+    ${CURL_CMD} "${address}" | $PAGER
+    return
+  fi
 }
 
 # wrkb 8080 -> wrk -c128 -t3 -d10s 127.0.0.1:8080
 # wrkb 8080/login -> wrk -c128 -t3 -d10s 127.0.0.1:8080/login
 # wrkb example.com -> wrk -c128 -t3 -d10s example.com
 function wrkb() {
-    WRK_CMD="$(command -v wrk) -c128 -t3 -d10s --latency"
-    address="${1}"
-    if [[ -f './.curl' ]]; then
-        curl_file=$(cat ./.curl)
-        address="${curl_file}${address}"
-        return
-    fi
+  WRK_CMD="$(command -v wrk) -c128 -t3 -d10s --latency"
+  address="${1}"
+  if [[ -f './.curl' ]]; then
+    curl_file=$(cat ./.curl)
+    address="${curl_file}${address}"
+    return
+  fi
 
-    if [[ -z "${address}" ]]; then
-        echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
-        echo "Or you can create a file named '.curl' in project root"
-        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
-        echo ""
-        echo "Usage:"
-        echo "  wrkb 8080        -> 'wrk -c128 -t3 -d10s --latency 127.0.0.1:8080'"
-        echo "  wrkb example.com -> 'wrk -c128 -t3 -d10s --latency example.com'"
-        echo ""
-        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-        echo "  wrkb route       -> 'wrk -c128 -t3 -d10s --latency host:port/route'"
-        return
-    fi
+  if [[ -z "${address}" ]]; then
+    echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
+    echo "Or you can create a file named '.curl' in project root"
+    echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+    echo ""
+    echo "Usage:"
+    echo "  wrkb 8080        -> 'wrk -c128 -t3 -d10s --latency 127.0.0.1:8080'"
+    echo "  wrkb example.com -> 'wrk -c128 -t3 -d10s --latency example.com'"
+    echo ""
+    echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+    echo "  wrkb route       -> 'wrk -c128 -t3 -d10s --latency host:port/route'"
+    return
+  fi
 
-    if [[ "$address" =~ ^[[:digit:]] ]]; then
-        ${WRK_CMD} "http://127.0.0.1:${address}"
-        return
-    else
-        ${WRK_CMD} "http://${address}"
-        return
-    fi
+  if [[ "$address" =~ ^[[:digit:]] ]]; then
+    ${WRK_CMD} "http://127.0.0.1:${address}"
+    return
+  else
+    ${WRK_CMD} "http://${address}"
+    return
+  fi
 }
 
 # ohab 8080 -> oha -c128 --no-tui -z10s --disable-keepalive 127.0.0.1:8080
 # ohab 8080/login
 # ohab example.com
 function ohab() {
-    OHA_CMD="$(command -v oha) -c128 --no-tui -z10s --disable-keepalive"
-    address="${1}"
-    if [[ -f './.curl' ]]; then
-        curl_file=$(cat ./.curl)
-        address="${curl_file}${address}"
-        return
-    fi
+  OHA_CMD="$(command -v oha) -c128 --no-tui -z10s --disable-keepalive"
+  address="${1}"
+  if [[ -f './.curl' ]]; then
+    curl_file=$(cat ./.curl)
+    address="${curl_file}${address}"
+    return
+  fi
 
-    if [[ -z "${address}" ]]; then
-        echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
-        echo "Or you can create a file named '.curl' in project root"
-        echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
-        echo ""
-        echo "Usage:"
-        echo "  ohab 8080        -> 'oha -c128 --no-tui -z10s --disable-keepalive 127.0.0.1:8080'"
-        echo "  ohab example.com -> 'oha -c128 --no-tui -z10s --disable-keepalive example.com'"
-        echo ""
-        echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-        echo "  ohab route       -> 'oha -c128 --no-tui -z10s --disable-keepalive host:port/route'"
-        return
-    fi
+  if [[ -z "${address}" ]]; then
+    echo "Do a HTTP benchmark on port on localhost or to a specific domain directly."
+    echo "Or you can create a file named '.curl' in project root"
+    echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+    echo ""
+    echo "Usage:"
+    echo "  ohab 8080        -> 'oha -c128 --no-tui -z10s --disable-keepalive 127.0.0.1:8080'"
+    echo "  ohab example.com -> 'oha -c128 --no-tui -z10s --disable-keepalive example.com'"
+    echo ""
+    echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+    echo "  ohab route       -> 'oha -c128 --no-tui -z10s --disable-keepalive host:port/route'"
+    return
+  fi
 
-    if [[ "$address" =~ ^[[:digit:]] ]]; then
-        ${OHA_CMD} "http://127.0.0.1:${address}"
-        return
-    else
-        ${OHA_CMD} "http://${address}"
-        return
-    fi
+  if [[ "$address" =~ ^[[:digit:]] ]]; then
+    ${OHA_CMD} "http://127.0.0.1:${address}"
+    return
+  else
+    ${OHA_CMD} "http://${address}"
+    return
+  fi
 }
 
 # Search for PHP extensions in available and active ones
 # Usage: phpm exif
 function phpm() {
-    package="${1}"
-    php -m | grep "${package}"
+  package="${1}"
+  php -m | grep "${package}"
 }
 
 # Total memory usage of process by process name case-insensitively
@@ -697,48 +697,48 @@ function phpm() {
 # Usage: memo firefox
 #      : memo -t firefox
 function memo() {
-    if [[ $# == 0 ]]; then
-        echo "Usage: memo [-t] firefox"
-        return 1
+  if [[ $# == 0 ]]; then
+    echo "Usage: memo [-t] firefox"
+    return 1
+  fi
+
+  if [[ $# == 2 ]]; then
+    if [[ $1 != '-t' ]]; then
+      echo "Usage: memo [-t] firefox"
+      return 1
     fi
 
-    if [[ $# == 2 ]]; then
-        if [[ $1 != '-t' ]]; then
-            echo "Usage: memo [-t] firefox"
-            return 1
-        fi
+    numfmt --to=iec --suffix=B --format="%.3f" \
+      "$(sudo ps_mem -t -p "$(pgrep -i --full "${2}" -d,)")"
+    return
+  fi
 
-        numfmt --to=iec --suffix=B --format="%.3f" \
-            "$(sudo ps_mem -t -p "$(pgrep -i --full "${2}" -d,)")"
-        return
-    fi
-
-    if [[ $# == 1 ]]; then
-        process="${1}"
-        sudo ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
-    fi
+  if [[ $# == 1 ]]; then
+    process="${1}"
+    sudo ps_mem -d -S -p "$(pgrep -i --full "${process}" -d,)"
+  fi
 
 }
 
 # https://askubuntu.com/a/337006
 # List dpkg history log
 # Parameters: install upgrade remove rollback
-function apt-history(){
-      case "$1" in
-        install)
-              grep 'install ' /var/log/dpkg.log
-              ;;
-        upgrade|remove)
-              grep $1 /var/log/dpkg.log
-              ;;
-        rollback)
-              grep upgrade /var/log/dpkg.log | \
-                  grep "$2" -A10000000 | \
-                  grep "$3" -B10000000 | \
-                  awk '{print $4"="$5}'
-              ;;
-        *)
-              bat /var/log/dpkg.log
-              ;;
-      esac
+function apt-history() {
+  case "$1" in
+  install)
+    grep 'install ' /var/log/dpkg.log
+    ;;
+  upgrade | remove)
+    grep $1 /var/log/dpkg.log
+    ;;
+  rollback)
+    grep upgrade /var/log/dpkg.log |
+      grep "$2" -A10000000 |
+      grep "$3" -B10000000 |
+      awk '{print $4"="$5}'
+    ;;
+  *)
+    bat /var/log/dpkg.log
+    ;;
+  esac
 }
