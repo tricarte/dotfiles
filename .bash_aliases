@@ -111,6 +111,7 @@ alias heyb="hey -n 100 -c 20"                                                   
 alias spd="speedtest --simple --no-upload"                                                # Download speed test
 alias onl="sudo systemctl restart dnsmasq && sudo systemctl restart valet-dns"
 alias metal="host metallica.com"
+alias vnstatl='vnstat -l -i $(ip route | grep default | cut -d" " -f5)' # Monitor current gateway internet interface bandwidth
 
 #######################################################################
 #                     Use ssh host config instead                     #
