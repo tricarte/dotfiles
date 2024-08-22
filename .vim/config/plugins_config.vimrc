@@ -219,7 +219,7 @@ let g:ale_set_loclist = 1
 let g:ale_open_list = 0
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
-let g:ale_set_highlights = 1
+let g:ale_set_highlights = 0 " makes the code unreadable
 let g:ale_set_signs = 1
 " let g:ale_virtualtext_cursor = 1
 let g:ale_lint_on_enter = 0
@@ -237,15 +237,17 @@ let g:ale_disable_lsp = 1
 " formatters.
 let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [], 'perl': ['perl', 'perlcritic'], 'lua': ['selene']}
 " goimports can be used in place of gofmt which can also manage imports
+" but gopls can interfere with goimports so I'm using gofmt instead.
+" or you can disable gopls imports and use goimports below.
 let g:ale_fixers = {
-            \ 'php': [ 'phpcbf', 'php_cs_fixer'],
-            \ 'html': ['prettier'],
-            \ 'css': ['prettier'],
-            \ 'sh': ['shfmt'],
-            \ 'perl': ['perltidy'],
-            \ 'rust': ['rustfmt'],
-            \ 'vlang': ['v'],
-            \ 'go': ['goimports']
+            \ 'php':   [ 'phpcbf', 'php_cs_fixer'],
+            \ 'html':  [ 'prettier'],
+            \ 'css':   [ 'prettier'],
+            \ 'sh':    [ 'shfmt'],
+            \ 'perl':  [ 'perltidy'],
+            \ 'rust':  [ 'rustfmt'],
+            \ 'vlang': [ 'v'],
+            \ 'go':    [ 'gofmt']
             \ }
 let g:ale_sh_shfmt_options = '-ln bash -i 2'
 let g:ale_vlang_v_options = 'fmt'
