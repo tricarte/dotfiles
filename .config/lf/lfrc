@@ -1813,6 +1813,12 @@ cmd convert-audio !{{
     printf "Done!\n"
 }}
 
+# Info: View markdown in a new terminal split using glow
+cmd markdown-view &{{
+    kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" \
+        --self /usr/bin/glow "${f}" --pager
+}}
+
 # Info: Open selected file with $EDITOR (usually, vim)
 cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
 map e open-with-vim
