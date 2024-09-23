@@ -619,7 +619,7 @@ function cl() {
 # wrkb 8080/login -> wrk -c128 -t3 -d10s 127.0.0.1:8080/login
 # wrkb example.com -> wrk -c128 -t3 -d10s example.com
 function wrkb() {
-  WRK_CMD="$(command -v wrk) -c128 -t3 -d10s --latency"
+  WRK_CMD=($(command -v wrk) -c128 -t3 -d10s --latency -H "Accept-Encoding: gzip, deflate")
   address="${1}"
   if [[ -f './.curl' ]]; then
     curl_file=$(cat ./.curl)
@@ -642,10 +642,13 @@ function wrkb() {
   fi
 
   if [[ "$address" =~ ^[[:digit:]] ]]; then
-    ${WRK_CMD} "http://127.0.0.1:${address}"
+    "${WRK_CMD[@]}" "http://127.0.0.1:${address}"
+    return
+  elif [[ "$address" =~ ^https? ]]; then
+    "${WRK_CMD[@]}" "${address}"
     return
   else
-    ${WRK_CMD} "http://${address}"
+    "${WRK_CMD[@]}" "http://${address}"
     return
   fi
 }
