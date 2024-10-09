@@ -176,6 +176,9 @@ nnoremap <leader>at <c-^>
 " All things FZF
 nnoremap <c-p>b :Buffers<cr>
 nnoremap <c-p>m :History<cr>
+" Below uses FZFMru, because 'History' does not list files that are opened
+" with lf.vim
+nnoremap <c-p>u :FZFMru<cr>
 nnoremap <c-p>w :GFiles<cr>
 nnoremap <c-p>f :Files<cr>
 nnoremap <c-p>c :Commands<cr>

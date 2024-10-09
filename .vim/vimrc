@@ -31,6 +31,8 @@ Plug 'mhinz/vim-startify' " Start screen for VIM
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 Plug 'ptzz/lf.vim'
+" fzf-mru.vim: To put files opened with lf into history
+Plug 'pbogut/fzf-mru.vim'
 Plug 'wellle/context.vim'
 " Because of context.vim, I disabled indenLine
 " Plug 'Yggdroot/indentLine'
