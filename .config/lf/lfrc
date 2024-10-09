@@ -1633,6 +1633,16 @@ cmd hc &{{
 }}
 map hc :hc
 
+# Info: Rename files with random strings
+cmd rename-random &{{
+    # Random string: https://stackoverflow.com/a/10336772/4195200
+    printf '%s' "${fx}" | perl -wnlaF'/' \
+        -e '@arr = split /\./, $F[-1];
+            $rand = sprintf("%010X", rand(0xFFFFFFFF));
+            rename $F[-1], "$rand.$arr[1]" or die "Rename failed: $!";'
+    lf -remote "send $id reload"
+}}
+
 # Info: Go to the original file of symlink
 cmd follow_symlink &{{
     real=$(realpath "${f}")
