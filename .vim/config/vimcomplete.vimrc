@@ -42,6 +42,14 @@ var options = {
         otherBuffersCount: 0, # Only search in this buffer
         filetypes: ['text', 'markdown']
     },
+    ngram: {
+        enable: true,
+        priority: 10,
+        bigram: true,
+        filetypes: ['text', 'help', 'markdown'],
+        filetypesComments: ['php', 'javascript', 'typescript', 'perl', 'vim', 'sh', 'lua'],
+    },
+    abbrev: { enable: true, priority: 10 },
     # dictionary: {
     #     enable: true,
     #     priority: 9,
@@ -51,23 +59,15 @@ var options = {
     #         text: { sortedDict: true }
     #     }
     # },
-    abbrev: { enable: true, priority: 10 },
     lsp: {
         enable: true,
-        priority: 12,
+        priority: 11,
         maxCount: 20,
         keywordOnly: false, # Default false
         # completionMatcher: 'fuzzy', # This may not be supported by phpactor
     },
+    vsnip: { enable: true, priority: 12 },
     omnifunc: { enable: false, priority: 8, filetypes: ['javascript', 'php', 'css', 'perl', 'lua'] },
-    vsnip: { enable: true, priority: 11 },
     # vimscript: { enable: true, priority: 11 },
-    ngram: {
-        enable: true,
-        priority: 10,
-        bigram: true,
-        filetypes: ['text', 'help', 'markdown'],
-        filetypesComments: ['php', 'javascript', 'typescript', 'perl', 'vim', 'sh', 'lua'],
-    },
 }
 autocmd VimEnter * g:VimCompleteOptionsSet(options)
