@@ -280,7 +280,7 @@ map <c-f> :fzf_jump
 
 # Info: Grep files using fzf and ripgrep
 cmd grep ${{
-    # This version is not capable of fuzzy search, use grep2 instead
+    # This version is not capable of fuzzy search, use grepf instead
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -303,8 +303,8 @@ cmd grep ${{
     fi
 }}
 
-# Info: Grep files using fzf and ripgrep
-cmd grep2 ${{
+# Info: Fuzzy grep files using fzf and ripgrep
+cmd grepf ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -827,6 +827,24 @@ c: Decrypt\n\
 }}
 
 map <delete> delete
+
+# Info: Trash selected items to ~/.local/share/Trash without actually deleting
+cmd trash &{{
+    wrap-with-quotes "${fx}" | xargs -I '{}' rip --graveyard ~/.local/share/Trash/rip "{}"
+    lf -remote "send $id load"
+}}
+
+# Info: Empty the trash located in ~/.local/share/Trash
+cmd empty-trash !{{
+    rip --decompose --graveyard ~/.local/share/Trash/rip
+    lf -remote "send $id load"
+}}
+
+# Info: Restore item from Trash
+cmd untrash &{{
+    wrap-with-quotes "${fx}" | xargs -I '{}' rip --unbury "{}" --graveyard ~/.local/share/Trash/rip
+    lf -remote "send $id load"
+}}
 
 # Info: Slugify filenames using mkslug script
 cmd slugify &{{
