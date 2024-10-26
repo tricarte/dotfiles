@@ -239,8 +239,9 @@ let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [
 " goimports can be used in place of gofmt which can also manage imports
 " but gopls can interfere with goimports so I'm using gofmt instead.
 " or you can disable gopls imports and use goimports below.
+" removed phpcbf from php fixers, gives the error: No fixable errors found
 let g:ale_fixers = {
-            \ 'php':   [ 'phpcbf', 'php_cs_fixer'],
+            \ 'php':   [ 'php_cs_fixer'],
             \ 'html':  [ 'prettier'],
             \ 'css':   [ 'prettier'],
             \ 'sh':    [ 'shfmt'],
