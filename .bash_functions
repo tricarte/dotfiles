@@ -745,3 +745,13 @@ function apt-history() {
     ;;
   esac
 }
+
+function fw() {
+  if [[ -z "${1}" ]]; then
+    echo ""
+    echo "Find out the full path of a command."
+    echo "Usage: fw command-name"
+    return
+  fi
+  file "$(which "${1}")"
+}
