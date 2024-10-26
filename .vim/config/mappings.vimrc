@@ -234,13 +234,13 @@ vnoremap ` "zdi`<C-R>z`<ESC>
 noremap  <silent>// :nohlsearch<CR>
 
 " map enter and backspace to go next and previous paragraph
-nnoremap <BS> {
-onoremap <BS> {
-vnoremap <BS> {
+nnoremap <BS> {<up>
+onoremap <BS> {<up>
+vnoremap <BS> {<up>
 
-nnoremap <expr> <CR> empty(&buftype) ? '}' : '<CR>'
-onoremap <expr> <CR> empty(&buftype) ? '}' : '<CR>'
-vnoremap <CR> }
+nnoremap <expr> <CR> empty(&buftype) ? '}<down>' : '<CR>'
+onoremap <expr> <CR> empty(&buftype) ? '}<down>' : '<CR>'
+vnoremap <CR> }<down>
 
 "" Open current line on GitHub
 " nnoremap <Leader>o :.Gbrowse<CR>
