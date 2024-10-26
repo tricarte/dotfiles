@@ -177,7 +177,12 @@ alias cgs="phpoc global show"                                                   
 alias csu="sudo php -n -dextension=phar.so -dextension=iconv.so /usr/bin/composer self-update" # Upgrade composer
 alias csd="phpoc show --direct"                                                                # List required packages of root package
 alias cse="phpoc search"                                                                       # Search for composer packages
-alias cre="composer require"                                                                   # Install composer package
+alias cre="phpoc require"                                                                      # Install composer package
+alias cso="phpoc show"                                                                         # Install composer package
+
+# Drupal & Drush
+alias dr="vendor/bin/drush"
+alias drcr="dr cr" # Clear all cache with drush
 
 ###########
 # Laravel #
