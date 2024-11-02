@@ -477,7 +477,8 @@ let g:session_command_aliases = 1
 "*****************************************************************************
 "" Visual Settings
 "*****************************************************************************
-syntax on
+"syntax on
+syntax sync fromstart
 " Improve this setting, because it loads all these highlights in every md file
 let g:markdown_fenced_languages = ['php', 'js=javascript', 'rust', 'html']
 set ruler
