@@ -28,7 +28,8 @@ alias ios="cat /sys/block/\$(mount | grep -w '/' | cut -c6-8)/queue/scheduler" #
 alias timezone="timedatectl"
 alias pstree2="ps -eo 'pid,args' --forest"                               # Process tree
 alias cpugov="cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor" # Cpu scaling governor
-alias ppas="sed -n '/deb .*ppa.launchpadcontent.net/ s@.*ppa.launchpadcontent.net/\(.*\)/ubuntu.*@\1@p' /etc/apt/sources.list.d/*.list"
+# Moved to ppas function
+# alias ppas="sed -n '/deb .*ppa.launchpadcontent.net/ s@.*ppa.launchpadcontent.net/\(.*\)/ubuntu.*@\1@p' /etc/apt/sources.list.d/*.list"
 alias fiotest="fio --name=random-write --ioengine=posixaio --rw=randwrite --bs=4k --numjobs=1 --size=4g --iodepth=1 --runtime=60 --time_based --end_fsync=1" # IO benchmark
 # alias dnstat="systemd-resolve --statistics"
 alias dnstat="echo 'This alias must be written using resolvectl and systemd-resolved must be in use by the system.'"

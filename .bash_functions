@@ -755,3 +755,12 @@ function fw() {
   fi
   file "$(which "${1}")"
 }
+
+function ppas() {
+  apt-cache policy |
+    grep http |
+    awk '{print $2" "$3}' |
+    sort -u |
+    grep ppa |
+    cut -d'/' -f4-5
+}
