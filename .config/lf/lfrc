@@ -602,7 +602,7 @@ cmd extract !{{
 }}
 
 # Info: Copy paths to clipboard
-cmd paths &{{
+cmd path &{{
     if [[ $XDG_SESSION_TYPE == 'x11' ]]; then
         XCLIP=$(command -v xclip)
         if [[ -z $XCLIP ]]; then
@@ -612,6 +612,38 @@ cmd paths &{{
 
         xclip -sel clip < <(printf "${fx}") && \
             lf -remote "send $id echo Paths copied to the clipboard."
+    else
+        lf -remote "send $id echoerr You are probably in a Wayland session."
+    fi
+}}
+
+# Info: Copy parent directory path to clipboard
+cmd dirname &{{
+    if [[ $XDG_SESSION_TYPE == 'x11' ]]; then
+        XCLIP=$(command -v xclip)
+        if [[ -z $XCLIP ]]; then
+            lf -remote "send $id echoerr xclip is not installed."
+            exit
+        fi
+
+        xclip -sel clip < <(dirname "${f}") && \
+            lf -remote "send $id echo Parent directory names copied to the clipboard."
+    else
+        lf -remote "send $id echoerr You are probably in a Wayland session."
+    fi
+}}
+
+# Info: Copy filenames to clipboard
+cmd basename &{{
+    if [[ $XDG_SESSION_TYPE == 'x11' ]]; then
+        XCLIP=$(command -v xclip)
+        if [[ -z $XCLIP ]]; then
+            lf -remote "send $id echoerr xclip is not installed."
+            exit
+        fi
+
+        xclip -sel clip < <(printf '%s' "${fx}" | xargs --delimiter='\n' -I '{}' basename '{}') && \
+            lf -remote "send $id echo File names copied to the clipboard."
     else
         lf -remote "send $id echoerr You are probably in a Wayland session."
     fi
@@ -844,6 +876,32 @@ cmd empty-trash !{{
 cmd untrash &{{
     wrap-with-quotes "${fx}" | xargs -I '{}' rip --unbury "{}" --graveyard ~/.local/share/Trash/rip
     lf -remote "send $id load"
+}}
+
+# Info: Check if selected directory is in a backup profile or not
+cmd in-backup-profile %{{
+    in-backup-profile.sh "${f}"
+}}
+
+# Info: Select items in cwd which are not listed in a backup profile
+cmd not-in-backup-profile &{{
+    lf -remote "send $id echo Please wait..."
+    dirs=$(find ./* -maxdepth 0)
+    items=()
+
+    for item in ${dirs}; do
+        out=$(in-backup-profile.sh "${item}")
+        if [[ $out == No* ]]; then
+            # lf -remote "send $id select ${item}"
+            items+=("${item}")
+        fi
+    done
+
+    lf -remote "send $id echo ''"
+    if [[ ${#items[@]} -gt 0 ]]; then
+        # TODO: wrap-with-quotes
+        lf -remote "send $id toggle $(echo ${items[@]})"
+    fi
 }}
 
 # Info: Slugify filenames using mkslug script
