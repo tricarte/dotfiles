@@ -142,6 +142,24 @@ let lspServers = [
             \   },
             \ }]
 
+            " \ #{
+            " \   name: 'yaml-language-server',
+            " \   path: $HOME . '/.npm-global/bin/yaml-language-server',
+            " \   filetype: 'yaml',
+            " \   args: ['--stdio'],
+            " \   workspaceConfig: #{
+            " \     yaml: #{
+            " \       validate: v:true,
+            " \       hover: v:true,
+            " \       completion: v:true,
+            " \       customTags: [],
+            " \       schemas: #{},
+            " \       schemaStore: #{ enable: v:true },
+            " \       format: #{ enable: v:true },
+            " \     },
+            " \   },
+            " \ },
+
 " Example extra config for luals. Put this into luals config above.
 " For settings: https://luals.github.io/wiki/settings/
     " \   workspaceConfig: #{
