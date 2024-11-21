@@ -93,7 +93,8 @@ command! RunPerl :w !perl
 command! NewPerl :call ScratchPERL()
 
 " Run current buffer as Lua code
-command! RunLua :w !lua
+" command! RunLua :w !lua
+command! RunLua :w !$HOME/luajit21/bin/luajit
 command! NewLua :call ScratchLUA()
 
 " Run current buffer as PHP code
