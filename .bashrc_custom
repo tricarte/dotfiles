@@ -8,7 +8,7 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # load .bash_functions
 if [ -f ~/.bash_functions ]; then
-    . ~/.bash_functions
+  . ~/.bash_functions
 fi
 
 # # load prompt theme
@@ -18,7 +18,7 @@ fi
 eval "$(starship init bash)"
 
 # added to prevent exiting with ctrl + d for tmux
-IGNOREEOF=3   # Shell only exists after the third consecutive Ctrl-d
+IGNOREEOF=3 # Shell only exists after the third consecutive Ctrl-d
 # set -o ignoreeof  # Same as setting IGNOREEOF=3
 
 pathmunge "$HOME/.composer/vendor/bin:$HOME/.npm-global/bin"
@@ -27,9 +27,9 @@ pathmunge "$HOME/.composer/vendor/bin:$HOME/.npm-global/bin"
 . /usr/share/autojump/autojump.bash
 
 # explain.sh begins
-explain () {
+explain() {
   if [ "$#" -eq 0 ]; then
-    while read  -p "Command: " cmd; do
+    while read -p "Command: " cmd; do
       curl -Gs "https://www.mankier.com/api/explain/?cols="$(tput cols) --data-urlencode "q=$cmd"
     done
     echo "Bye!"
@@ -79,59 +79,58 @@ export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 
 # load cht.sh completion
 if [ -f ~/.cht.completion.sh ]; then
-    source ~/.cht.completion.sh
+  source ~/.cht.completion.sh
 fi
 
 # load wpcli completion
 if [ -f ~/.wp-completion.bash ]; then
-    source ~/.wp-completion.bash
+  source ~/.wp-completion.bash
 fi
 
 # load rustic completion
 if [ -f ~/.rustic-completions.bash ]; then
-    source ~/.rustic-completions.bash
+  source ~/.rustic-completions.bash
 fi
 
 # load wpsite completion
 if [ -f ~/.wpsite-completion.bash ]; then
-    source ~/.wpsite-completion.bash
+  source ~/.wpsite-completion.bash
 fi
 
 # load rstc completion
 if [ -f ~/.rstc-completion.bash ]; then
-    source ~/.rstc-completion.bash
+  source ~/.rstc-completion.bash
 fi
 
 # Load ssh key for github/gitlab
 # FIXME: This supposes that only one key is added to the agent
 # and it is github/gitlab key.
-ssh-add -l > /dev/null 2>&1
+ssh-add -l >/dev/null 2>&1
 if [ $? -eq 1 ]; then
   if [ -f ~/.ssh/github-id_rsa.pub ]; then
-      ssh-add ~/.ssh/github-id_rsa > /dev/null 2>&1
+    ssh-add ~/.ssh/github-id_rsa >/dev/null 2>&1
   fi
 fi
 
 # Provide directory completion for wpr function
-_wpr_complete()
-{
+_wpr_complete() {
   local cur
 
   # FIXME: This is hardcoded.
   if [[ -z "${SITESDIR}" ]]; then
-      SITESDIR="$HOME/sites"
+    SITESDIR="$HOME/sites"
   fi
 
   COMPREPLY=()
   cur=${COMP_WORDS[COMP_CWORD]}
 
   if [ "$COMP_CWORD" -eq 1 ]; then
-      FD=$(command -v fd)
-      if [[ $FD ]]; then
-          COMPREPLY=($( compgen -W "$($FD wpstarter.json --max-depth 2 --type f --base-directory $SITESDIR --color never --exec dirname)" -- $cur ) )
-      else
-          COMPREPLY=($( compgen -W "$(find $SITESDIR/ -maxdepth 2 -type f -name wpstarter.json -exec dirname {} \; | xargs -i basename {})" -- $cur ) )
-      fi
+    FD=$(command -v fd)
+    if [[ $FD ]]; then
+      COMPREPLY=($(compgen -W "$($FD wpstarter.json --max-depth 2 --type f --base-directory $SITESDIR --color never --exec dirname)" -- $cur))
+    else
+      COMPREPLY=($(compgen -W "$(find $SITESDIR/ -maxdepth 2 -type f -name wpstarter.json -exec dirname {} \; | xargs -i basename {})" -- $cur))
+    fi
   fi
 
   return 0
@@ -141,18 +140,18 @@ complete -F _wpr_complete wpr
 # Be modular!!!
 # Include additional shell script files
 if [[ -d "$HOME/Library/bashrc.d" ]]; then
-    for FN in "$HOME"/Library/bashrc.d/*.sh ; do
-        source "$FN"
-    done
+  for FN in "$HOME"/Library/bashrc.d/*.sh; do
+    source "$FN"
+  done
 fi
 
 if [[ -f "$HOME/.cargo/env" ]]; then
-    source "$HOME/.cargo/env"
+  source "$HOME/.cargo/env"
 fi
 
 TMUXP=$(command -v tmuxp)
 if [[ $TMUXP ]]; then
-    eval "$(_TMUXP_COMPLETE=bash_source tmuxp)"
+  eval "$(_TMUXP_COMPLETE=bash_source tmuxp)"
 fi
 
 # nnn file manager configuration
@@ -181,18 +180,23 @@ export BAT_PAGER='less -R --incsearch -i -J -g'
 export ANDROID_HOME="${HOME}/Android/Sdk"
 
 if [[ -f "${HOME}/.apis" ]]; then
-    source "${HOME}/.apis"
+  source "${HOME}/.apis"
 fi
 
 if [[ -f "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
-    source "${HOME}/perl5/perlbrew/etc/bashrc"
+  source "${HOME}/perl5/perlbrew/etc/bashrc"
 fi
 
-PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"; export PATH;
-PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
-PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
-PERL_MB_OPT="--install_base \"${HOME}/perl5\""; export PERL_MB_OPT;
-PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"; export PERL_MM_OPT;
+PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"
+export PATH
+PERL5LIB="${HOME}/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"
+export PERL5LIB
+PERL_LOCAL_LIB_ROOT="${HOME}/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"
+export PERL_LOCAL_LIB_ROOT
+PERL_MB_OPT="--install_base \"${HOME}/perl5\""
+export PERL_MB_OPT
+PERL_MM_OPT="INSTALL_BASE=${HOME}/perl5"
+export PERL_MM_OPT
 
 # https://stackoverflow.com/questions/5302650/multi-level-bash-completion
 
@@ -214,19 +218,19 @@ complete -F _rcsync_complete rcsync
 
 # For colorized man pages
 export LESS_TERMCAP_mb=$'\e[01;31m' \
-export LESS_TERMCAP_md=$'\e[01;31m' \
-export LESS_TERMCAP_me=$'\e[0m' \
-export LESS_TERMCAP_se=$'\e[0m' \
-export LESS_TERMCAP_so=$'\e[01;44;33m' \
-export LESS_TERMCAP_ue=$'\e[0m' \
-export LESS_TERMCAP_us=$'\e[01;32m' \
+  export LESS_TERMCAP_md=$'\e[01;31m' \
+  export LESS_TERMCAP_me=$'\e[0m' \
+  export LESS_TERMCAP_se=$'\e[0m' \
+  export LESS_TERMCAP_so=$'\e[01;44;33m' \
+  export LESS_TERMCAP_ue=$'\e[0m' \
+  export LESS_TERMCAP_us=$'\e[01;32m'
 
 if [[ ! $PATH =~ /usr/local/go/bin ]]; then
-    export PATH=$PATH:/usr/local/go/bin
+  export PATH=$PATH:/usr/local/go/bin
 fi
 
 if [[ ! $PATH =~ $HOME/go/bin ]]; then
-    export PATH=$PATH:$HOME/go/bin
+  export PATH=$PATH:$HOME/go/bin
 fi
 
 # To get rid of the vaapi errors for some apps like mpv
@@ -234,3 +238,13 @@ export LIBVA_DRIVER_NAME=i965
 
 GPG_TTY=$(tty)
 export GPG_TTY
+
+export LUA_PATH="lua_modules/share/lua/5.1/?.lua;./lua_modules/share/lua/5.1/?/init.lua;./?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;/usr/local/lib/lua/5.1/?.lua;/usr/local/lib/lua/5.1/?/init.lua;/usr/share/lua/5.1/?.lua;/usr/share/lua/5.1/?/init.lua;${HOME}/.luarocks/share/lua/5.1/?.lua;${HOME}/.luarocks/share/lua/5.1/?/init.lua"
+
+export LUA_CPATH="lua_modules/lib/lua/5.1/?.so;./?.so;/usr/local/lib/lua/5.1/?.so;/usr/lib/x86_64-linux-gnu/lua/5.1/?.so;/usr/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so;${HOME}/.luarocks/lib/lua/5.1/?.so"
+
+export LUA_PATH_5_4="lua_modules/share/lua/5.4/?.lua;./lua_modules/share/lua/5.4/?/init.lua;./?.lua;/usr/local/share/lua/5.4/?.lua;/usr/local/share/lua/5.4/?/init.lua;/usr/local/lib/lua/5.4/?.lua;/usr/local/lib/lua/5.4/?/init.lua;/usr/share/lua/5.4/?.lua;/usr/share/lua/5.4/?/init.lua;${HOME}/.luarocks/share/lua/5.4/?.lua;${HOME}/.luarocks/share/lua/5.4/?/init.lua"
+
+export LUA_CPATH_5_4="lua_modules/lib/lua/5.4/?.so;./?.so;/usr/local/lib/lua/5.4/?.so;/usr/lib/x86_64-linux-gnu/lua/5.4/?.so;/usr/lib/lua/5.4/?.so;/usr/local/lib/lua/5.4/loadall.so;${HOME}/.luarocks/lib/lua/5.4/?.so"
+
+export PATH="${HOME}/.luarocks/bin:${PATH}"
