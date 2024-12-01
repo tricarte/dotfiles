@@ -133,10 +133,15 @@ let lspServers = [
             \         enable: v:false,
             \       },
             \       format: #{
-            \         enable: v:true
+            \         enable: v:true,
             \       },
             \       runtime: #{
-            \         version: 'LuaJIT'
+            \         version: 'LuaJIT',
+            \         fileEncoding: 'utf8',
+            \         pathStrict: v:true,
+            \       },
+            \       semantic: #{
+            \         enable: v:false,
             \       }
             \     }
             \   },
