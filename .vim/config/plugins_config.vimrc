@@ -498,3 +498,5 @@ let g:context_enabled = 0
 " open lf instead of netrw
 " let g:NERDTreeHijackNetrw = 0
 let g:lf_replace_netrw = 1 " Open lf when vim opens a directory
+
+let g:EditorConfig_max_line_indicator = "none"
