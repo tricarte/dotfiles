@@ -118,15 +118,22 @@ function! ScratchPERL()
     :7
 endfunction
 
+" " This is the first version
+" " that uses a buffer with not file
+" function! ScratchLUA()
+"     noswapfile enew!
+"     " setlocal buftype=nofile
+"     setlocal buftype=nowrite
+"     " setlocal bufhidden=hide
+"     " setlocal nobuflisted
+"     setlocal filetype=lua
+"     lcd ~
+"     file LUA
+" endfunction
+
 function! ScratchLUA()
-    noswapfile enew!
-    " setlocal buftype=nofile
-    setlocal buftype=nowrite
-    " setlocal bufhidden=hide
-    " setlocal nobuflisted
+    e! $HOME/repos/lua-scripts/playground.lua
     setlocal filetype=lua
-    lcd ~
-    file LUA
 endfunction
 
 " Using it like ScratchRUST
