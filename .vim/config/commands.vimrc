@@ -48,7 +48,7 @@ command! -bang Valet call fzf#vim#files('~/valet-park', <bang>0)
 command! -bang Sites call fzf#vim#files('~/sites', <bang>0)
 command! -bang Repos call fzf#vim#files('~/repos', <bang>0)
 command! -bang Etc call fzf#vim#files('/etc', <bang>0)
-" command! -bang Dotf call fzf#run({'source': 'dfiles ls-files', 'sink': 'e'})
+" Dotf will not work because VIM will not be able to find shell aliases.
 command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
 
 if executable('shfmt')
@@ -94,7 +94,8 @@ command! NewPerl :call ScratchPERL()
 
 " Run current buffer as Lua code
 " command! RunLua :w !lua
-command! RunLua :w !$HOME/luajit21/bin/luajit
+" command! RunLua :w !$HOME/luajit21/bin/luajit
+command! RunLua :lcd %:h | w !$HOME/luajit21/bin/luajit
 command! NewLua :call ScratchLUA()
 
 " Run current buffer as PHP code
@@ -139,3 +140,6 @@ command! Last let file = system('last $HOME/Downloads') | :execute ':e '. file
 
 " Replicate gn mapping in lf as a command in vim
 command! GN :call system('kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}"')
+
+" Puts every word to a new line
+command! SpaceToNewline :%s/ /\r/
