@@ -248,3 +248,5 @@ export LUA_PATH_5_4="lua_modules/share/lua/5.4/?.lua;./lua_modules/share/lua/5.4
 export LUA_CPATH_5_4="lua_modules/lib/lua/5.4/?.so;./?.so;/usr/local/lib/lua/5.4/?.so;/usr/lib/x86_64-linux-gnu/lua/5.4/?.so;/usr/lib/lua/5.4/?.so;/usr/local/lib/lua/5.4/loadall.so;${HOME}/.luarocks/lib/lua/5.4/?.so"
 
 export PATH="${HOME}/.luarocks/bin:${PATH}"
+
+export PATH="$PATH:/opt/nvim-linux64/bin"
