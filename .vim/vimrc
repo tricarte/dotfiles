@@ -131,9 +131,6 @@ Plug 'sniphpets/sniphpets-common'
 " Close all buffers but this
 Plug 'vim-scripts/BufOnly.vim'
 
-" Automatically change directory to project's root
-Plug 'airblade/vim-rooter'
-
 " Integerate ranger file manager with vim, :Ranger
 " Disabled, gonna try floaterm
 " Plug 'francoiscabrol/ranger.vim', { 'on': 'RangerWorkingDirectory' }
@@ -257,7 +254,7 @@ Plug 'tpope/vim-repeat'
 Plug 'inkarkat/vim-ingo-library'
 
 " Auto add colon or semicolon at the end of the line using <LEADER>;
-Plug 'lfilho/cosco.vim', {'for': ['python', 'php', 'javascript', 'perl']}
+Plug 'lfilho/cosco.vim', {'for': ['python', 'php', 'javascript', 'perl', 'c', 'cpp']}
 
 " :{Chrome,Firefox,Opera,AllBrowser}Reload
 " On last try, it was running buggy, requires xdotool.
@@ -345,7 +342,12 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'yegappan/lsp'
-Plug 'editorconfig/editorconfig-vim'
+
+" Automatically change directory to project's root
+Plug 'airblade/vim-rooter'
+
+" Plug 'editorconfig/editorconfig-vim'
+packadd! editorconfig
 
 call plug#end()
 " matchup.vim will replace both matchit.vim and matchparen
