@@ -89,8 +89,8 @@ augroup END
 " Now using a plugin to insert the semicolon at the end of the line.
 augroup semiColon
     au!
-    autocmd FileType javascript,css,php,sql,perl nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon) <bar> :w<CR>
-    autocmd FileType javascript,css,php,sql,perl imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
+    autocmd FileType javascript,css,php,sql,perl,c,cpp nmap <silent> <Leader>; <Plug>(cosco-commaOrSemiColon) <bar> :w<CR>
+    autocmd FileType javascript,css,php,sql,perl,c,cpp imap <silent> <Leader>; <c-o><Plug>(cosco-commaOrSemiColon)
 augroup END
 
 " html
