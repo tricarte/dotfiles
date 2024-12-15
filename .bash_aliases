@@ -108,6 +108,7 @@ alias phpo="php \
     -d opcache.jit=tracing \
     -d mysqlnd.collect_statistics=0"
 alias phphash="phpo ~/repos/php-playground/src/hash_algorithms_benchmark_time_length.php" # Benchmark PHP hashing algorithms
+alias psh="psysh"                                                                         # PHP cli shell
 alias heyb="hey -n 100 -c 20"                                                             # HTTP Benchmark with hey
 alias spd="speedtest --simple --no-upload"                                                # Download speed test
 alias onl="sudo systemctl restart dnsmasq && sudo systemctl restart valet-dns"
@@ -147,8 +148,17 @@ alias mcon="mount-containers2"
 alias cc="rm -rf ~/.cache/thumbnails/*"          # Clear thumbnail cache
 alias nb="ip n | grep REACHABLE | cut -d' ' -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
-alias kssha="kssh \$(nb) -p 8022"              # Ssh into android
-alias scpand="termscp \"\$(nb):8022:storage\"" # Scp file transfer with termscp to android
+# alias kssha="kssh \$(whoami)@\$(nb) -p 8022"   # Ssh into android
+alias ssha="ssh -o ServerAliveInterval=600 \$(whoami)@\$(nb) -p 8022" # Ssh into android
+alias scpand="termscp \"\$(nb):8022:storage\""                        # Scp file transfer with termscp to android
+alias redmifs="sshfs -o transform_symlinks,follow_symlinks \
+    -o auto_cache,reconnect,no_readahead \
+    -o Ciphers=aes128-ctr \
+    -o Compression=no \
+    -o port=8022 \
+    -o ServerAliveInterval=600 \
+    \$(whoami)@\$(nb):/data/data/com.termux/files/home ~/redmi-sshfs"
+alias redmifsu="fusermount -u ~/redmi-sshfs" # Umount redmi sshfs connection
 alias sniploc="cd ~/valet-park/sniploc; pws"
 alias yt="ytfzf -T kitty -f -t"
 alias update-kitty="curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
