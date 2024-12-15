@@ -157,8 +157,9 @@ let g:expand_region_text_objects = {
 
 " rooter config
 let g:rooter_change_directory_for_non_project_files = 'current'
-let g:rooter_patterns = ['.git', '.git/', '.root', '.htaccess']
+let g:rooter_patterns = ['.git', '.git/', '.root', '.htaccess', 'composer.json']
 let g:rooter_silent_chdir = 1
+let g:rooter_cd_cmd = 'lcd'
 
 " CtrlP config
 set wildignore+=/.git/,/.hg/,/.svn/
