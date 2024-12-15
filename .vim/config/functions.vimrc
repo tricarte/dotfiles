@@ -133,7 +133,10 @@ endfunction
 
 function! ScratchLUA()
     e! $HOME/repos/lua-scripts/playground.lua
-    setlocal filetype=lua
+endfunction
+
+function! ScratchC()
+    e! /home/sagirbas/repos/c-playground/playground.c
 endfunction
 
 " Using it like ScratchRUST
@@ -148,11 +151,12 @@ function! ScratchPHP()
                 <?php
                 declare(strict_types=1);
 
-                namespace Scratch;
-
-                require_once __DIR__ . '/vendor/autoload.php';
+                require_once __DIR__ . '/../vendor/autoload.php';
+                require_once 'helpers.php';
 
                 use Carbon\Carbon;
+
+                use function Scratch\writeln;
 
 
 
@@ -270,6 +274,8 @@ function! RunBufferAsScript()
         :RunVLang
     elseif b:mft == "go"
         :RunGolang
+    elseif b:mft == "c"
+        :RunC
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
