@@ -110,42 +110,54 @@ autocmd User LspSetup call LspOptionsSet(lspOpts)
             " \	  path: $HOME . '/.config/v-analyzer/bin/v-analyzer',
             " \	  args: []
             " \ },
+            " \	  path: $HOME . '/.bun/bin/bun',
+            " \	  args: [ $HOME . '/.npm-global/bin/intelephense', '--stdio']
+            " \	  args: [ '--noprofile', '--norc', '-c', $HOME.'/.bun/bin/bun '.$HOME.'/.npm-global/bin/intelephense --stdio' ]
 let lspServers = [
-            \ #{
-            \	  name: 'intelephense',
-            \	  filetype: ['php'],
-            \	  path: $HOME . '/.bun/bin/bun',
-            \	  args: [ $HOME . '/.npm-global/bin/intelephense', '--stdio']
-            \ },
-            \ #{name: 'gopls',
-            \   filetype: 'go',
-            \   path: $HOME . '/go/bin/gopls',
-            \   args: ['serve']
-            \ },
-            \ #{
-            \   name: 'luals',
-            \   filetype: 'lua',
-            \   path: $HOME . '/bin/lua-language-server-3.10.1-linux-x64/bin/lua-language-server',
-            \   args: [],
-            \   workspaceConfig: #{
-            \     Lua: #{
-            \       diagnostics: #{
-            \         enable: v:false,
-            \       },
-            \       format: #{
-            \         enable: v:true,
-            \       },
-            \       runtime: #{
-            \         version: 'LuaJIT',
-            \         fileEncoding: 'utf8',
-            \         pathStrict: v:true,
-            \       },
-            \       semantic: #{
-            \         enable: v:false,
-            \       }
-            \     }
-            \   },
-            \ }]
+        \  #{
+        \     name: 'ccls',
+        \     path: '/usr/bin/ccls',
+        \     filetype: ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+        \     root_uri: {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'compile_commands.json'))},
+        \     initialization_options: {'cache': {'directory': expand('~/.cache/ccls') }},
+        \ },
+        \ #{
+        \	  name: 'intelephense',
+        \	  filetype: ['php'],
+        \	  path: '/usr/bin/bash',
+        \	  args: [ '--noprofile', '--norc', '-c', 'sleep 2;'.$HOME.'/.npm-global/bin/intelephense --stdio' ]
+        \ },
+        \ #{
+        \   name: 'gopls',
+        \   filetype: 'go',
+        \   path: $HOME . '/go/bin/gopls',
+        \   args: ['serve']
+        \ },
+        \ #{
+        \   name: 'luals',
+        \   filetype: 'lua',
+        \   path: '/usr/bin/bash',
+        \   args: ['--noprofile', '--norc', '-c', 'sleep 1;'.$HOME.'/bin/lua-language-server-3.13.2-linux-x64/bin/lua-language-server'],
+        \   workspaceConfig: #{
+        \     Lua: #{
+        \       diagnostics: #{
+        \         enable: v:false,
+        \       },
+        \       format: #{
+        \         enable: v:true,
+        \       },
+        \       runtime: #{
+        \         version: 'LuaJIT',
+        \         fileEncoding: 'utf8',
+        \         pathStrict: v:true,
+        \       },
+        \       semantic: #{
+        \         enable: v:false,
+        \       }
+        \     }
+        \   },
+        \ }]
+            " \   path: $HOME . '/bin/lua-language-server-3.13.2-linux-x64/bin/lua-language-server',
 
             " \ #{
             " \   name: 'yaml-language-server',
@@ -202,3 +214,6 @@ autocmd User LspSetup call LspAddServer(lspServers)
 "                  \   path: '/usr/local/bin/phpactor',
 "                  \   args: ['language-server']
 "                  \ }])
+
+
+nmap <silent> gd :LspGotoDefinition<CR>
