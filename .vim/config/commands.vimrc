@@ -95,15 +95,25 @@ command! NewPerl :call ScratchPERL()
 " Run current buffer as Lua code
 " command! RunLua :w !lua
 " command! RunLua :w !$HOME/luajit21/bin/luajit
-command! RunLua :lcd %:h | w !$HOME/luajit21/bin/luajit
+" command! RunLua :lcd %:h | w !$HOME/luajit21/bin/luajit
+command! RunLua :lcd %:h | !clear;$HOME/luajit21/bin/luajit %
 command! NewLua :call ScratchLUA()
 
 " Run current buffer as PHP code
 " Command abbreviation: rh
-command! RunPHP :w !phpo
+" ATTENTION: Depends on current working directory
+" command! RunPHP :w !phpo
+" This handles the working directory problem
+" command! RunPHP :lcd %:h | w !phpo
+command! RunPHP :!clear;phpo %
 " command! RunPHP :up | w !phpo
 " Command abbreviation: nh
 command! NewPHP :call ScratchPHP()
+
+
+" Run current buffer as C code with tcc
+command! RunC :lcd %:h | !clear;/usr/bin/tcc -run %
+command! NewC :call ScratchC()
 
 " There is :rc command abbreviation for this command
 " in abbreviations.vimrc
