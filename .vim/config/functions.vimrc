@@ -279,3 +279,8 @@ function! RunBufferAsScript()
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
+
+function! FormatVlang(buffer) abort
+    return {'command': 'v fmt'}
+endfunction
+execute ale#fix#registry#Add('vfmt', 'FormatVlang', ['vlang'], 'v fmt for vlang')

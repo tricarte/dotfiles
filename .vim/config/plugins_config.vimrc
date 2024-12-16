@@ -236,23 +236,31 @@ let g:ale_disable_lsp = 1
 " Linters are syntax error and best practices checkers.
 " Fixers are anything that changes the code including beautifiers and
 " formatters.
-let g:ale_linters = {'php': ['php'], 'html': [], 'css': [], 'typescriptreact': [], "javascript": [], 'perl': ['perl', 'perlcritic'], 'lua': ['selene']}
+let g:ale_linters = {
+            \ 'php': ['php'],
+            \ 'html': [],
+            \ 'css': [],
+            \ 'typescriptreact': [],
+            \ "javascript": [],
+            \ 'perl': ['perl', 'perlcritic'],
+            \ 'lua': ['selene']
+            \ }
 " goimports can be used in place of gofmt which can also manage imports
 " but gopls can interfere with goimports so I'm using gofmt instead.
 " or you can disable gopls imports and use goimports below.
 " removed phpcbf from php fixers, gives the error: No fixable errors found
+" vfmt fixer is defined in functions.vimrc
 let g:ale_fixers = {
-            \ 'php':   [ 'php_cs_fixer'],
-            \ 'html':  [ 'prettier'],
-            \ 'css':   [ 'prettier'],
-            \ 'sh':    [ 'shfmt'],
-            \ 'perl':  [ 'perltidy'],
-            \ 'rust':  [ 'rustfmt'],
-            \ 'vlang': [ 'v'],
-            \ 'go':    [ 'gofmt']
+            \ 'php':   ['php_cs_fixer'],
+            \ 'html':  ['prettier'],
+            \ 'css':   ['prettier'],
+            \ 'sh':    ['shfmt'],
+            \ 'perl':  ['perltidy'],
+            \ 'rust':  ['rustfmt'],
+            \ 'vlang': ['vfmt'],
+            \ 'go':    ['gofmt']
             \ }
 let g:ale_sh_shfmt_options = '-ln bash -i 2'
-let g:ale_vlang_v_options = 'fmt'
 let g:ale_perl_perl_options = '-c'
 
 let g:prettier#config#tab_width = 2
