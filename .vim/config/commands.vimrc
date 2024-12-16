@@ -49,7 +49,8 @@ command! -bang Sites call fzf#vim#files('~/sites', <bang>0)
 command! -bang Repos call fzf#vim#files('~/repos', <bang>0)
 command! -bang Etc call fzf#vim#files('/etc', <bang>0)
 " Dotf will not work because VIM will not be able to find shell aliases.
-command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
+" command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
+command! -bang Dfiles call fzf#run({'source': 'dfl', 'sink': 'e'})
 
 if executable('shfmt')
     " command! -bang ShellFormat :%!shfmt -ln bash -i 2
