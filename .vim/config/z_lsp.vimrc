@@ -113,6 +113,7 @@ autocmd User LspSetup call LspOptionsSet(lspOpts)
             " \	  path: $HOME . '/.bun/bin/bun',
             " \	  args: [ $HOME . '/.npm-global/bin/intelephense', '--stdio']
             " \	  args: [ '--noprofile', '--norc', '-c', $HOME.'/.bun/bin/bun '.$HOME.'/.npm-global/bin/intelephense --stdio' ]
+" lua-language-server has this startup option: -configpath=sumnekoLuaConfig.lua
 let lspServers = [
         \  #{
         \     name: 'ccls',
