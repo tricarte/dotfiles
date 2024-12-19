@@ -175,6 +175,7 @@ alias q="exit"
 alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die"                                    # Backup with rstc and shutdown
 alias upv="cd ~/repos/v; v up; v doc -m -f html vlib/; cd ~/Documents/vlang/docs/; git pull;" # Update vlang source, api reference and docs
 alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at now +25 minute"
+alias kconref="kdeconnect-cli --refresh"
 
 ##############
 #  Composer  #
