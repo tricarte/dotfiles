@@ -1566,6 +1566,36 @@ cmd convert-video-to-mp4 !{{
     fi
 }}
 
+# Info: Convert audio to mp3
+cmd convert-audio-to-mp3 !{{
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d converted ]]; then
+        mkdir converted
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -i "${item}" -b:a 192k -y \
+            "converted/${filename%.*}.mp3"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "converted" ]]; then
+        lf -remote "send $id select \"converted\""
+    fi
+}}
+
 # Info: Resize video using ffmpeg
 cmd resize-video !{{
     printf "Non power of 2 resolutions may error!\n"
