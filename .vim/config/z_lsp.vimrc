@@ -116,6 +116,11 @@ autocmd User LspSetup call LspOptionsSet(lspOpts)
 " lua-language-server has this startup option: -configpath=sumnekoLuaConfig.lua
 let lspServers = [
         \  #{
+        \     name: 'v-analyzer',
+        \     path: $HOME.'/repos/v-analyzer/bin/v-analyzer',
+        \     filetype: ['vlang'],
+        \ },
+        \  #{
         \     name: 'ccls',
         \     path: '/usr/bin/ccls',
         \     filetype: ['c', 'cpp', 'objc', 'objcpp', 'cc'],
