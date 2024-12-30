@@ -284,3 +284,31 @@ function! FormatVlang(buffer) abort
     return {'command': 'v fmt'}
 endfunction
 execute ale#fix#registry#Add('vfmt', 'FormatVlang', ['vlang'], 'v fmt for vlang')
+
+" Used by the command 'SnpSyn'
+function! HandleSnpSyn(syn)
+    let line = search('type=')
+    call setline(line, "type='" . a:syn . "'")
+endfunction
+
+" Used by the command 'SnpParent'
+function! HandleSnpParent(parent)
+    let [pid, ptitle] = split(a:parent, "\t")
+    let line = search('id=')
+    call setline(line, "id='" . pid . "' # " . ptitle)
+endfunction
+
+" Used by the command 'SnpSave'
+function! HandleSnpSave()
+    silent! w
+    let job = job_start('snippet-writer-v save -f ' . expand("%"), {"callback": "SnpSaveHandler"})
+endfunction
+
+function! SnpSaveHandler(channel, msg)
+    if a:msg == 'success'
+        silent! RemoveFileAndBuffer
+        echom 'Snippet saved succesfully!.'
+    else
+        echohl WarningMsg | echom a:msg | echohl None
+    endif
+endfunction

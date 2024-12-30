@@ -144,7 +144,8 @@ command! -nargs=? -bang BW :silent! argd % | bw<bang><args>
 
 " Delete file from filesystem and remove the buffer
 " Command abbreviation: RM
-command! RemoveFileAndBuffer  :call delete(expand('%')) | bdelete!
+" command! RemoveFileAndBuffer  :call delete(expand('%')) | bdelete!
+command! RemoveFileAndBuffer  :call system('rip --graveyard ~/.local/share/Trash/rip ' . expand('%')) | bdelete!
 
 " Open the last file downloaded in ~/Downloads
 command! Last let file = system('last $HOME/Downloads') | :execute ':e '. file
@@ -153,4 +154,10 @@ command! Last let file = system('last $HOME/Downloads') | :execute ':e '. file
 command! GN :call system('kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}"')
 
 " Puts every word to a new line
-command! SpaceToNewline :%s/ /\r/
+command! -range=% SpaceToNewline <line1>,<line2>:s/\s\+/\r/
+command! -range=% RemoveBlankLines <line1>,<line2>:g/^$/d
+
+command! -bang SnpNew let tmpfile = system('snippet-writer-v new') | :execute ':e ' . tmpfile | setf toml | :norm vin'
+command! -bang SnpSyn :call fzf#run({'source': 'snippet-writer-v syn', 'sink': funcref('HandleSnpSyn')})
+command! -bang SnpParent :call fzf#run({'source': 'snippet-writer-v categories', 'sink': funcref('HandleSnpParent')})
+command! -bang SnpSave :call HandleSnpSave()
