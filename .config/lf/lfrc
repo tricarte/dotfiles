@@ -1596,6 +1596,27 @@ cmd convert-audio-to-mp3 !{{
     fi
 }}
 
+# Info: Normalize mp3 gain (will replace original files!)
+cmd normalize-mp3-gain !{{
+    clear
+    count=$(printf "${fx}\n" | wc -l)
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Processing ${item}: "
+
+        mp3gain -q -r "${item}"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+}}
+
 # Info: Resize video using ffmpeg
 cmd resize-video !{{
     printf "Non power of 2 resolutions may error!\n"
