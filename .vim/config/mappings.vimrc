@@ -316,16 +316,29 @@ nnoremap <leader>sn :Snippets<CR>
 nnoremap <leader>/ /\<\><left><left>
 
 " bufferline plugin provides mappings for switching by ordinal buffer numbers
-nnoremap <Leader>1 <Plug>lightline#bufferline#go(1)
-nnoremap <Leader>2 <Plug>lightline#bufferline#go(2)
-nnoremap <Leader>3 <Plug>lightline#bufferline#go(3)
-nnoremap <Leader>4 <Plug>lightline#bufferline#go(4)
-nnoremap <Leader>5 <Plug>lightline#bufferline#go(5)
-nnoremap <Leader>6 <Plug>lightline#bufferline#go(6)
-nnoremap <Leader>7 <Plug>lightline#bufferline#go(7)
-nnoremap <Leader>8 <Plug>lightline#bufferline#go(8)
-nnoremap <Leader>9 <Plug>lightline#bufferline#go(9)
-nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
+" nnoremap <Leader>1 <Plug>lightline#bufferline#go(1)
+" nnoremap <Leader>2 <Plug>lightline#bufferline#go(2)
+" nnoremap <Leader>3 <Plug>lightline#bufferline#go(3)
+" nnoremap <Leader>4 <Plug>lightline#bufferline#go(4)
+" nnoremap <Leader>5 <Plug>lightline#bufferline#go(5)
+" nnoremap <Leader>6 <Plug>lightline#bufferline#go(6)
+" nnoremap <Leader>7 <Plug>lightline#bufferline#go(7)
+" nnoremap <Leader>8 <Plug>lightline#bufferline#go(8)
+" nnoremap <Leader>9 <Plug>lightline#bufferline#go(9)
+" nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
+
+" This function is defined by tricarte
+nnoremap <Leader>1 :call GotoBuffer(1)<CR>
+nnoremap <Leader>2 :call GotoBuffer(2)<CR>
+nnoremap <Leader>3 :call GotoBuffer(3)<CR>
+nnoremap <Leader>4 :call GotoBuffer(4)<CR>
+nnoremap <Leader>5 :call GotoBuffer(5)<CR>
+nnoremap <Leader>6 :call GotoBuffer(6)<CR>
+nnoremap <Leader>7 :call GotoBuffer(7)<CR>
+nnoremap <Leader>8 :call GotoBuffer(8)<CR>
+nnoremap <Leader>9 :call GotoBuffer(9)<CR>
+
+"
 " nnoremap <Leader>1 :b1<cr>
 " nnoremap <Leader>2 :b2<cr>
 " nnoremap <Leader>3 :b3<cr>
@@ -336,6 +349,16 @@ nnoremap <Leader>0 <Plug>lightline#bufferline#go(10)
 " nnoremap <Leader>8 :b8<cr>
 " nnoremap <Leader>9 :b9<cr>
 " nnoremap <Leader>0 :b0<cr>
+" same mappings for pacha/vem-tabline
+" nnoremap <leader>1 :1tabnext<CR>
+" nnoremap <leader>2 :2tabnext<CR>
+" nnoremap <leader>3 :3tabnext<CR>
+" nnoremap <leader>4 :4tabnext<CR>
+" nnoremap <leader>5 :5tabnext<CR>
+" nnoremap <leader>6 :6tabnext<CR>
+" nnoremap <leader>7 :7tabnext<CR>
+" nnoremap <leader>8 :8tabnext<CR>
+" nnoremap <leader>9 :9tabnext<CR>
 
 " floaterm mappings
 " nnoremap   <silent>   <space>r :FloatermNew ranger<CR>
@@ -365,5 +388,8 @@ nnoremap <C-k> zk
 inoremap <C-l> <c-g>u<Esc>[s1z=`]a<c-g>u
 
 " Switch to a light colorscheme
+" TODO: Update this to use material colorscheme
 nnoremap <space>l :colorscheme base16-github<CR>
 nnoremap <space>d :colorscheme base16-material-palenight<CR>
+
+nnoremap <space>q :e ~/.quick<CR>
