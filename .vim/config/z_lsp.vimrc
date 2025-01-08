@@ -96,29 +96,22 @@ let lspOpts = #{
 	\ }
 autocmd User LspSetup call LspOptionsSet(lspOpts)
 
-" Working phpactor lsp config
-" let lspServers = [#{
-" 	\	  name: 'phpactor',
-" 	\	  filetype: ['php'],
-" 	\	  path: '/usr/local/bin/phpactor',
-" 	\	  args: ['language-server']
-" 	\ }]
-
-            " \ #{
-            " \	  name: 'v-analyzer',
-            " \	  filetype: ['vlang'],
-            " \	  path: $HOME . '/.config/v-analyzer/bin/v-analyzer',
-            " \	  args: []
-            " \ },
-            " \	  path: $HOME . '/.bun/bin/bun',
-            " \	  args: [ $HOME . '/.npm-global/bin/intelephense', '--stdio']
-            " \	  args: [ '--noprofile', '--norc', '-c', $HOME.'/.bun/bin/bun '.$HOME.'/.npm-global/bin/intelephense --stdio' ]
 " lua-language-server has this startup option: -configpath=sumnekoLuaConfig.lua
+
+function! HandleNotifications(lspserver, reply)
+    echo "LSP Server started!"
+endfunction
+
 let lspServers = [
         \  #{
         \     name: 'v-analyzer',
         \     path: $HOME.'/repos/v-analyzer/bin/v-analyzer',
+        \     args: [ '--stdio' ],
         \     filetype: ['vlang'],
+        \     runUnlessSearch: ['examples/', 'vlib/'],
+        \     runIfSearch: ['.root', 'v.mod'],
+        \     rootSearch: ['.root', 'v.mod'],
+        \     customNotificationHandlers: { "experimental/serverStatus": function('HandleNotifications'), },
         \ },
         \  #{
         \     name: 'ccls',
@@ -130,8 +123,10 @@ let lspServers = [
         \ #{
         \	  name: 'intelephense',
         \	  filetype: ['php'],
-        \	  path: '/usr/bin/bash',
-        \	  args: [ '--noprofile', '--norc', '-c', 'sleep 2;'.$HOME.'/.npm-global/bin/intelephense --stdio' ]
+        \	  path: $HOME.'/.npm-global/bin/intelephense',
+        \	  args: [ '--stdio' ],
+        \     runIfSearch: ['composer.json'],
+        \     rootSearch: ['composer.json'],
         \ },
         \ #{
         \   name: 'gopls',
@@ -142,8 +137,10 @@ let lspServers = [
         \ #{
         \   name: 'luals',
         \   filetype: 'lua',
-        \   path: '/usr/bin/bash',
-        \   args: ['--noprofile', '--norc', '-c', 'sleep 1;'.$HOME.'/bin/lua-language-server-3.13.2-linux-x64/bin/lua-language-server'],
+        \   path: $HOME.'/bin/lua-language-server-3.13.4-linux-x64/bin/lua-language-server',
+        \   runIfSearch: ['lua_modules/', '.root'],
+        \   rootSearch: ['lua_modules/', '.root'],
+        \   customNotificationHandlers: { "$/hello": function('HandleNotifications'), },
         \   workspaceConfig: #{
         \     Lua: #{
         \       diagnostics: #{
@@ -163,7 +160,6 @@ let lspServers = [
         \     }
         \   },
         \ }]
-            " \   path: $HOME . '/bin/lua-language-server-3.13.2-linux-x64/bin/lua-language-server',
 
             " \ #{
             " \   name: 'yaml-language-server',
