@@ -161,3 +161,6 @@ command! -bang SnpNew let tmpfile = system('snippet-writer-v new') | :execute ':
 command! -bang SnpSyn :call fzf#run({'source': 'snippet-writer-v syn', 'sink': funcref('HandleSnpSyn')})
 command! -bang SnpParent :call fzf#run({'source': 'snippet-writer-v categories', 'sink': funcref('HandleSnpParent')})
 command! -bang SnpSave :call HandleSnpSave()
+
+" Display 1m system load average
+command! -bang Lavg :echo LoadAvg()
