@@ -312,3 +312,26 @@ function! SnpSaveHandler(channel, msg)
         echohl WarningMsg | echom a:msg | echohl None
     endif
 endfunction
+
+function! LoadAvg()
+    let cmd = 'bash --norc --noprofile -c "loadavg"'
+    return system(cmd)
+endfunction
+
+" <leader>1-9 is mapped to this function
+function! GotoBuffer(n)
+    " Initialize an empty list to store buffer names
+    let l:buffer_list = []
+
+    " Iterate through all buffer numbers
+    for l:bufnr in range(1, bufnr('$'))
+        " Check if the buffer is listed (i.e., it is loaded)
+        if buflisted(l:bufnr)
+            " Get the buffer name and add it to the list
+            let l:buffer_name = bufname(l:bufnr)
+            call add(l:buffer_list, l:buffer_name)
+        endif
+    endfor
+
+    execute 'b' l:buffer_list[a:n - 1]
+endfunction
