@@ -492,8 +492,8 @@ cmd bookmark_create ${{
 }}
 map B :bookmark_create
 
-# Info: Open selected file with a manually entered application
 # TODO: handles flatpaks but not snaps
+# Info: Open selected file with a manually entered application
 cmd open-with &{{
     if [[ -z "$@" ]]; then
         lf -remote "send $id echoerr Err: Enter an application name."
@@ -537,8 +537,8 @@ cmd quicklook-single-image &{{
 }}
 map gq :quicklook-single-image
 
-# Info: View current directory in thumbnail mode <gb>
 # What you mark in sxiv will also be selected in lf.
+# Info: View current directory in thumbnail mode <gb>
 cmd browse-images &{{
     iv=$(command -v nsxiv)
 
@@ -742,9 +742,9 @@ cmd st &{{
     xdotool windowactivate "${vlcid}"
 }}
 
-# Info: Decrypt file which is encrypted with gpg
 # Only useful for encrypted text files
 # that will be printed to the screen.
+# Info: Decrypt file which is encrypted with gpg
 cmd decrypt !{{
     clear
     gpg -qd --pinentry-mode loopback "${f}"
@@ -1163,8 +1163,8 @@ cmd kshare !{{
   fi
 }}
 
-# Info: Run any executable in a new kitty window <go>
 # Usage: :run or :runs for sudo
+# Info: Run any executable in a new kitty window <go>
 cmd run &{{
     if [[ -x "${f}" ]]; then
         # --type=overlay
@@ -1710,9 +1710,9 @@ cmd md2pdf-groff !{{
 # "# Info: Description goes here..."
 # "cmd cmd_name &{{ }}"
 # If you want to create a cmd that should not be listed,
-# create it like this:
-# # Info: Noop>cmd_name
-# cmd cmd_name ${{}}
+# create it like this (without quotes):
+# "# Info: Noop>cmd_name"
+# "cmd_name ${{}}"
 # TODO: This is VERY fragile.
 map gp ${{
     FZF=$(command -v fzf)
