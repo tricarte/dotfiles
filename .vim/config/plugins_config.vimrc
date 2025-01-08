@@ -120,6 +120,23 @@ let g:tagbar_type_json = {
     \ },
     \ 'sort' : 0
     \ }
+" Disabled showing variables for vlang
+" \ 'v:variable',
+let g:tagbar_type_vlang = {
+  \ 'kinds': [
+    \ 'm:imodule',
+    \ 'M:module',
+    \ 'C:cfunction',
+    \ 'f:function',
+    \ 'h:method',
+    \ 'c:const',
+    \ 's:struct',
+    \ 'e:enum',
+    \ 'i:interface',
+    \ 'S:sfield',
+    \ 'E:efield',
+  \ ],
+\ }
 
 " vista.vim - tagbar alternative
 " Ensure you have installed some decent font to show these pretty symbols, then you can enable icon for the kind.
@@ -509,3 +526,7 @@ let g:context_enabled = 0
 let g:lf_replace_netrw = 1 " Open lf when vim opens a directory
 
 let g:EditorConfig_max_line_indicator = "none"
+
+" pacha/vem-tabline settings
+let g:vem_tabline_show_number = 'index'
+" let g:vem_tabline_show_number = 'buffnr'
