@@ -36,8 +36,11 @@ Plug 'pbogut/fzf-mru.vim'
 Plug 'wellle/context.vim'
 " Because of context.vim, I disabled indenLine
 " Plug 'Yggdroot/indentLine'
-Plug 'itchyny/lightline.vim'
-Plug 'mengelbrecht/lightline-bufferline'
+" Plug 'itchyny/lightline.vim'
+" Plug 'mengelbrecht/lightline-bufferline'
+" Plug 'pacha/vem-statusline'
+" vem-tabline has a few issues: wrong buffer index when resized
+" Plug 'pacha/vem-tabline'
 " Show buffers in statusline or command line
 " Plug 'bling/vim-bufferline'
 " Plug 'liuchengxu/eleline.vim'
@@ -73,19 +76,19 @@ Plug 'edkolev/promptline.vim' , { 'on': 'PromptlineSnapshot' }
 " Used one
 Plug 'chriskempson/base16-vim'
 " Installed ones
-" Plug 'ntk148v/komau.vim'
-" Plug 'fenetikm/falcon'
-" Plug 'n1ghtmare/noirblaze-vim'
-" Plug 'kaicataldo/material.vim'
-" Plug 'cormacrelf/vim-colors-github'
-" Plug 'NLKNguyen/papercolor-theme'
-" Plug 'fneu/breezy'
-" Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
-" Plug 'joshdick/onedark.vim'
-" Plug 'rakr/vim-one'
-" Plug 'preservim/vim-colors-pencil' " Both dark and light is GOOD.
-" Plug 'drewtempelmeyer/palenight.vim'
-" Plug 'stefanvanburen/rams.vim' " Light is pretty good, but it needs markdown improvements.
+Plug 'ntk148v/komau.vim'
+Plug 'fenetikm/falcon'
+Plug 'n1ghtmare/noirblaze-vim'
+Plug 'kaicataldo/material.vim'
+Plug 'cormacrelf/vim-colors-github'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'fneu/breezy'
+Plug 'challenger-deep-theme/vim', { 'as': 'challenger-deep' }
+Plug 'joshdick/onedark.vim'
+Plug 'rakr/vim-one'
+Plug 'preservim/vim-colors-pencil' " Both dark and light is GOOD.
+Plug 'drewtempelmeyer/palenight.vim'
+Plug 'stefanvanburen/rams.vim' " Light is pretty good, but it needs markdown improvements.
 
 " Plug 'shawncplus/phpcomplete.vim'
 " Plug 'lvht/phpcd.vim', { 'for': 'php', 'do': 'composer install' }
@@ -335,6 +338,9 @@ Plug 'rust-lang/rust.vim'
 " Plug 'neoclide/coc.nvim', {'branch': 'release'} " completion engine
 " Plug 'antoinemadec/coc-fzf'
 
+" Automatically change directory to project's root
+Plug 'airblade/vim-rooter'
+
 " Using vimcomplete instead of CoC
 Plug 'girishji/vimcomplete'
 Plug 'girishji/ngram-complete.vim' " ngram and bigram completion instead of dictionary
@@ -342,9 +348,6 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'yegappan/lsp'
-
-" Automatically change directory to project's root
-Plug 'airblade/vim-rooter'
 
 " Plug 'editorconfig/editorconfig-vim'
 packadd! editorconfig
@@ -487,6 +490,7 @@ let g:markdown_fenced_languages = ['php', 'js=javascript', 'rust', 'html']
 set ruler
 set relativenumber
 set number
+" set numberwidth=8
 set noshowmode                    " We use lightline to show the mode
 set cmdheight=2
 set smoothscroll
@@ -503,8 +507,8 @@ if has('termguicolors')
     " set notermguicolors
 endif
 
-set background=dark
-" set background=light
+" set background=dark
+set background=light
 
 let no_buffers_menu=1
 if !exists('g:not_finish_vimplug')
@@ -522,9 +526,10 @@ if !exists('g:not_finish_vimplug')
   " colorscheme palenight " Another preferred one
   " colorscheme pencil " Another preferred one
   " colorscheme base16-google-light " Another preferred one
+  " colorscheme base16-google-dark " Another preferred one
   " colorscheme base16-materia " Another preferred dark one
   " colorscheme base16-material " Another preferred dark one
-  colorscheme base16-material-palenight " This is the one I use
+  " colorscheme base16-material-palenight " This is the one I use
   " colorscheme komau " Another preferred dark one
   " colorscheme base16-solarized-dark " Another preferred dark one
   " colorscheme base16-solarized-light " Another preferred light one
@@ -532,11 +537,13 @@ if !exists('g:not_finish_vimplug')
   " colorscheme shine " This is an official colorscheme.
   " colorscheme zellner " This is an official colorscheme.
   " colorscheme default
-  " colorscheme material
   let g:material_terminal_italics = 1
-  " let g:material_theme_style = 'lighter'
-  " let g:material_theme_style = 'palenight'
   " let g:material_theme_style = 'default'
+  let g:material_theme_style = 'ocean'
+  " let g:material_theme_style = 'lighter'
+  " let g:material_theme_style = 'darker'
+  " let g:material_theme_style = 'palenight'
+  colorscheme material
   " colorscheme falcon
   let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
   let g:pencil_terminal_italics = 0
@@ -671,23 +678,34 @@ let g:lightline#bufferline#show_number  = 2
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
+
+            " \ 'active': {
+            " \   'left': [ [ 'mode', 'paste' ],
+            " \             [ 'readonly', 'modified' ] ],
+            " \   'right': [ [ 'lineinfo' ], [ 'totallines' ],
+            " \              [ 'percent' ],
+            " \              [ 'loadavg', 'fileformat', 'fileencoding', 'filetype' ] ]
+            " \ },
+            " \ 'component_function': {
+            " \   'loadavg': 'LoadAvg',
+            " \ },
 let g:lightline = {
-      \ 'colorscheme': 'material',
-      \ 'tabline': {
-      \   'left': [ ['buffers'] ],
-      \   'right': [ ['close'] ]
-      \ },
-      \ 'component_expand': {
-      \   'buffers': 'lightline#bufferline#buffers'
-      \ },
-      \ 'component_type': {
-      \   'buffers': 'tabsel'
-      \ },
-      \ 'component': {
-      \   'separator': '',
-      \   'totallines': "%{line('$')}",
-      \ },
-      \ }
+            \ 'colorscheme': 'material',
+            \ 'tabline': {
+            \   'left': [ ['buffers'] ],
+            \   'right': [ ['close'] ]
+            \ },
+            \ 'component_expand': {
+            \   'buffers': 'lightline#bufferline#buffers'
+            \ },
+            \ 'component_type': {
+            \   'buffers': 'tabsel'
+            \ },
+            \ 'component': {
+            \   'separator': '',
+            \   'totallines': "%{line('$')}",
+            \ },
+            \ }
 " let g:lightline = {
 "     \ 'tabline': {
 "     \   'left': [ 
@@ -868,62 +886,120 @@ set re=0
 " https://www.tdaly.co.uk/post/vanilla-vim-statusline
 " https://www.tdaly.co.uk/projects/vim-statusline-generator/
 "" statusline
-" set laststatus=2
-" set statusline=                          " left align
-" set statusline+=%2*\                     " blank char
-" set statusline+=%2*\%{StatuslineMode()}
-" set statusline+=%2*\
-" set statusline+=%1*\ <<
-" set statusline+=%1*\ %f                  " short filename
-" set statusline+=%1*\ >>
-" set statusline+=%=                       " right align
-" set statusline+=%*
-" set statusline+=%3*\%h%m%r               " file flags (help, read-only, modified)
-" set statusline+=%4*\%{b:gitbranch}       " include git branch
-" set statusline+=%3*\%.25F                " long filename (trimmed to 25 chars)
-" set statusline+=%3*\::
-" set statusline+=%3*\%l/%L\\|             " line count
-" set statusline+=%3*\%y                   " file type
-" hi User1 ctermbg=black ctermfg=grey guibg=black guifg=grey
-" hi User2 ctermbg=green ctermfg=black guibg=green guifg=black
-" hi User3 ctermbg=black ctermfg=lightgreen guibg=black guifg=lightgreen
-" hi User4 ctermbg=black ctermfg=lightgreen guibg=black guifg=lightgreen
+" My custom statusline based on above (tdaly) link
+set laststatus=2
+set statusline=
+set statusline+=%1*
+set statusline+=\ 
+set statusline+=%{StatuslineMode()}
+set statusline+=\ 
+set statusline+=%2*
+set statusline+=\ 
+set statusline+=%F
+set statusline+=\ 
+set statusline+=%8*
+set statusline+=%=
+set statusline+=\ 
+set statusline+=%{&ff}
+set statusline+=\ 
+set statusline+=|
+set statusline+=\ 
+set statusline+=%y
+set statusline+=\ 
+set statusline+=|
+set statusline+=\ 
+set statusline+=%{strlen(&fenc)?&fenc:'none'}
+set statusline+=\ 
+set statusline+=%1*
+set statusline+=\ 
+set statusline+=%l
+set statusline+=:
+set statusline+=%L
+set statusline+=:
+set statusline+=%c
+set statusline+=\ 
+" hi User1 cterm=bold term=bold ctermbg=lightmagenta ctermfg=black guibg=lightmagenta guifg=black
+hi User1 cterm=bold term=bold ctermbg=none ctermfg=6
+hi User2 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=lightgreen guifg=black
+hi User3 ctermbg=darkgray ctermfg=white guibg=darkgray guifg=white
+hi User4 ctermbg=red ctermfg=black guibg=red guifg=black
+hi User9 ctermbg=darkcyan ctermfg=white guibg=darkcyan guifg=white
+hi User8 ctermbg=none ctermfg=255
+
+function! StatuslineMode()
+  let l:mode=mode()
+  if l:mode==#"n"
+    return "NORMAL"
+  elseif l:mode==?"v"
+    return "VISUAL"
+  elseif l:mode==?""
+    return "VBLOCK"
+  elseif l:mode==#"i"
+    return "INSERT"
+  elseif l:mode==#"R"
+    return "REPLACE"
+  elseif l:mode==?"s"
+    return "SELECT"
+  elseif l:mode==#"t"
+    return "TERMINAL"
+  elseif l:mode==#"c"
+    return "COMMAND"
+  elseif l:mode==#"!"
+    return "SHELL"
+  endif
+endfunction
+
+
+" Default factory settings of lightline
+" With these settings bufferline will not work
+" You have to integrate above lightline settings related to bufferline into here!
+" let g:lightline.active = {
+"             \ 'left': [ [ 'mode', 'paste' ],
+"             \           [ 'readonly', 'filename', 'modified' ] ],
+"             \ 'right': [ [ 'lineinfo' ],
+"             \            [ 'percent' ],
+"             \            [ 'fileformat', 'fileencoding', 'filetype' ] ] }
+" let g:lightline.inactive = {
+"             \ 'left': [ [ 'filename' ] ],
+"             \ 'right': [ [ 'lineinfo' ],
+"             \            [ 'percent' ] ] }
+" let g:lightline.tabline = {
+"             \ 'left': [ [ 'tabs' ] ],
+"             \ 'right': [ [ 'close' ] ] }
+
+" let g:lightline.active = {
+"             \ 'left': [ [ 'mode', 'paste' ],
+"             \           [ 'readonly', 'filename', 'modified' ] ],
+"             \ 'right': [ [ 'lineinfo' ],
+"             \            [ 'percent' ],
+"             \            [ 'fileformat', 'fileencoding', 'filetype' ] ] }
+" let g:lightline.inactive = {
+"             \ 'left': [ [ 'filename' ] ],
+"             \ 'right': [ [ 'lineinfo' ],
+"             \            [ 'percent' ] ] }
+" let g:lightline.tabline = {
+"             \ 'left': [ [ 'tabs' ] ],
+"             \ 'right': [ [ 'close' ] ] }
 "
-" "" statusline functions
-" function! StatuslineMode()
-"   let l:mode=mode()
-"   if l:mode==#"n"
-"     return "NORMAL"
-"   elseif l:mode==?"v"
-"     return "VISUAL"
-"   elseif l:mode==#"i"
-"     return "INSERT"
-"   elseif l:mode==#"R"
-"     return "REPLACE"
-"   elseif l:mode==?"s"
-"     return "SELECT"
-"   elseif l:mode==#"t"
-"     return "TERMINAL"
-"   elseif l:mode==#"c"
-"     return "COMMAND"
-"   elseif l:mode==#"!"
-"     return "SHELL"
-"   endif
-" endfunction
-"
-" function! StatuslineGitBranch()
-"   let b:gitbranch=""
-"   if &modifiable
-"     lcd %:p:h
-"     let l:gitrevparse=system("git rev-parse --abbrev-ref HEAD")
-"     lcd -
-"     if l:gitrevparse!~"fatal: not a git repository"
-"       let b:gitbranch="(".substitute(l:gitrevparse, '\n', '', 'g').") "
-"     endif
-"   endif
-" endfunction
-"
-" augroup GetGitBranch
-"   autocmd!
-"   autocmd VimEnter,WinEnter,BufEnter * call StatuslineGitBranch()
-" augroup END
+" let g:lightline.component = {
+"             \ 'mode': '%{lightline#mode()}',
+"             \ 'absolutepath': '%F',
+"             \ 'relativepath': '%f',
+"             \ 'filename': '%t',
+"             \ 'modified': '%M',
+"             \ 'bufnum': '%n',
+"             \ 'paste': '%{&paste?"PASTE":""}',
+"             \ 'readonly': '%R',
+"             \ 'charvalue': '%b',
+"             \ 'charvaluehex': '%B',
+"             \ 'fileencoding': '%{&fenc!=#""?&fenc:&enc}',
+"             \ 'fileformat': '%{&ff}',
+"             \ 'filetype': '%{&ft!=#""?&ft:"no ft"}',
+"             \ 'percent': '%3p%%',
+"             \ 'percentwin': '%P',
+"             \ 'spell': '%{&spell?&spelllang:""}',
+"             \ 'lineinfo': '%3l:%-2c',
+"             \ 'line': '%l',
+"             \ 'column': '%c',
+"             \ 'close': '%999X X ',
+"             \ 'winnr': '%{winnr()}' }
