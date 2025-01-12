@@ -1,1 +1,422 @@
-s14
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use warnings FATAL => "all";
+use utf8;
+use 5.34.0;
+
+# use diagnostics; # When encountering an error, it will try to explain it.
+# use Data::Dumper qw(Dumper);
+use List::Util qw(max);
+use DBI;
+use Term::ReadLine;
+use IO::Pager;
+use Term::ANSIColor;
+use IPC::Run qw(run);
+
+my $usrname = getlogin;
+
+my $boldgreen = color('bold green');
+my $reset     = color('reset');
+
+my $hist_file = $ENV{'HOME'} . '/.snp.hst';
+open( my $fh, '<:encoding(UTF-8)', $hist_file )
+  or die "Could not open file '$hist_file' $!";
+
+my @hist = <$fh>;
+chomp @hist;
+close $fh;
+
+my $dbase = $ENV{'HOME'} . '/repos/sniploc-bulma-carton/src/db/dbase.sqlite';
+my $dsn   = "dbi:SQLite:dbname=$dbase";
+my $dbh   = DBI->connect(
+    $dsn, undef, undef,
+    {
+        PrintError                       => 1,
+        RaiseError                       => 1,
+        FetchHashKeyName                 => 'NAME_lc',
+        sqlite_allow_multiple_statements => 1,
+    }
+) or die("Can't connect to database.\n");
+$dbh->do(
+    "PRAGMA foreign_keys = ON;PRAGMA synchronous = OFF;PRAGMA cache_size = 5000"
+);
+
+my $term    = Term::ReadLine->new('Snippets');
+my $attribs = $term->Attribs;
+# TODO: With colored prompt, c-u does not clear lines with long strings
+# my $prompt = $boldgreen . ">" . $reset . ' ';
+my $prompt = '> ';
+my $OUT    = $term->OUT || \*STDOUT;
+$attribs->{startup_hook}                    = \&setup_keys_readline;
+$attribs->{completer_word_break_characters} = '';
+$attribs->{basic_word_break_characters}     = '';
+$attribs->{completion_function} = \&tab_compl_categories;
+$term->ornaments(0);
+$term->SetHistory( (@hist) ) if @hist;
+
+$term->add_defun( 'clear-search-term', \&clear_search_term );
+$term->add_defun( 'fuzzy-history',     \&fuzzy_history );
+$term->MinLine(0);    # disable implicit call of add_history()
+
+print $OUT <<"END_WCM";
+${boldgreen}Snippet Search Console${reset}
+Type 'q' to quit!
+Available commands: [.last|.lastu|.random|.total]
+END_WCM
+
+# print $OUT $boldgreen . "Snippet Search Console" . $reset . "\n";
+# print $OUT "Type 'q' to quit! \n";
+
+# TODO: parents_title LIKE can be REGEXP (speed benchmark)
+# asg017/sqlite-regex
+my $sql = q{SELECT
+sifts.title,
+si.type,
+sifts.uuid,
+si.parent_id,
+replace(g.parents_title, 'HOME -', '') as parents_title,
+sifts.content
+FROM snpy_items_fts sifts
+JOIN snpy_items si ON si.id = sifts.rowid
+JOIN generation g ON g.id = si.parent_id
+WHERE si.deleted = 0
+AND si.type != 'inode/directory'
+AND parents_title LIKE ?
+AND snpy_items_fts MATCH ? ORDER BY bm25(snpy_items_fts, 15.0, 2.0, 1.0)};
+my $sth = $dbh->prepare($sql);
+
+# If already have a search argument
+# then display the search result
+# instead of the search prompt.
+handle_search("@ARGV") if @ARGV and length "@ARGV" >= 3;
+
+my $last_query = "@ARGV" || "";
+while ( defined( $_ = $term->readline( $prompt, $last_query ) ) ) {
+
+    # Get rid of whitespaces
+    $_ =~ s/^\s+//g;
+    $_ =~ s/\s+$//g;
+
+    $_ eq 'q' and last;    # User wants to quit.
+
+    if ( $_ eq '.last' ) {
+        handle_last();
+        $last_query = '.last';
+        next;
+    }
+
+    if ( $_ eq '.lastu' ) {
+        # Just pass a non-empty string to get the recently updated snippets
+        # 'u' is arbitrary.
+        handle_last('u');
+        $last_query = '.lastu';
+        next;
+    }
+
+    if ( $_ eq '.random' ) {
+        handle_random();
+        $last_query = '.random';
+        next;
+    }
+
+    if ( $_ eq '.total' ) {
+        handle_total();
+        $last_query = '.total';
+        next;
+    }
+
+    if ( $_ eq '' ) {      # Empty query means a new empty prompt.
+        $last_query = '';
+        next;
+    }
+
+    if ( $_ =~ /^:\w+$/ ) {    # Handle missing mime
+        $last_query = $_;
+        next;
+    }
+
+    if ( length $_ < 3 ) {
+        print $OUT "Search query must have at least 3 characters.\n";
+        $last_query = $_;
+        next;
+    }
+
+    # TODO: Not working
+    # if($_ =~ /.+:.{1,2}/) {
+    #     # if( length(( split /:/, $_ )[1]) < 3 )  {
+    #         print $OUT "Search query must have at least 3 characters.\n";
+    #         $last_query = $_;
+    #         next;
+    #     # }
+    # }
+
+    $last_query = $_;
+    handle_search($_);
+}
+
+open( $fh, '>:encoding(UTF-8)', $hist_file )
+  or die "Could not open file '$hist_file' $!";
+
+my @session_hist = $term->GetHistory();
+
+# History size: 100
+{
+    for my $i ( 0 .. $#session_hist ) {
+        if ( defined $session_hist[ $i + 1 ]
+            and $session_hist[$i] eq $session_hist[ $i + 1 ] )
+        {
+            delete $session_hist[$i];
+        }
+    }
+    @session_hist = grep { defined $_ } @session_hist;
+
+    # TODO: we have empty lines in .snp.hst file
+    local $" = "\n";
+    my @slice = ();
+    if ( $#session_hist <= 99 ) {
+        @slice = ( 0 .. $#session_hist );
+    }
+    else {
+        my $start = $#session_hist - 99;
+        @slice = ( $start .. $#session_hist );
+    }
+    print $fh "@session_hist[( @slice )]";
+}
+
+$dbh->disconnect();
+
+print ""; # Script exit point.
+
+sub render_fzf {
+    my $records = shift;
+
+    if (! @$records) {  print $OUT "Nothing found!\n"; return; }
+    my $query   = shift;
+    my $prompt  = shift;
+
+    my $fzfinput = "";
+    my %results  = ();
+
+    my $max_width = max( map length, map { $$_[4] } @$records );
+
+    for my $row (@$records) {
+        $results{ $$row[2] } = $$row[5];    # uuid => snippet_content pair
+        # $fzfinput .= sprintf "%-${max_width}s\t* %s\t%s\t%s\n",
+        $fzfinput .= sprintf "%-${max_width}s\t%s\t%s\t%s\n",
+          $$row[4], $$row[0], $$row[2], $$row[1]; # ParentTabTitleTabUUIDTabType
+                                                  # 4 parent -> Field 1
+                                                  # 0 title  -> Field 2
+                                                  # 2 uuid   -> Field 3
+                                                  # 1 type   -> Field 4
+    }
+
+    my $preview_window =
+      `tput cols` + 0 > 84 ? "right,wrap" : "up,wrap,<30(70%)";
+    # my $query = $mime;
+    # $query .= " ${qstring}" if $qstring;
+
+    my $return = undef;
+    # TODO: Can we get rid of IPC::Run?
+    # But piping Perl variables to external commands
+    # is a lot easier with IPC::Run.
+    # my $wrapped = ' ' x ( $max_width );
+    # "--exit-0", # If there is no match for the query, exit immediately.
+    run [
+        "/home/${usrname}/.fzf/bin/fzf",
+        "--delimiter=\t",
+        '--with-nth=1,2',    # --with-nth: which fields to display
+        '--nth=1..',         # --nth is the search scope
+        "--query=${query} ",
+        "--prompt=${prompt}> ",
+        "--bind=ctrl-b:execute-silent:xdg-open http://snippets.test/admin/i/edit/{3}",
+        "--bind=ctrl-y:execute-silent:/home/${usrname}/bin/preview_client_3.pl {3} nohl | xclip -selection clipboard",
+        "--bind=ctrl-alt-d:execute-silent(/home/${usrname}/bin/snippet-writer-v delete -s {3})+abort",
+        "--preview=/home/${usrname}/bin/preview_client_3.pl {3} hl",
+        "--preview-window=${preview_window}",
+        # "-i",              # case-insensitive filtering
+        "--algo=v1",         # v2 did not work
+        # "--wrap",
+        # "--wrap-sign=${wrapped}↳ ",
+        # "--wrap-sign=${wrapped}",
+      ],
+      \$fzfinput, \$return;
+
+    my ( undef, undef, $chosen ) = split /\t/, $return;
+    if ( defined $chosen && $chosen ne '' ) {
+
+        to_clipboard( $results{$chosen} );    # TODO: waaaaaaaayland
+        {    # To implicitly close the pager when out of scope
+            my $token = IO::Pager::open local *$OUT;
+
+            # in a pager, no need to create newlines.
+            print $OUT $results{$chosen};
+
+            # print $OUT "\n", `preview_client_2.pl ${chosen}`, "\n";
+        }
+    }
+}
+
+sub handle_last {
+    my $sql = q{SELECT
+    si.title,
+    si.type,
+    si.uuid,
+    si.parent_id,
+    replace(g.parents_title, 'HOME -', '') as parents_title,
+    si.content
+    FROM snpy_items si
+    JOIN generation g ON g.id = si.parent_id
+    WHERE si.deleted = 0 AND si.id IS NOT 1 AND si.type != 'inode/directory'
+    };
+
+    my $updated = shift;
+    my $prompt;
+
+    if (defined $updated) {
+        $sql .= 'AND si.creation_date != si.update_date ORDER BY si.update_date DESC LIMIT 5';
+        $prompt = 'Recently updated snippets'
+    } else {
+        $sql .= 'ORDER BY si.creation_date DESC LIMIT 5';
+        $prompt = 'Recently created snippets'
+    }
+
+    my $sth = $dbh->prepare($sql);
+    my @records = $dbh->selectall_array( $sth, undef );
+    render_fzf(\@records, '', $prompt)
+}
+
+sub handle_random {
+    my $sql = q{SELECT * FROM random_view_five_with_parent_tree};
+
+    my $sth = $dbh->prepare($sql);
+    my @records = $dbh->selectall_array( $sth, undef );
+    render_fzf(\@records, '', 'Random snippets')
+}
+
+sub handle_total {
+    my $sql = q{SELECT COUNT(id) as count
+    FROM snpy_items
+    WHERE
+    deleted = 0
+    AND type IS NOT 'inode/directory'};
+
+    my $sth = $dbh->prepare($sql);
+    $sth->execute;
+    my ( $count ) = $sth->fetchrow_array;
+    print $OUT <<"END_WCM";
+Total number of snippets: ${boldgreen}${count}${reset}
+END_WCM
+}
+
+sub handle_search {
+    my $input = shift;
+    my ( $mime, $qstring ) =
+      $input =~ /:/ ? ( split /:/, $input ) : ( '', $input );
+    $term->AddHistory($input);    # At this point $input cannot be empty.
+
+    my @bindings = ();
+
+    # push @bindings, $mime ne '' ? "%$mime%" : '%%';
+    push @bindings, $mime ne ''
+      ? join ' ', map { "%$_%" } ( split /\s/, $mime )
+      : '%%';
+
+    if ($qstring) {
+        if ( $qstring =~ /^".+"$/ ) {
+            push @bindings, $qstring;    # This is a phrased based search
+        }
+        else {
+         # This is a prefixed token based search. I needed to quote each word of
+         # the query. Otherwise queries containing non alphanumeric chars cause
+         # trouble.
+            push @bindings, join " ", map { "\"$_\"*" } ( split / /, $qstring );
+        }
+    }
+    else {
+        push @bindings, '"f-m-l"';
+    }
+
+    my @records = $dbh->selectall_array( $sth, undef, @bindings );
+
+    my $query = $mime;
+    $query .= " ${qstring}" if $qstring;
+
+    render_fzf(\@records, $query, '')
+}
+
+sub to_clipboard {
+    my $input = shift;
+    my $cmd   = '|xclip -i -selection clipboard';
+    my $r     = open my $exe, $cmd or die "Couldn't run `$cmd`: $!";
+    binmode $exe, ':encoding(UTF-8)';
+    print {$exe} $input;
+    close $exe or die "Error closing `$cmd`: $!";
+}
+
+sub tab_compl_categories {
+    my $csql    = undef;
+    my $records = undef;
+
+    if ( $attribs->{line_buffer} eq '' ) {
+        $csql =
+q{SELECT replace(parents_title, 'HOME - ', '') FROM generation WHERE parent_id IS 1};
+
+        # print $OUT scalar @$ref;
+        $records = $dbh->selectcol_arrayref($csql);
+        return @$records;
+    }
+    else {
+# push @bindings, join ' - ', map { "%$_%" } ( split /\s/, $attribs->{line_buffer} );
+        $csql =
+q{SELECT replace(parents_title, 'HOME - ', '') as new_title FROM generation
+        WHERE new_title LIKE ?};
+
+        # $records = $dbh->selectcol_arrayref($csql, undef, @bindings);
+        $records = $dbh->selectcol_arrayref( $dbh->prepare($csql),
+            undef, $attribs->{line_buffer} . '%' );
+        return @$records;
+    }
+
+    # return $term->GetHistory()
+    # return @list;
+    # return @records;
+};
+
+sub setup_keys_readline {
+    $term->bind_key( ord "\cu", 'clear-search-term', 'emacs' );
+    $term->bind_key( ord "\cr", 'fuzzy-history',     'emacs' );
+}
+
+# C-u will clear the search term up to the ':' character if any.
+# Else, the whole line will be cleared.
+sub clear_search_term {
+    my $line = $attribs->{line_buffer};
+    return 0 if $line eq '';
+    if ( $line =~ /\w+:\w+/ ) {
+        $attribs->{line_buffer} = ( split /:/, $line, 2 )[0] . ':';
+    }
+    else {
+        $attribs->{line_buffer} = '';
+    }
+    return 0;
+}
+
+sub fuzzy_history {    # Use fzf for search history using C-r
+    my @hist = $term->GetHistory();
+    my %uniq;
+    undef @uniq{@hist};
+    my @uniques = keys %uniq;
+    @uniques = grep { $_ ne '' } @uniques;
+    local $" = '\n';
+    my $command = <<"END_CMD";
+printf '@uniques' \\
+| "/home/${usrname}/.fzf/bin/fzf" \\
+--query="$attribs->{line_buffer}"
+END_CMD
+    my $chosen = `${command}`;
+    chomp $chosen;
+    $attribs->{line_buffer} = $chosen;
+    $attribs->{point}       = $attribs->{end};    # Move cursor to the end
+}
