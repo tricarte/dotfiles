@@ -40,7 +40,7 @@ Plug 'wellle/context.vim'
 " Plug 'mengelbrecht/lightline-bufferline'
 " Plug 'pacha/vem-statusline'
 " vem-tabline has a few issues: wrong buffer index when resized
-" Plug 'pacha/vem-tabline'
+Plug 'pacha/vem-tabline'
 " Show buffers in statusline or command line
 " Plug 'bling/vim-bufferline'
 " Plug 'liuchengxu/eleline.vim'
