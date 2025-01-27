@@ -18,6 +18,7 @@ use IPC::Run qw(run);
 my $usrname = getlogin;
 
 my $boldgreen = color('bold green');
+my $boldred = color('bold red');
 my $reset     = color('reset');
 
 my $hist_file = $ENV{'HOME'} . '/.snp.hst';
@@ -46,8 +47,8 @@ $dbh->do(
 my $term    = Term::ReadLine->new('Snippets');
 my $attribs = $term->Attribs;
 # TODO: With colored prompt, c-u does not clear lines with long strings
-# my $prompt = $boldgreen . ">" . $reset . ' ';
-my $prompt = '> ';
+# my $prompt = $boldgreen . "❯" . $reset . ' ';
+my $prompt = '❯ ';
 my $OUT    = $term->OUT || \*STDOUT;
 $attribs->{startup_hook}                    = \&setup_keys_readline;
 $attribs->{completer_word_break_characters} = '';
@@ -192,7 +193,7 @@ print ""; # Script exit point.
 sub render_fzf {
     my $records = shift;
 
-    if (! @$records) {  print $OUT "Nothing found!\n"; return; }
+    if (! @$records) {  print $OUT $boldred . "Nothing found!" . $reset . "\n"; return; }
     my $query   = shift;
     my $prompt  = shift;
 
@@ -225,15 +226,18 @@ sub render_fzf {
     # "--exit-0", # If there is no match for the query, exit immediately.
     run [
         "/home/${usrname}/.fzf/bin/fzf",
+        "--style=minimal",
         "--delimiter=\t",
         '--with-nth=1,2',    # --with-nth: which fields to display
         '--nth=1..',         # --nth is the search scope
         "--query=${query} ",
         "--prompt=${prompt}> ",
         "--bind=ctrl-b:execute-silent:xdg-open http://snippets.test/admin/i/edit/{3}",
-        "--bind=ctrl-y:execute-silent:/home/${usrname}/bin/preview_client_3.pl {3} nohl | xclip -selection clipboard",
         "--bind=ctrl-alt-d:execute-silent(/home/${usrname}/bin/snippet-writer-v delete -s {3})+abort",
-        "--preview=/home/${usrname}/bin/preview_client_3.pl {3} hl",
+        # "--preview=/home/${usrname}/bin/preview_client_3.pl {3} hl",
+        # "--bind=ctrl-y:execute-silent:/home/${usrname}/bin/preview_client_3.pl {3} nohl | xclip -selection clipboard",
+        "--bind=ctrl-y:execute-silent:/home/${usrname}/repos/v-projects/snippet_preview_client/snippet_preview_client {3} nohl | xclip -selection clipboard",
+        "--preview=/home/${usrname}/repos/v-projects/snippet_preview_client/snippet_preview_client {3} hl",
         "--preview-window=${preview_window}",
         # "-i",              # case-insensitive filtering
         "--algo=v1",         # v2 did not work
