@@ -528,5 +528,8 @@ let g:lf_replace_netrw = 1 " Open lf when vim opens a directory
 let g:EditorConfig_max_line_indicator = "none"
 
 " pacha/vem-tabline settings
-let g:vem_tabline_show_number = 'index'
-" let g:vem_tabline_show_number = 'buffnr'
+" let g:vem_tabline_show_number = 'index'
+let g:vem_tabline_show_number = 'buffnr'
+
+" everforest colorscheme
+" let g:everforest_better_performance = 1
