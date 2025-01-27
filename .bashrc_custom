@@ -52,6 +52,8 @@ export FZF_ALT_C_COMMAND="fd --type d --no-ignore-vcs --exclude node_modules --e
 export FZF_DEFAULT_OPTS='-m --height 100%'
 
 # https://minsw.github.io/fzf-color-picker/
+# Another fzf theme generator
+# https://vitormv.github.io/fzf-themes/
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
 # --color=fg:#d0d0d0,bg:#263238,hl:#5f87af
 # --color=fg+:#d0d0d0,bg+:#562c5c,hl+:#5fd7ff
@@ -72,12 +74,40 @@ export FZF_DEFAULT_OPTS='-m --height 100%'
 # --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6
 # --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4'
 
-# Spacecamp
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+# Spacecamp: This is the one I use in material ocean dark theme
+if [[ $KITTY_CONF_THEME == "include dark-theme.conf" ]]; then
+  export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
  --color=fg:#dedede,bg:#0f111a,hl:#666666
  --color=fg+:#eeeeee,bg+:#282828,hl+:#cf73e6
  --color=info:#cf73e6,prompt:#FF0000,pointer:#cf73e6
  --color=marker:#f0d50c,spinner:#cf73e6,header:#91aadf'
+fi
+
+# ayu-light theme
+if [[ $KITTY_CONF_THEME == "include light-theme.conf" ]]; then
+  # https://github.com/tinted-theming/tinted-fzf/blob/main/bash/base16-tomorrow.config
+  color00='#ffffff'
+  color01='#e0e0e0'
+  color02='#d6d6d6'
+  color03='#8e908c'
+  color04='#969896'
+  color05='#4d4d4c'
+  color06='#282a2e'
+  color07='#1d1f21'
+  color08='#c82829'
+  color09='#f5871f'
+  color0A='#eab700'
+  color0B='#718c00'
+  color0C='#3e999f'
+  color0D='#4271ae'
+  color0E='#8959a8'
+  color0F='#a3685a'
+
+  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS""\
+ --color=bg+:$color01,bg:$color00,spinner:$color0C,hl:$color0D""\
+ --color=fg:$color04,header:$color0D,info:$color0A,pointer:$color0C""\
+ --color=marker:$color0C,fg+:$color06,prompt:$color0A,hl+:$color0D"
+fi
 
 # Custom
 # export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
