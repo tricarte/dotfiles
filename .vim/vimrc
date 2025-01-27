@@ -34,6 +34,7 @@ Plug 'ptzz/lf.vim'
 " fzf-mru.vim: To put files opened with lf into history
 Plug 'pbogut/fzf-mru.vim'
 Plug 'wellle/context.vim'
+Plug 'fladson/vim-kitty' " syntax highlighting support for kitty config files
 " Because of context.vim, I disabled indenLine
 " Plug 'Yggdroot/indentLine'
 " Plug 'itchyny/lightline.vim'
@@ -61,7 +62,8 @@ Plug 'dense-analysis/ale'
 Plug 'sheerun/vim-polyglot'
 Plug 'ollykel/v-vim' " vlang syntax highlight support
 " let g:polyglot_disabled = ['markdown', 'php']
-let g:polyglot_disabled = ['php']
+" Plug 'TysonAndre/php-vim-syntax'
+" let g:polyglot_disabled = ['php']
 " Plug 'othree/html5.vim'
 " Plug 'StanAngeloff/php.vim' " Improved syntax highlighting for PHP.
 Plug 'edkolev/promptline.vim' , { 'on': 'PromptlineSnapshot' }
@@ -77,6 +79,12 @@ Plug 'edkolev/promptline.vim' , { 'on': 'PromptlineSnapshot' }
 Plug 'chriskempson/base16-vim'
 " Installed ones
 Plug 'ntk148v/komau.vim'
+Plug 'ayu-theme/ayu-vim'
+Plug 'catppuccin/vim', { 'as': 'catppuccin' }
+Plug 'sainnhe/everforest'
+Plug 'morhetz/gruvbox'
+Plug 'sonph/onehalf'
+Plug 'rose-pine/vim'
 Plug 'fenetikm/falcon'
 Plug 'n1ghtmare/noirblaze-vim'
 Plug 'kaicataldo/material.vim'
@@ -499,8 +507,8 @@ set smoothscroll
 if has('termguicolors')
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    set termguicolors " This setting corrects the colorscheme but breaks builtin terminal
     let &t_ut = " "
+    set termguicolors " This setting corrects the colorscheme but breaks builtin terminal
 
     " let &t_8f = "\<Esc>[38:2:%lu:%lu:%lum"
     " let &t_8b = "\<Esc>[48:2:%lu:%lu:%lum"
@@ -539,14 +547,41 @@ if !exists('g:not_finish_vimplug')
   " colorscheme default
   let g:material_terminal_italics = 1
   " let g:material_theme_style = 'default'
-  let g:material_theme_style = 'ocean'
+  let g:material_theme_style = 'ocean' " The one I use
   " let g:material_theme_style = 'lighter'
   " let g:material_theme_style = 'darker'
   " let g:material_theme_style = 'palenight'
-  colorscheme material
-  " colorscheme falcon
+  " colorscheme material
+  " colorscheme catppuccin_latte
+  " colorscheme catppuccin_mocha
+  " colorscheme one
+  let g:pencil_gutter_color = 0      " 0=mono (def), 1=color
   let g:pencil_higher_contrast_ui = 1   " 0=low (def), 1=high
-  let g:pencil_terminal_italics = 0
+  let g:pencil_terminal_italics = 1
+  let g:pencil_neutral_code_bg = 1   " 0=gray (def), 1=normal
+  " colorscheme pencil " Another preferred one
+  let ayucolor="light"
+  " let ayucolor="mirage"
+  " let ayucolor="dark"
+  " colorscheme ayu
+  if $KITTY_CONF_THEME == "include dark-theme.conf"
+      colorscheme material
+  else
+      colorscheme ayu
+  endif
+  " let g:everforest_background = 'soft' " not good
+  let g:everforest_background = 'hard' " not good
+  let g:everforest_better_performance = 1
+  " colorscheme everforest
+  let g:gruvbox_bold = 1
+  let g:gruvbox_italic = 1
+  let g:gruvbox_underline = 1
+  let g:gruvbox_undercurl = 1
+  let g:gruvbox_contrast_light = 'soft'
+  let g:gruvbox_invert_tabline = 1
+  " colorscheme gruvbox
+  " colorscheme falcon
+  " colorscheme rosepine_dawn
   let g:palenight_terminal_italics=1
   " colorscheme paper
   " colorscheme rams " Preferred one
@@ -559,7 +594,7 @@ if !exists('g:not_finish_vimplug')
   highlight Comment cterm=italic gui=italic
 endif
 
-if exists('*term_setansicolors')
+if $KITTY_CONF_THEME == "include dark-theme.conf" && exists('*term_setansicolors')
   let g:terminal_ansi_colors = repeat([0], 16)
   let g:terminal_ansi_colors[0] = '#303c41'
   let g:terminal_ansi_colors[1] = '#f07178'
@@ -577,6 +612,26 @@ if exists('*term_setansicolors')
   let g:terminal_ansi_colors[13] = '#e1acff'
   let g:terminal_ansi_colors[14] = '#a3f7ff'
   let g:terminal_ansi_colors[15] = '#ffffff'
+endif
+
+if $KITTY_CONF_THEME == "include light-theme.conf" && exists('*term_setansicolors')
+let g:terminal_ansi_colors = repeat([0], 16)
+let g:terminal_ansi_colors[0] = '#000000'
+let g:terminal_ansi_colors[1] = '#ff3333'
+let g:terminal_ansi_colors[2] = '#86b200'
+let g:terminal_ansi_colors[3] = '#f19618'
+let g:terminal_ansi_colors[4] = '#41a6d9'
+let g:terminal_ansi_colors[5] = '#f07078'
+let g:terminal_ansi_colors[6] = '#4cbe99'
+let g:terminal_ansi_colors[7] = '#ffffff'
+let g:terminal_ansi_colors[8] = '#323232'
+let g:terminal_ansi_colors[9] = '#ff6565'
+let g:terminal_ansi_colors[10] = '#b8e532'
+let g:terminal_ansi_colors[11] = '#ffc849'
+let g:terminal_ansi_colors[12] = '#73d7ff'
+let g:terminal_ansi_colors[13] = '#ffa3aa'
+let g:terminal_ansi_colors[14] = '#7ff0cb'
+let g:terminal_ansi_colors[15] = '#ffffff'
 endif
 
 set mousemodel=popup
@@ -889,15 +944,28 @@ set re=0
 " My custom statusline based on above (tdaly) link
 set laststatus=2
 set statusline=
-set statusline+=%1*
+" set statusline+=%1*
+set statusline+=%4*
 set statusline+=\ 
 set statusline+=%{StatuslineMode()}
-set statusline+=\ 
+" set statusline+=\ 🭐🭖
+set statusline+=%5*
+" set statusline+=\ 🭖
+" set statusline+=\ 🭨
+set statusline+=\ ◥
+
+" ◣
+"
+" ◤
+
 set statusline+=%2*
 set statusline+=\ 
-set statusline+=%F
-set statusline+=\ 
-set statusline+=%8*
+set statusline+=%F\ 
+set statusline+=%6*
+" set statusline+=\ ◤ 
+set statusline+=\◤
+" set statusline+=%8*
+set statusline+=%1*
 set statusline+=%=
 set statusline+=\ 
 set statusline+=%{&ff}
@@ -918,13 +986,26 @@ set statusline+=%L
 set statusline+=:
 set statusline+=%c
 set statusline+=\ 
-" hi User1 cterm=bold term=bold ctermbg=lightmagenta ctermfg=black guibg=lightmagenta guifg=black
-hi User1 cterm=bold term=bold ctermbg=none ctermfg=6
-hi User2 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=lightgreen guifg=black
+" hi User1 cterm=bold term=bold ctermbg=lightmagenta ctermfg=black guibg=lightmagenta guifg=black " First version
+" hi User1 cterm=bold term=bold ctermbg=none ctermfg=6 guibg=#f0f0f0 guifg=#51A7AC " Used in pencil light
+if $KITTY_CONF_THEME == "include light-theme.conf"
+hi User1 cterm=bold term=bold ctermbg=none ctermfg=6 guibg=#fafafa guifg=#51A7AC " Used in ayu-light
+else
+hi User1 cterm=bold term=bold ctermbg=none ctermfg=6 guibg=#0f111a guifg=#51A7AC " Used in Material-Ocean
+endif
+" hi User2 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=lightgreen guifg=black
+hi User2 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=lightgreen guifg=#2C3335
+hi User5 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=#6A399A guifg=lightgreen
+if $KITTY_CONF_THEME == "include light-theme.conf"
+hi User6 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=#fafafa guifg=lightgreen
+else
+hi User6 cterm=bold term=bold ctermbg=lightgreen ctermfg=black guibg=#0f111a guifg=lightgreen
+endif
 hi User3 ctermbg=darkgray ctermfg=white guibg=darkgray guifg=white
-hi User4 ctermbg=red ctermfg=black guibg=red guifg=black
+" hi User4 ctermbg=red ctermfg=black guibg=red guifg=black
 hi User9 ctermbg=darkcyan ctermfg=white guibg=darkcyan guifg=white
 hi User8 ctermbg=none ctermfg=255
+hi User4 term=bold cterm=bold ctermfg=2 guibg=#6A399A guifg=#fafafa
 
 function! StatuslineMode()
   let l:mode=mode()
@@ -1003,3 +1084,11 @@ endfunction
 "             \ 'column': '%c',
 "             \ 'close': '%999X X ',
 "             \ 'winnr': '%{winnr()}' }
+
+" set cursorline
+" set cursorlineopt=number
+" " autocmd ColorScheme * highlight CursorLineNr cterm=bold term=bold gui=bold
+" hi LineNr       term=bold cterm=bold ctermfg=2 guifg=Grey guibg=#f1f1f1
+" " hi CursorLineNr       term=bold cterm=bold ctermfg=2 guifg=#7c4dff guibg=#fafafa
+" " hi CursorLineNr       term=bold cterm=bold ctermfg=2 guifg=#ffcc00 guibg=#fafafa
+" hi CursorLineNr       term=bold cterm=bold ctermfg=2 guifg=#b195ff guibg=#fafafa
