@@ -137,7 +137,7 @@ let lspServers = [
         \ #{
         \   name: 'luals',
         \   filetype: 'lua',
-        \   path: $HOME.'/bin/lua-language-server-3.13.4-linux-x64/bin/lua-language-server',
+        \   path: $HOME.'/bin/lua-language-server-3.13.5-linux-x64/bin/lua-language-server',
         \   runIfSearch: ['lua_modules/', '.root'],
         \   rootSearch: ['lua_modules/', '.root'],
         \   customNotificationHandlers: { "$/hello": function('HandleNotifications'), },
