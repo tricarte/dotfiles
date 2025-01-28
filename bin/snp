@@ -61,11 +61,18 @@ $term->add_defun( 'clear-search-term', \&clear_search_term );
 $term->add_defun( 'fuzzy-history',     \&fuzzy_history );
 $term->MinLine(0);    # disable implicit call of add_history()
 
+my @cmds = ('.last', '.lastu', '.random', '.total', '.cc', '.help');
+
+{
+$" = '|'; # Change array separator char temporarily.
 print $OUT <<"END_WCM";
 ${boldgreen}Snippet Search Console${reset}
-Type 'q' to quit!
-Available commands: [.last|.lastu|.random|.total|.cc]
+Try searching 'create branch' or 'php:create directory'.
+Use TAB to see available categories.
+Available commands: [@cmds]
+Use 'q' to quit.
 END_WCM
+}
 
 # print $OUT $boldgreen . "Snippet Search Console" . $reset . "\n";
 # print $OUT "Type 'q' to quit! \n";
@@ -100,7 +107,20 @@ while ( defined( $_ = $term->readline( $prompt, $last_query ) ) ) {
     $_ =~ s/^\s+//g;
     $_ =~ s/\s+$//g;
 
+    if ( $_ =~ /^\./ ) {
+        my $cur = $_;
+        if (!grep { $_ eq $cur } @cmds) {
+            print $OUT $boldred . "No such command!" . $reset . "\n"; next; 
+        }
+    }
+
     $_ eq 'q' and last;    # User wants to quit.
+
+    if ( $_ eq '.help' ) {
+        handle_help();
+        $last_query = '.help';
+        next;
+    }
 
     if ( $_ eq '.last' ) {
         handle_last();
@@ -296,6 +316,15 @@ sub handle_last {
     render_fzf(\@records, '', $prompt)
 }
 
+# TODO: Colored, columnar output
+sub handle_help {
+$" = '|'; # Change array separator char temporarily.
+print $OUT <<"END_WCM";
+Available commands: [@cmds]
+Use 'q' to quit.
+END_WCM
+}
+
 sub handle_ccache {
     my $return = `/home/${usrname}/repos/v-projects/snippet_preview_client/snippet_preview_client -clear-cache`;
     if ( $return eq 'cleared' ) {
@@ -374,6 +403,11 @@ sub to_clipboard {
 }
 
 sub tab_compl_categories {
+    if ( $attribs->{line_buffer} =~ /^\./ ) {
+        return grep { $_ =~ $attribs->{line_buffer} } @cmds;
+        # return ('soner', 'ahmet');
+    }
+
     my $csql    = undef;
     my $records = undef;
 
