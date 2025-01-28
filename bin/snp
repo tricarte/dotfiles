@@ -64,7 +64,7 @@ $term->MinLine(0);    # disable implicit call of add_history()
 print $OUT <<"END_WCM";
 ${boldgreen}Snippet Search Console${reset}
 Type 'q' to quit!
-Available commands: [.last|.lastu|.random|.total]
+Available commands: [.last|.lastu|.random|.total|.cc]
 END_WCM
 
 # print $OUT $boldgreen . "Snippet Search Console" . $reset . "\n";
@@ -125,6 +125,11 @@ while ( defined( $_ = $term->readline( $prompt, $last_query ) ) ) {
     if ( $_ eq '.total' ) {
         handle_total();
         $last_query = '.total';
+        next;
+    }
+
+    if ( $_ eq '.cc' ) {
+        handle_ccache();
         next;
     }
 
@@ -289,6 +294,15 @@ sub handle_last {
     my $sth = $dbh->prepare($sql);
     my @records = $dbh->selectall_array( $sth, undef );
     render_fzf(\@records, '', $prompt)
+}
+
+sub handle_ccache {
+    my $return = `/home/${usrname}/repos/v-projects/snippet_preview_client/snippet_preview_client -clear-cache`;
+    if ( $return eq 'cleared' ) {
+        print $OUT $boldgreen . "Cache cleared!" . $reset . "\n"; return; 
+    } else {
+        print $OUT $boldred . "Cache couldnot be cleared!" . $reset . "\n"; return; 
+    }
 }
 
 sub handle_random {
