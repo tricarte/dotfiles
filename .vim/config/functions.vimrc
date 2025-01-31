@@ -294,8 +294,8 @@ endfunction
 " Used by the command 'SnpParent'
 function! HandleSnpParent(parent)
     let [pid, ptitle] = split(a:parent, "\t")
-    let line = search('id=')
-    call setline(line, "id='" . pid . "' # " . ptitle)
+    let line = search('\[parent\]')
+    call setline(line + 1, "id='" . pid . "' # " . ptitle)
 endfunction
 
 " Used by the command 'SnpSave'
