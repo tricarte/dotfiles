@@ -245,7 +245,7 @@ map gj &{{
 }}
 
 # Info: FZF integration using <c-f>
-cmd fzf_jump ${{
+cmd fzf-jump ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -450,7 +450,7 @@ cmd link %{{
 map P :link
 
 # Info: Go to a bookmarked directory <b>
-cmd bookmark_jump ${{
+cmd bookmark-jump ${{
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
@@ -471,10 +471,10 @@ cmd bookmark_jump ${{
         lf -remote "send $id echoerr Err: Target directory does not exist."
     fi
 }}
-map b :bookmark_jump
+map b :bookmark-jump
 
 # Info: Bookmark the working directory ( not the selected one ) <B>
-cmd bookmark_create ${{
+cmd bookmark-create ${{
     LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
     clear
     read -rp "Enter the bookmark name for ${PWD}: " ans
@@ -490,7 +490,7 @@ cmd bookmark_create ${{
         fi
     fi
 }}
-map B :bookmark_create
+map B :bookmark-create
 
 # TODO: handles flatpaks but not snaps
 # Info: Open selected file with a manually entered application
@@ -1044,7 +1044,7 @@ cmd mountc !{{
 }}
 
 # Info: Go to the mount point of the selected veracrypt container
-cmd goto_container_mount_point &{{
+cmd goto-container-mount-point &{{
     output=$(conta --text --non-interactive --volume-properties "$f")
     mpoint=$(printf "${output}" | grep "Mount Directory" | cut -d' ' -f3)
     if [[ -d $mpoint ]]; then
@@ -1771,7 +1771,7 @@ cmd rename-random &{{
 }}
 
 # Info: Go to the original file of symlink
-cmd follow_symlink &{{
+cmd follow-symlink &{{
     real=$(realpath "${f}")
     lf -remote "send $id select ${real}"
 }}
@@ -1791,13 +1791,13 @@ cmd extract-audio !{{
 }}
 
 # Info: Create a new kitty shell window with cwd <gn>
-cmd new_kitty_window &{{
+cmd new-kitty-window &{{
     kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}"
 }}
-map gn :new_kitty_window
+map gn :new-kitty-window
 
 # Info: Convert mp4 to animated avif
-cmd mp4_to_avif !{{
+cmd mp4-to-avif !{{
     echo 'Converted videos will be in "./converted" directory.'
     echo 'Warning: AVIF conversion can take some time depending on the input video!'
     if [[ ! -d './converted' ]]; then
@@ -1833,7 +1833,7 @@ cmd mp4_to_avif !{{
 }}
 
 # Info: Calculate total number of lines of selected file(s)
-cmd total_line_number &{{
+cmd total-line-number &{{
     output=$(total_line_numbers.php $fx)
     lf -remote "send $id echo ${output}"
 }}
