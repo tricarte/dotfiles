@@ -276,7 +276,7 @@ cmd fzf-jump ${{
         lf -remote "send $id $cmd \"$res\""
     fi
 }}
-map <c-f> :fzf_jump
+map <c-f> :fzf-jump
 
 # Info: Grep files using fzf and ripgrep
 cmd grep ${{
