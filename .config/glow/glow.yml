@@ -1,7 +1,7 @@
 # style name or JSON path (default "auto")
-style: "dark"
+style: "auto"
 # Enable pager: THIS DOES NOT WORK
-pager: ${PAGER:/usr/bin/less}
+# pager: ${PAGER:/usr/bin/less}
 # show local files only; no network (TUI-mode only)
 # local: true
 # word-wrap at width
