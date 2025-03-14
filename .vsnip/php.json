@@ -1,0 +1,9 @@
+{
+  "FUUCK": {
+    "prefix": ["fuck"],
+    "body": [
+      "echo \"FUUCK\".PHP_EOL;"
+    ],
+    "description": "The ultimate debugging keyword."
+  }
+}
