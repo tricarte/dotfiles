@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Sync contents of isos to bakcup.iso in external disk.
+# Sync contents of isos to backup.iso in external disk.
 
 storages=$(find /media/"${USER}"/* -maxdepth 0 -type d 2>/dev/null)
 
