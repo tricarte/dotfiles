@@ -60,12 +60,6 @@ map i !{{
     # fi
     # clear && /usr/local/bin/pistol "$f" | less -R --incsearch -i -J -g
 
-    PISTOL=$(command -v pistol)
-    if [[ -z $PISTOL ]]; then
-        lf -remote "send $id echoerr pistol is not installed."
-        exit
-    fi
-
     # if [[ $TERM == "xterm-kitty" ]]; then
     #     if [[ -S /tmp/mykitty ]]; then
     #         kitty @ --to unix:/tmp/mykitty launch \
@@ -77,7 +71,27 @@ map i !{{
     #     clear && $PISTOL "$f"
     # fi
 
+    mime=$(file -bi "${f}")
+    if [[ $mime == text/* ]]; then
+
+        ext="${f##*.}"
+        if [[ $ext == "md" ]]; then
+            GLOW=$(command -v glow)
+            PAGER="/usr/bin/bat --style plain" "${GLOW}" --pager --config "${HOME}/.config/glow/glow.yml" "${f}"
+            exit 0
+        fi
+
+        clear;/usr/local/bin/vim -u "${HOME}/.vim/vimrc.minimal" "${f}"
+        exit 0
+    fi
+
+    PISTOL=$(command -v pistol)
+    if [[ -z $PISTOL ]]; then
+        lf -remote "send $id echoerr pistol is not installed."
+        exit
+    fi
     clear && /usr/local/bin/pistol "$f"
+
 }}
 
 # Open hovered directory in GUI file manager
