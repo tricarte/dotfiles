@@ -146,7 +146,7 @@ alias weather="curl http://wttr.in/kayseri"
 # alias mconu="sudo conta --text --non-interactive -d"
 alias mcon="mount-containers2"
 alias cc="rm -rf ~/.cache/thumbnails/*"          # Clear thumbnail cache
-alias nb="ip n | grep REACHABLE | cut -d' ' -f1" # Neighbors in the network
+alias nb="ip n | grep REACHABLE | cut -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
 # alias kssha="kssh \$(whoami)@\$(nb) -p 8022"   # Ssh into android
 alias ssha="ssh -o ServerAliveInterval=600 \$(whoami)@\$(nb) -p 8022" # Ssh into android
@@ -177,6 +177,7 @@ alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die"                      
 alias upv="cd ~/repos/v; v up; v doc -m -f html vlib/; cd ~/Documents/vlang/docs/; git pull;" # Update vlang source, api reference and docs
 alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at now +25 minute"
 alias kconref="kdeconnect-cli --refresh"
+alias less='less -x4RFsX --incsearch -i -g'
 
 ##############
 #  Composer  #
@@ -192,7 +193,7 @@ alias csu="sudo php -n -dextension=phar.so -dextension=iconv.so /usr/bin/compose
 alias csd="phpoc show --direct"                                                                # List required packages of root package
 alias cse="phpoc search"                                                                       # Search for composer packages
 alias cre="phpoc require"                                                                      # Install composer package
-alias cso="phpoc show"                                                                         # Install composer package
+alias cso="phpoc show"                                                                         # List installed composer packages
 
 # Drupal & Drush
 alias dr="vendor/bin/drush"

@@ -219,7 +219,7 @@ export VISUAL="vim"
 # export VISUAL="vim"
 export EDITOR="$VISUAL"
 
-export BAT_PAGER='less -R --incsearch -i -J -g'
+export BAT_PAGER='less -F -R --incsearch -i -J -g'
 
 export ANDROID_HOME="${HOME}/Android/Sdk"
 
