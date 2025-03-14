@@ -102,10 +102,12 @@ function! HandleNotifications(lspserver, reply)
     echo "LSP Server started!"
 endfunction
 
+" intelephense configuration
+" https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
 let lspServers = [
         \  #{
         \     name: 'v-analyzer',
-        \     path: $HOME.'/repos/v-analyzer/bin/v-analyzer',
+        \     path: $HOME.'/.config/v-analyzer/bin/v-analyzer',
         \     args: [ '--stdio' ],
         \     filetype: ['vlang'],
         \     runUnlessSearch: ['examples/', 'vlib/'],
@@ -127,6 +129,12 @@ let lspServers = [
         \	  args: [ '--stdio' ],
         \     runIfSearch: ['composer.json'],
         \     rootSearch: ['composer.json'],
+        \     initializationOptions: #{
+        \        format: #{
+        \            enable: v:true,
+        \            braces: 'psr12'
+        \        }
+        \     }
         \ },
         \ #{
         \   name: 'gopls',

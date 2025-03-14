@@ -164,3 +164,5 @@ command! -bang SnpSave :call HandleSnpSave()
 
 " Display 1m system load average
 command! -bang Lavg :echo LoadAvg()
+
+command! -bang Apos :%s/’/'/|%s/”/"/|%s/“/"/

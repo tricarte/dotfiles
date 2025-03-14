@@ -285,6 +285,11 @@ function! FormatVlang(buffer) abort
 endfunction
 execute ale#fix#registry#Add('vfmt', 'FormatVlang', ['vlang'], 'v fmt for vlang')
 
+function! FormatPHP(buffer) abort
+    return {'command': 'phpcs --standard=PSR12 --cache -q'}
+endfunction
+execute ale#fix#registry#Add('phpcs', 'FormatPHP', ['php'], 'phpcs for php')
+
 " Used by the command 'SnpSyn'
 function! HandleSnpSyn(syn)
     let line = search('type=')

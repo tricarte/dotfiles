@@ -74,9 +74,14 @@ augroup END
 "                     \ nmap <buffer> <LocalLeader>u <Plug>(composer-use)
 
 " remove trailing whitespaces and ^M chars
-augroup ws
-  au!
-  autocmd FileType c,cpp,java,php,js,json,css,scss,sass,py,rb,coffee,python,twig,xml,yml,html,phtml,html autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
+" augroup ws
+"   au!
+"   autocmd FileType c,cpp,java,php,js,json,css,scss,sass,py,rb,coffee,python,twig,xml,yml,html,phtml,html autocmd BufWritePre <buffer> :call setline(1,map(getline(1,"$"),'substitute(v:val,"\\s\\+$","","")'))
+" augroup END
+
+augroup lsp_format
+    au!
+    autocmd! BufWritePre *.php :LspFormat
 augroup END
 
 " enable folding in manual pages based on indentation
@@ -204,13 +209,13 @@ endfunction
 "     autocmd BufRead *.jsx :set filetype=javascript.jsx
 " augroup END
 
-augroup setFormatters
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,typescriptreact,javascript,javascriptreact,json,html,php setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
+" augroup setFormatters
+"   autocmd!
+"   " Setup formatexpr specified filetype(s).
+"   autocmd FileType typescript,typescriptreact,javascript,javascriptreact,json,html,php setl formatexpr=CocAction('formatSelected')
+"   " Update signature help on jump placeholder.
+"   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+" augroup end
 
 augroup MojoCommentString
   autocmd!
