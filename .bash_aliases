@@ -108,6 +108,7 @@ alias phpo="php \
     -d opcache.jit=tracing \
     -d mysqlnd.collect_statistics=0"
 alias phphash="phpo ~/repos/php-playground/src/hash_algorithms_benchmark_time_length.php" # Benchmark PHP hashing algorithms
+alias phpm="php -m | grep -i" # Check PHP extension is installed
 alias psh="psysh"                                                                         # PHP cli shell
 alias heyb="hey -n 100 -c 20"                                                             # HTTP Benchmark with hey
 alias spd="speedtest --simple --no-upload"                                                # Download speed test
