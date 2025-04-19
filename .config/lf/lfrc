@@ -301,7 +301,7 @@ cmd grep ${{
     fi
     res="$( \
         RG_PREFIX="rg --hidden --column --line-number --no-heading --color=always \
-            --smart-case "
+            --smart-case --no-hidden "
         FZF_DEFAULT_COMMAND="$RG_PREFIX ''" \
             $FZF --bind "change:reload:$RG_PREFIX {q} || true" \
             --ansi --header 'Search in files' \
@@ -1518,8 +1518,16 @@ cmd image2video ${{
     fi
 }}
 
-# Info: Encode video using x264 fast preset
+# Info: Encode video using x264 fast preset or av1
 cmd optimize-video !{{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+        exit
+    fi
+
+    clear
+
     bname=$(basename "${f}")
     count=$(printf "${fx}\n" | wc -l)
 
@@ -1527,23 +1535,50 @@ cmd optimize-video !{{
         mkdir optimized
     fi
 
-    while read item; do
-        count=$((count - 1))
-        filename="$(basename "${item}")"
-        printf "Processing ${item}: "
+    encoder=$(printf "av1\nh264_vaapi" | $FZF)
 
-        ffmpeg -nostdin -loglevel panic -hide_banner \
-            -i "${item}" -c:v libx264 \
-            -vsync vfr -preset fast \
-            -movflags +faststart -c:a copy \
-            "optimized/${filename%.*}.mp4"
+    case "${encoder}" in
+    av1)
+        while read item; do
+            count=$((count - 1))
+                filename="$(basename "${item}")"
+                printf "Processing ${item}: "
 
-        if [[ $count -gt 0 ]]; then
-            printf "DONE - remaining ${count}.\n"
-        else
-            printf "FINISHED.\n"
-        fi
-    done < <(printf "${fx}\n")
+                SVT_LOG=1 ffmpeg -nostdin -loglevel panic -hide_banner \
+                -i "${item}" -map_metadata -1 -c:a libopus -c:v libsvtav1 -qp 30 \
+                -tile-columns 2 -tile-rows 2 -pix_fmt yuv420p -movflags +faststart -vf \
+                "scale=trunc(iw/2)*2:trunc(ih/2)*2" "optimized/${filename%.*}_av1.mp4"
+
+                if [[ $count -gt 0 ]]; then
+                    printf "DONE - remaining ${count}.\n"
+                else
+                    printf "FINISHED.\n"
+                fi
+        done < <(printf "${fx}\n")
+        ;;
+    h264_vaapi)
+        while read item; do
+            count=$((count - 1))
+                filename="$(basename "${item}")"
+                printf "Processing ${item}: "
+
+                ffmpeg -nostdin -loglevel panic -hide_banner \
+                -i "${item}" -c:v libx264 \
+                -vsync vfr -preset fast \
+                -movflags +faststart -c:a copy \
+                "optimized/${filename%.*}_h264.mp4"
+
+                if [[ $count -gt 0 ]]; then
+                    printf "DONE - remaining ${count}.\n"
+                else
+                    printf "FINISHED.\n"
+                        fi
+                        done < <(printf "${fx}\n")
+                        ;;
+    *)
+        printf "Unknown encoder!"
+        exit
+        esac
 
     if [[ -d "optimized" ]]; then
         lf -remote "send $id select \"optimized\""
