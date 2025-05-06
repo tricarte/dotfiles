@@ -136,7 +136,11 @@ function! ScratchLUA()
 endfunction
 
 function! ScratchC()
-    e! /home/sagirbas/repos/c-playground/playground.c
+    e! $HOME/repos/c-playground/playground.c
+endfunction
+
+function! ScratchRUBY()
+    e! $HOME/repos/ruby-playground/playground.rb
 endfunction
 
 " Using it like ScratchRUST
@@ -276,6 +280,8 @@ function! RunBufferAsScript()
         :RunGolang
     elseif b:mft == "c"
         :RunC
+    elseif b:mft == "ruby"
+        :RunRuby
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>

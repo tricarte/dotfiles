@@ -93,6 +93,10 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 command! RunPerl :w !perl
 command! NewPerl :call ScratchPERL()
 
+" Run current buffer as Ruby code
+command! RunRuby :w !ruby
+command! NewRuby :call ScratchRUBY()
+
 " Run current buffer as Lua code
 " command! RunLua :w !lua
 " command! RunLua :w !$HOME/luajit21/bin/luajit
