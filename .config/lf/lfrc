@@ -1518,6 +1518,11 @@ cmd image2video ${{
     fi
 }}
 
+# Info: Crop black areas from videos
+cmd crop-video !{{
+    crop.sh "${fx}"
+}}
+
 # Info: Encode video using x264 fast preset or av1
 cmd optimize-video !{{
     FZF=$(command -v fzf)
@@ -2012,5 +2017,46 @@ map e open-with-vim
 # Info: Add current working directory to autojump database
 cmd add-to-autojump &{{
     autojump --add "${PWD}"
+}}
+
+# Info: Compress selected files(s) for WEB with gzip or brotli
+cmd compress !{{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+        exit
+    fi
+
+    clear
+    echo "If the compressed file is larger than the original, it will be deleted."
+
+    compressor=$(printf "brotli\ngzip" | $FZF)
+
+    case "${compressor}" in
+    brotli)
+        while read item; do
+            brotli -q 10 -f "${item}" --squash --output="${item}.br"
+        done < <(printf "${fx}\n")
+        ;;
+    gzip)
+        while read item; do
+            gzip -9f "${item}" --keep
+
+            # Delete if larger than the original
+            if [[ -f "${item}.gz" ]]; then
+                size_org="$(stat ${item} --format=%s)"
+                size_comp="$(stat ${item}.gz --format=%s)"
+
+                if [ $size_comp -gt $size_org ]; then
+                    rm -f "${item}.gz"
+                fi
+            fi
+        done < <(printf "${fx}\n")
+        ;;
+    *)
+        printf "Cancelled!\n"
+        exit
+        esac
+
 }}
 
