@@ -615,6 +615,46 @@ function cl() {
   fi
 }
 
+# ct 8080 -> curl-timing.sh 127.0.0.1:8080
+# ct 8080/login -> curl-timing.sh 127.0.0.1:8080/login
+# ct example.com -> curl-timing.sh example.com
+function ct() {
+  # CURL_CMD="$(command -v curl) --silent --include"
+  # PAGER=$(command -v bat)
+  # if [[ -z $PAGER ]]; then
+  #   PAGER="$(command -v less)"
+  # fi
+  address="${1}"
+  if [[ -f './.curl' ]]; then
+    curl_file=$(cat ./.curl)
+    address="${curl_file}${address}"
+    curl-timing.sh "${address}"
+    return
+  fi
+
+  if [[ -z "${address}" ]]; then
+    echo "Get the timing for a curl request."
+    echo "Or you can create a file named '.curl' in project root"
+    echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+    echo ""
+    echo "Usage:"
+    echo "  ct 8080        -> 'curl-timing.sh 127.0.0.1:8080'"
+    echo "  ct example.com -> 'curl-timing.sh example.com'"
+    echo ""
+    echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
+    echo "  ct route       -> 'curl-timing.sh host:port/route'"
+    return
+  fi
+
+  if [[ "$address" =~ ^[[:digit:]] ]]; then
+    curl-timing.sh "127.0.0.1:${address}"
+    return
+  else
+    curl-timing.sh "${address}"
+    return
+  fi
+}
+
 # wrkb 8080 -> wrk -c128 -t3 -d10s 127.0.0.1:8080
 # wrkb 8080/login -> wrk -c128 -t3 -d10s 127.0.0.1:8080/login
 # wrkb example.com -> wrk -c128 -t3 -d10s example.com
