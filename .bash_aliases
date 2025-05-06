@@ -42,7 +42,8 @@ alias abrt="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW STATUS WHERE Variable
 alias prcl="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW FULL PROCESSLIST'"                                    # MySQL/MariaDB process list
 alias busy="lsof | { head -1 ; grep /media/\$(whoami) ; }"                                                       # Which process keeps the usb device busy
 # alias iscoremodule="corelist --upstream" # Is this module in perl core?
-#
+alias taillighty="tail -f /tmp/custom-lighttpd-error.log"
+alias tailfpm="tail -f /tmp/php-fpm-845-drupal.error.log /tmp/lighttpd-fpm-static-php-fpm-pool.log"
 
 ##############################################
 # archive management based on file extension #
