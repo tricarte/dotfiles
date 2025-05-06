@@ -294,3 +294,13 @@ export LUA_CPATH_5_4="lua_modules/lib/lua/5.4/?.so;./?.so;/usr/local/lib/lua/5.4
 export PATH="${HOME}/.luarocks/bin:${PATH}"
 
 export PATH="$PATH:/opt/nvim-linux64/bin"
+
+source "/etc/profile.d/rvm.sh"
+
+# https://askubuntu.com/questions/413436/copy-current-terminal-prompt-to-clipboard
+if [[ -n $DISPLAY ]]; then
+  copy_line_to_x_clipboard () {
+    printf %s "$READLINE_LINE" | xclip -selection CLIPBOARD
+  }
+  bind -x '"\C-y": copy_line_to_x_clipboard'
+fi
