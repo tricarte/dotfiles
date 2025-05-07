@@ -149,7 +149,7 @@ command! -nargs=? -bang BW :silent! argd % | bw<bang><args>
 " Delete file from filesystem and remove the buffer
 " Command abbreviation: RM
 " command! RemoveFileAndBuffer  :call delete(expand('%')) | bdelete!
-command! RemoveFileAndBuffer  :call system('rip --graveyard ~/.local/share/Trash/rip ' . expand('%')) | bdelete!
+command! RemoveFileAndBuffer  :call RemoveFileAndBuffer()
 
 " Open the last file downloaded in ~/Downloads
 command! Last let file = system('last $HOME/Downloads') | :execute ':e '. file

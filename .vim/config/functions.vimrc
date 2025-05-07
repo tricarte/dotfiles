@@ -346,3 +346,15 @@ function! GotoBuffer(n)
 
     execute 'b' l:buffer_list[a:n - 1]
 endfunction
+
+
+function! RemoveFileAndBuffer()
+    let choice = confirm("Trash this file? Default: No",
+                \ "&Yes\n&No", 2)
+    if choice == 1
+        call system('rip --graveyard ~/.local/share/Trash/rip ' . expand('%'))
+        bdelete!
+    else
+        echo "Cancelled!"
+    endif
+endfunction
