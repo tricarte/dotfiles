@@ -165,7 +165,7 @@ alias sniploc="cd ~/valet-park/sniploc; pws"
 alias yt="ytfzf -T kitty -f -t"
 alias update-kitty="curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
 alias update-starship="curl -sS https://starship.rs/install.sh | sh -s -- -y"
-alias update-wp="sudo wp cli update"    # Update wpcli, use 'wp cli check-update'
+alias update-wpcli="sudo wp cli update"    # Update wpcli, use 'wp cli check-update'
 alias update-npm-global="npm update -g" # Update globally installed npm packages
 alias str="vlc -vvv -I ncurses --recursive expand --quiet --random --sout '#http{mux=ts,dst=\$(hostname -I):8080/stream}' --sout-all --sout-keep /media/v*"
 alias ger="mcon mount-only && sstart gerbera.service"
