@@ -797,10 +797,15 @@ function fw() {
 }
 
 function ppas() {
-  apt-cache policy |
+  ppa=$(apt-cache policy |
     grep http |
     awk '{print $2" "$3}' |
     sort -u |
     grep ppa |
-    cut -d'/' -f4-5
+    cut -d'/' -f4-5 | fzf
+  )
+
+  if [[ -n "${ppa}" ]]; then
+    printf "%s" "sudo apt-add-repository --remove ppa:${ppa}"
+  fi
 }
