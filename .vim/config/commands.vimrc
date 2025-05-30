@@ -97,6 +97,11 @@ command! NewPerl :call ScratchPERL()
 command! RunRuby :w !ruby
 command! NewRuby :call ScratchRUBY()
 
+" Run current buffer as Bash shell script
+" command! RunBash :w !bash
+command! -nargs=? RunBash :!clear;bash --noprofile --norc % <args>
+command! NewBash :call ScratchBASH()
+
 " Run current buffer as Lua code
 " command! RunLua :w !lua
 " command! RunLua :w !$HOME/luajit21/bin/luajit
@@ -110,7 +115,9 @@ command! NewLua :call ScratchLUA()
 " command! RunPHP :w !phpo
 " This handles the working directory problem
 " command! RunPHP :lcd %:h | w !phpo
-command! RunPHP :!clear;phpo %
+" Below is the working one before arguments.
+" command! RunPHP :!clear;phpo %
+command! -nargs=? RunPHP :!clear;phpo % <args>
 " command! RunPHP :up | w !phpo
 " Command abbreviation: nh
 command! NewPHP :call ScratchPHP()
@@ -141,6 +148,8 @@ command! RunGolang :w !go run %
 " Create a new Golang single file buffer
 command! NewGolang :call ScratchGolang()
 
+command! -nargs=? RunBufferAsScript :call RunBufferAsScript("<args>")
+
 " Some closed buffers will come back when you restore a session
 " even you closed them with bd
 " Use BW instead
@@ -165,6 +174,7 @@ command! -bang SnpNew let tmpfile = system('snippet-writer-v new') | :execute ':
 command! -bang SnpSyn :call fzf#run({'source': 'snippet-writer-v syn', 'sink': funcref('HandleSnpSyn')})
 command! -bang SnpParent :call fzf#run({'source': 'snippet-writer-v categories', 'sink': funcref('HandleSnpParent')})
 command! -bang SnpSave :call HandleSnpSave()
+command! -bang SnpCloneLast let tmpfile = system('snippet-writer-v clone') | :execute ':e ' . tmpfile | setf toml | :norm ggv2in'
 
 " Display 1m system load average
 command! -bang Lavg :echo LoadAvg()

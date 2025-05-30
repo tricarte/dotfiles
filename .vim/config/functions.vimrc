@@ -96,6 +96,20 @@ function! NeatFoldText()
     return foldtextstart . " " . foldtextend
 endfunction
 
+function! ScratchBASH()
+    " e! /tmp/php-scratch-file.php
+    e! $HOME/repos/bash-playground/bash-scratch.sh
+    setlocal filetype=sh
+    :% norm die
+    let content =<< trim END
+#!/usr/bin/env bash
+
+
+    END
+    call setline(1, content)
+    :3
+endfunction
+
 function! ScratchPERL()
     noswapfile enew!
     " setlocal buftype=nofile
@@ -264,10 +278,11 @@ function! PHPServer()
     call system(printf('xdg-open http://localhost:%s/%s', port, file))
 endfunction
 
-function! RunBufferAsScript()
+function! RunBufferAsScript(...)
     let b:mft = &filetype
     if b:mft == "php"
-        :RunPHP
+        " :RunPHP
+        execute ':RunPHP' . ' ' . join(a:000, ' ')
     elseif b:mft == "perl"
         :RunPerl
     elseif b:mft == "lua"
@@ -282,6 +297,8 @@ function! RunBufferAsScript()
         :RunC
     elseif b:mft == "ruby"
         :RunRuby
+    elseif b:mft == "sh"
+        execute ':RunBash' . ' ' . join(a:000, ' ')
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
@@ -317,7 +334,8 @@ endfunction
 
 function! SnpSaveHandler(channel, msg)
     if a:msg == 'success'
-        silent! RemoveFileAndBuffer
+        " silent! RemoveFileAndBuffer
+        call RemoveFileAndBuffer(1)
         echom 'Snippet saved succesfully!.'
     else
         echohl WarningMsg | echom a:msg | echohl None
@@ -348,9 +366,14 @@ function! GotoBuffer(n)
 endfunction
 
 
-function! RemoveFileAndBuffer()
-    let choice = confirm("Trash this file? Default: No",
-                \ "&Yes\n&No", 2)
+function! RemoveFileAndBuffer(skipConfirm = 0)
+    let choice = 0
+    if a:skipConfirm == 0
+        let choice = confirm("Trash this file? Default: No",
+                    \ "&Yes\n&No", 2)
+    else
+        let choice = 1
+    endif
     if choice == 1
         call system('rip --graveyard ~/.local/share/Trash/rip ' . expand('%'))
         bdelete!
