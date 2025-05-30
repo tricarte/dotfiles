@@ -150,10 +150,10 @@ augroup END
 "     autocmd Filetype markdown,text inoreabbrev wp WP
 " augroup END
 
-augroup Markdown
-  autocmd!
-  autocmd FileType markdown set wrap
-augroup END
+" augroup Markdown
+"   autocmd!
+"   autocmd FileType markdown set wrap
+" augroup END
 
 augroup JsonFolding
   autocmd!
