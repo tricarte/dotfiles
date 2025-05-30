@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Use dmenu to launch or raise and focus running applications
 
 # CMD=$(dmenu_path | dmenu -i -b -fn '-*-nu-*-*-*-*-*-*-*-*-*-*-*-*' -nb '#545043' -nf '#D2C7A7' -sb '#D2C7A7' -sf '#545043')
