@@ -114,13 +114,7 @@ cmd open-with-menu !{{
     clear
     open-with.pl "${f}"
 }}
-
-# Open with menu
-# Uppercase letter o
 map O :open-with-menu
-# map O &{{
-#     lf -remote "send $id open-with-menu"
-# }}
 
 # Info: Make selection executable <+x>
 cmd make-selection-executable &{{
@@ -477,7 +471,7 @@ cmd bookmark-jump ${{
         exit
     fi
 
-    echo "${res}"
+    # echo "${res}"
 
     if [[ -d "${res}" ]]; then
         lf -remote "send $id cd \"${res}\""
@@ -1520,7 +1514,7 @@ cmd image2video ${{
 
 # Info: Crop black areas from videos
 cmd crop-video !{{
-    crop.sh "${fx}"
+    crop-video.sh "${fx}"
 }}
 
 # Info: Encode video using x264 fast preset or av1
