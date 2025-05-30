@@ -190,12 +190,14 @@ alias cgu="composer global update" # Update globally installed packages
 # alias cgs="composer global show" # List globally installed packages
 # alias csu="sudo composer self-update" # Upgrade composer
 alias cdo="phpoc dump-autoload --optimize"
+alias cdog="phpoc global dump-autoload --optimize"
 alias cgs="phpoc global show"                                                                  # List globally installed packages
 alias csu="sudo php -n -dextension=phar.so -dextension=iconv.so /usr/bin/composer self-update" # Upgrade composer
 alias csd="phpoc show --direct"                                                                # List required packages of root package
 alias cse="phpoc search"                                                                       # Search for composer packages
 alias cre="phpoc require"                                                                      # Install composer package
 alias cso="phpoc show"                                                                         # List installed composer packages
+alias cgsp="phpoc global show --platform"                                                      # List installed PHP extensions and their libraries.
 
 # Drupal & Drush
 alias dr="vendor/bin/drush"
