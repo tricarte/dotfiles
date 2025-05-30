@@ -162,6 +162,8 @@ Plug 'ryanoasis/vim-devicons'
 " because this one is written in PHP.
 " Plug 'vim-php/tagbar-phpctags.vim'
 
+Plug 'nelsyeung/twig.vim'
+
 " " ' ( { on visuals also works using a config in this file (vnoremap with zdi)
 " cst : Change surrounding tab
 " cs : Press cs then what to change, then to what.
@@ -884,6 +886,7 @@ endif
 " txt markdown text wrapping
 augroup vimrc-wrapping
   autocmd!
+  autocmd Filetype text call s:setupWrapping()
   autocmd BufRead,BufNewFile *.txt,*.md call s:setupWrapping()
 augroup END
 
