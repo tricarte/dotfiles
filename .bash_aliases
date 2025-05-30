@@ -241,6 +241,8 @@ alias dpushall="dpush && dpushgh"
 alias darchive="dfiles archive -o ~/dotfiles-gitlab-repo.zip HEAD"
 alias dlog="dfiles log"
 alias drevert="dfiles reset --hard HEAD" # Revert changes to last commit of dotfiles
+alias dui="gitui -d \$HOME/.dotfiles -w \$HOME" # Dotfiles management with gitui
+alias dlazy="lazygit -g \$HOME/.dotfiles -w \$HOME" # Dotfiles management with gitui
 
 #########################
 #  Docker and Devilbox  #
