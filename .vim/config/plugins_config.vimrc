@@ -534,3 +534,8 @@ let g:vem_tabline_show_number = 'buffnr'
 
 " everforest colorscheme
 " let g:everforest_better_performance = 1
+
+" Support snippets in snipmate format in vsnip
+" This does not work!
+" Snippets are listed but expansion is broken.
+" let g:vsnip_snippet_dir = '~/.vim/my-snippets'
