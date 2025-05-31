@@ -50,6 +50,7 @@ Plug 'pacha/vem-tabline'
 " Using vim-signify instead
 " Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-eunuch'
 Plug 'mhinz/vim-signify'
 " Using :FixWhitespace command instead
 " Plug 'bronson/vim-trailing-whitespace'
