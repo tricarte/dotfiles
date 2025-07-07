@@ -77,13 +77,6 @@ function! OpenCurrentFileBackupHistory()
   noautocmd wincmd p
 endfunction
 
-function! OpenCurrentFileBackupHistory()
-  let backup_dir = expand(s:custom_backup_dir . expand('%:p:h'))
-  let cmd = 'tmux split-window -h -c "' . backup_dir . '"\; '
-  let cmd .= 'send-keys "git log --patch --since=\"1 month ago\" ' . expand('%:t') . '" C-m'
-  call system(cmd)
-endfunction
-
 function! NeatFoldText()
     let foldchar         = matchstr(&fillchars, 'fold:\zs.')
     let lines_count      = v:foldend - v:foldstart + 1
