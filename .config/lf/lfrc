@@ -348,8 +348,8 @@ cmd mkdir %{{
     fi
 
     if [[ -w "${PWD}" ]]; then
-      mkdir -- "$@"
-      lf -remote "send $id select $@"
+      mkdir -p -- "$@"
+      lf -remote "send $id select ${PWD}/$@"
     else
         lf -remote "send $id echoerr Current working directory is not writable."
     fi
