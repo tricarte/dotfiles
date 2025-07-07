@@ -218,12 +218,12 @@ nnoremap <Left> <c-w><
 nnoremap <Right> <c-w>>
 
 " wrap selection inside character
-vnoremap ( "zdi(<C-R>z)<ESC>
-vnoremap { "zdi{<C-R>z}<ESC>
-vnoremap [ "zdi[<C-R>z]<ESC>
-vnoremap ' "zdi'<C-R>z'<ESC>
-vnoremap " "zdi"<C-R>z"<ESC>
-vnoremap ` "zdi`<C-R>z`<ESC>
+" vnoremap ( "zdi(<C-R>z)<ESC>
+" vnoremap { "zdi{<C-R>z}<ESC>
+" vnoremap [ "zdi[<C-R>z]<ESC>
+" vnoremap ' "zdi'<C-R>z'<ESC>
+" vnoremap " "zdi"<C-R>z"<ESC>
+" vnoremap ` "zdi`<C-R>z`<ESC>
 
 " paste from system clipboard as in termimal
 " if has("gui_running")
