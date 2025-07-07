@@ -180,3 +180,17 @@ command! -bang SnpCloneLast let tmpfile = system('snippet-writer-v clone') | :ex
 command! -bang Lavg :echo LoadAvg()
 
 command! -bang Apos :%s/’/'/|%s/”/"/|%s/“/"/
+
+if executable('fx') && $TERM == 'xterm-kitty'
+    " command! FX :w !FX_COLLAPSED=1 fx
+    " command! FX :exe ':FloatermNew --autoclose=0 --title=FX "FX_COLLAPSED=1 /usr/local/bin/fx" %'
+    command! FX :call system('kitty @ --to unix:/tmp/mykitty launch --type window --cwd "${PWD}" --env FX_COLLAPSED=1 fx ' . expand('%'))
+endif
+
+" Reload vimrc without restarting VIM!
+command! Resource :so $MYVIMRC
+
+" This is the default Rg command provided by fzf.vim
+" Just added the '--ignore-vcs' flag to ignore .gitignore files.
+" The project root directory must be a git directory.
+command!      -bang -nargs=* Rg                               call fzf#vim#grep("rg --column --ignore-vcs --line-number --no-heading --color=always --smart-case -- ".fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
