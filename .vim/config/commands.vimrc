@@ -43,14 +43,33 @@ command! -range=% Clipboard  <line1>,<line2>:w! ~/.clipboard
 " Fix weird DOS characters.
 command! FixDos :e ++ff=dos
 
-command! -bang Docs call fzf#vim#files('~/Documents', <bang>0)
-command! -bang Valet call fzf#vim#files('~/valet-park', <bang>0)
-command! -bang Sites call fzf#vim#files('~/sites', <bang>0)
-command! -bang Repos call fzf#vim#files('~/repos', <bang>0)
-command! -bang Etc call fzf#vim#files('/etc', <bang>0)
-" Dotf will not work because VIM will not be able to find shell aliases.
-" command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
-command! -bang Dfiles call fzf#run({'source': 'dfl', 'sink': 'e'})
+" command! -bang FindDocs call fzf#vim#files('~/Documents', <bang>0)
+" command! -bang FindValet call fzf#vim#files('~/valet-park', <bang>0)
+" command! -bang FindSites call fzf#vim#files('~/sites', <bang>0)
+" command! -bang FindRepos call fzf#vim#files('~/repos', <bang>0)
+" command! -bang FindEtc call fzf#vim#files('/etc', <bang>0)
+" command! -bang FindNotes call fzf#vim#files('~/Documents/notes', <bang>0)
+" " Dotf will not work because VIM will not be able to find shell aliases.
+" " command! -bang Dotf call fzf#run({'source': 'dfiles ls-files ~', 'sink': 'e'})
+" command! -bang FindDfiles call fzf#run({'source': 'dfl', 'sink': 'e'})
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+            " \ 'Documents': { 'type': 'files', 'path': '~/Documents' },
+let g:source_list = {
+            \ 'Notes': { 'type': 'files', 'path': '~/Documents/notes' },
+            \ 'Etc': { 'type': 'files', 'path': '/etc' },
+            \ 'Dotfiles': { 'type': 'run', 'command': {'source': 'dfl', 'sink': 'e'} },
+            \}
+
+command! -bang FindFiles :call fzf#run({'source': keys(g:source_list), 'sink': function('FuncFindFiles'), 'options': '+m', 'window': g:fzf_layout['window']})
+function! FuncFindFiles(selected)
+    if g:source_list[a:selected]['type'] == 'files'
+        call fzf#vim#files(g:source_list[a:selected]['path'])
+    else
+        call fzf#run(extend(g:source_list[a:selected]['command'], g:fzf_layout))
+    endif
+endfunction
+nnoremap <leader>f :FindFiles<enter>
 
 if executable('shfmt')
     " command! -bang ShellFormat :%!shfmt -ln bash -i 2
