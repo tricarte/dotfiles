@@ -109,11 +109,11 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 " command! Filetype :exe 'CocList filetypes'
 
 " Run current buffer as Perl code
-command! RunPerl :w !perl
+command! -nargs=? RunPerl :w !perl -- - <args>
 command! NewPerl :call ScratchPERL()
 
 " Run current buffer as Ruby code
-command! RunRuby :w !ruby
+command! -nargs=? RunRuby :w !ruby -- - <args>
 command! NewRuby :call ScratchRUBY()
 
 " Run current buffer as Bash shell script
@@ -125,7 +125,7 @@ command! NewBash :call ScratchBASH()
 " command! RunLua :w !lua
 " command! RunLua :w !$HOME/luajit21/bin/luajit
 " command! RunLua :lcd %:h | w !$HOME/luajit21/bin/luajit
-command! RunLua :lcd %:h | !clear;$HOME/luajit21/bin/luajit %
+command! -nargs=? RunLua :lcd %:h | !clear;$HOME/luajit21/bin/luajit % <args>
 command! NewLua :call ScratchLUA()
 
 " Run current buffer as PHP code
@@ -143,7 +143,8 @@ command! NewPHP :call ScratchPHP()
 
 
 " Run current buffer as C code with tcc
-command! RunC :lcd %:h | !clear;/usr/bin/tcc -run %
+" command! RunC :lcd %:h | !clear;/usr/bin/tcc -run %
+command! -nargs=? RunC :lcd %:h | !clear;/usr/bin/tcc -run % <args>
 command! NewC :call ScratchC()
 
 " There is :rc command abbreviation for this command
@@ -153,17 +154,20 @@ command! RunCargo :w | !clear && cargo run --quiet
 " Requires rust-nightly.
 " There is :rs command abbreviation for this command
 " in abbreviations.vimrc
-command! RunRust :silent! call RunRustScript()
+command! -nargs=? RunRust :w | !clear;cargo +nightly -Zscript --quiet % <args>
+" command! RunRust :silent! call RunRustScript()
 " Create a new rust single file buffer
 command! NewRust :call ScratchRUST()
 
 " Below one runs like the rust version, in a floaterm
 " command! RunVLang :silent! call RunVLangScript()
-command! RunVLang :w !v
+" command! RunVLang :w !v
+command! -nargs=? RunVLang :!clear;v run % <args>
 " Create a new vlang single file buffer
 command! NewVLang :call ScratchVLang()
 
-command! RunGolang :w !go run %
+" command! RunGolang :w !go run %
+command! -nargs=? RunGolang :w | :!clear;go run % <args>
 " Create a new Golang single file buffer
 command! NewGolang :call ScratchGolang()
 
