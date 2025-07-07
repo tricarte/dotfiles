@@ -1597,8 +1597,55 @@ cmd optimize-video !{{
         lf -remote "send $id select \"optimized\""
     fi
 }}
+#
+# Info: Rotate video using ffmpeg
+cmd rotate-video !{{
+    FZF=$(command -v fzf)
+    if [[ -z $FZF ]]; then
+        lf -remote "send $id echoerr fzf is not installed."
+        exit
+    fi
 
-# Info: Convert video to mp4 ( no encoding )
+    clear
+
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d rotated ]]; then
+        mkdir rotated
+    fi
+
+    direction=$(
+cat <<EOF | $FZF | cut -d" " -f1
+0 - 90° counterclockwise and vertical flip (default)
+1 - 90° clockwise
+2 - 90° counterclockwise
+3 - 90° clockwise and vertical flip
+EOF
+)
+
+    while read item; do
+      count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Rotating ${item}: "
+
+        # TODO: This version re-encodes with smaller file size.
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+        -i "${item}" -c:v libx264  -vf "transpose=${direction}" -c:a copy "rotated/${filename%.*}.mp4"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "rotated" ]]; then
+        lf -remote "send $id select \"rotated\""
+    fi
+}}
+
+# Info: Convert video to mp4 ( applies re-encoding )
 cmd convert-video-to-mp4 !{{
     bname=$(basename "${f}")
     count=$(printf "${fx}\n" | wc -l)
