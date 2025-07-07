@@ -218,7 +218,10 @@ let lspServers = [
 " 	\        'language-server'
 " 	\      ]
 " 	\ }]
-autocmd User LspSetup call LspAddServer(lspServers)
+augroup SetupLsp
+  autocmd!
+  autocmd User LspSetup call LspAddServer(lspServers)
+augroup END
 " call LspAddServer([#{name: 'phpactor',
 "                  \   filetype: ['php'],
 "                  \   path: '/usr/local/bin/phpactor',
