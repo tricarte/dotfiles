@@ -72,6 +72,11 @@ map i !{{
     # fi
 
     mime=$(file -bi "${f}")
+    if [[ $mime =~ ^application/json ]]; then
+        FX_COLLAPSED=1 $(command -v fx) "${f}"
+        exit 0
+    fi
+
     if [[ $mime == text/* ]]; then
 
         ext="${f##*.}"
