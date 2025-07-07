@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-cd ~ || exit && /usr/bin/git \
+cd / || exit && /usr/bin/git \
   --git-dir="${HOME}"/.dotfiles/ \
   --work-tree="${HOME}" ls-files ~ |
-  xargs -I'{}' realpath '{}' | replace "${HOME}" '~'
+  sed "s|^|~/|"
+  # xargs -I'{}' realpath '{}' | replace "${HOME}" '~'
