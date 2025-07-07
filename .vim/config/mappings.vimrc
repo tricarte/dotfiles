@@ -394,3 +394,7 @@ nnoremap <space>l :colorscheme base16-github<CR>
 nnoremap <space>d :colorscheme base16-material-palenight<CR>
 
 nnoremap <space>q :e ~/.quick<CR>
+
+" Search in command and search history
+nnoremap <silent> <Leader>h: :History:<CR>
+nnoremap <silent> <Leader>h/ :History/<CR>
