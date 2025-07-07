@@ -8,7 +8,7 @@ alias hdtemp="sudo hddtemp /dev/sda"
 alias rr="file /var/run/reboot-required"
 alias sizes='sudo du -sk * | sort -n | perl -ne '\''($s,$f)=split(m{\t});for (qw(K M G)) {if($s<1024) {printf("%.1f",$s);print "$_\t$f"; last};$s=$s/1024}'\' # sort filesystem items by size
 alias mounts="mount | column -t"
-alias diskusage="df -H -T $(mount | grep ext4 | cut -d' ' -f1)"
+alias diskusage="df -H -T $(mount | grep -E "ext4|xfs" | cut -d' ' -f1)"
 alias codename="lsb_release -rcs | tr '\n' ' '; echo"
 alias ipsets="sudo ipset list -terse"
 alias mygroups="id -nG"
