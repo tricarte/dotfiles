@@ -579,40 +579,66 @@ function pmodi() {
 # cl 8080/login -> curl 127.0.0.1:8080/login
 # cl example.com -> curl example.com
 function cl() {
-  CURL_CMD="$(command -v curl) --silent --include"
+  CURL_CMD="$(command -v curl) --silent"
   PAGER=$(command -v bat)
   if [[ -z $PAGER ]]; then
     PAGER="$(command -v less)"
   fi
   address="${1}"
-  if [[ -f './.curl' ]]; then
-    curl_file=$(cat ./.curl)
-    address="${curl_file}${address}"
-    ${CURL_CMD} "${address}" | $PAGER
-    return
-  fi
+
+  # Check for current and parent directories for a .curl file
+  current=$PWD
+  while [[ $current != "/" ]];
+  do
+      if [[ -f "${current}/.curl" ]]; then
+          echo "Using .curl file: ${current}/.curl"
+          host_url=$(cat "${current}/.curl")
+          address="${host_url}${address}"
+          break
+      else
+          current=$(dirname "$current")
+      fi
+  done
 
   if [[ -z "${address}" ]]; then
     echo "Curl to a port on localhost or to a specific domain directly."
     echo "Or you can create a file named '.curl' in project root"
-    echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
+    echo "in which you can define the host:port combo like this: 127.0.0.1:8080"
     echo ""
     echo "Usage:"
     echo "  cl 8080        -> 'curl 127.0.0.1:8080'"
     echo "  cl example.com -> 'curl example.com'"
     echo ""
-    echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-    echo "  cl route       -> 'curl host:port/route'"
+    echo "  # Or inside directory with a '.curl' file with 'host:port' inside:"
+    echo "  cl /route       -> 'curl host:port/route'"
     return
   fi
 
+  # If the given address starts with a port number
   if [[ "$address" =~ ^[[:digit:]] ]]; then
-    ${CURL_CMD} "127.0.0.1:${address}" | $PAGER
-    return
-  else
-    ${CURL_CMD} "${address}" | $PAGER
-    return
+    # Local IP addresses start with digits, so eliminate them.
+    if [[ ! "$address" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+      address="127.0.0.1:${address}"
+    fi
   fi
+
+  headers=$(${CURL_CMD} --head "${address}" | grep 'Content-Type')
+
+  if [[ "${headers}" =~ 'json' ]]; then
+      export FX_COLLAPSED=1
+      PAGER="fx"
+  fi
+
+  echo "Requested address: ${address}"
+
+  start=$(date +%s%N)
+  response=$(${CURL_CMD} --include "${address}")
+  end=$(date +%s%N)
+
+  echo -e "${response}" | $PAGER
+  # duration=$(echo "scale=3; ($end - $start) / 1000000" | bc)
+  duration=$(( (end - start) / 1000000 ))
+  echo "Execution time: ${duration} ms"
 }
 
 # ct 8080 -> curl-timing.sh 127.0.0.1:8080
