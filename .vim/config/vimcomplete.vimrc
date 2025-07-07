@@ -70,4 +70,7 @@ var options = {
     omnifunc: { enable: false, priority: 8, filetypes: ['javascript', 'php', 'css', 'perl', 'lua'] },
     # vimscript: { enable: true, priority: 11 },
 }
-autocmd VimEnter * g:VimCompleteOptionsSet(options)
+augroup VimCompleteSetOptions
+  autocmd!
+  autocmd VimEnter * g:VimCompleteOptionsSet(options)
+augroup end
