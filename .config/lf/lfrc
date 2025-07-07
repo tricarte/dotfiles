@@ -2131,3 +2131,35 @@ cmd compress !{{
 
 }}
 
+# Info: Annotate images with spectacle or satty
+cmd annotate-image &{{
+    TOOL=""
+    for cmd in spectacle satty; do
+      if command -v "$cmd" &> /dev/null; then
+        if [[ "${cmd}" == 'spectacle' ]]; then
+          TOOL="${cmd} --edit-existing"
+          break
+        elif [[ "${cmd}" == 'satty' ]]; then
+          TOOL="${cmd} --fullscreen --filename"
+          break
+        fi
+      fi
+    done
+
+    if [[ -z "${TOOL}" ]]; then
+        lf -remote "send $id echoerr This tool requires spectacle or satty."
+        exit
+    fi
+
+    mime=$(file -bi "${f}")
+    if [[ $mime =~ ^image ]]; then
+      ${TOOL} "${f}"
+      exit 0
+    else lf -remote "send $id echoerr Input file is not recognized as image."
+      exit
+    fi
+
+
+
+}}
+
