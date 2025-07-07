@@ -181,11 +181,11 @@ function! ScratchRUST()
     setlocal filetype=rust
     :% norm die
     let content =<< trim END
-                ```cargo
+                ---cargo
                 [dependencies]
                 # clap = { version = "4.2", features = ["derive"] }
                 # rand = "0.8.5"
-                ```
+                ---
 
                 fn main() {
                     println!("Hello World!");
