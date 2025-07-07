@@ -195,7 +195,10 @@ augroup COCCSS
     autocmd FileType scss setl iskeyword+=@-@
 augroup END
 
-autocmd QuitPre * call <sid>TermForceCloseAll()
+augroup TermClose
+    autocmd!
+    autocmd QuitPre * call <sid>TermForceCloseAll()
+augroup END
 function! s:TermForceCloseAll() abort
     let term_bufs = filter(range(1, bufnr('$')), 'getbufvar(v:val, "&buftype") == "terminal"')
     for t in term_bufs
