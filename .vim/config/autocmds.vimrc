@@ -226,3 +226,9 @@ augroup intelephenseDocRoot
   autocmd!
   autocmd FileType php let b:coc_root_patterns = ['.git', '.env', 'composer.json', 'artisan']
 augroup end
+
+augroup OpenQuickNotes
+  autocmd!
+  autocmd VimEnter * :e ~/.quick
+  " autocmd WinEnter :e ~/.quick
+augroup end
