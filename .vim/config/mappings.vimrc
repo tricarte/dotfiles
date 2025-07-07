@@ -305,10 +305,11 @@ augroup END
 "     autocmd FileType php silent! nunmap <S-k>
 " augroup END
 
-if executable("piknik")
-    command! Pkp :r!piknik -paste
-    command! -range Pkc :silent '<,'>w !piknik -copy
-endif
+" Disabling for now...
+" if executable("piknik")
+"     command! Pkp :r!piknik -paste
+"     command! -range Pkc :silent '<,'>w !piknik -copy
+" endif
 
 nnoremap <leader>sn :Snippets<CR>
 
