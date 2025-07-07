@@ -1566,9 +1566,18 @@ cmd optimize-video !{{
                 filename="$(basename "${item}")"
                 printf "Processing ${item}: "
 
+                if [[! -c /dev/dri/renderD128]]; then
+                  printf "/dev/dri/renderD128 for vaapi does not exist.\n"
+                  exit
+                fi
+
                 ffmpeg -nostdin -loglevel panic -hide_banner \
-                -i "${item}" -c:v libx264 \
+                -i "${item}" \
+                -vaapi_device /dev/dri/renderD128 \
+                -c:v h264_vaapi \
                 -vsync vfr -preset fast \
+                -c:a aac -b:a 128k \
+                -vf 'format=nv12,hwupload' \
                 -movflags +faststart -c:a copy \
                 "optimized/${filename%.*}_h264.mp4"
 
@@ -1603,8 +1612,24 @@ cmd convert-video-to-mp4 !{{
         filename="$(basename "${item}")"
         printf "Processing ${item}: "
 
+        if [[! -c /dev/dri/renderD128]]; then
+          printf "/dev/dri/renderD128 for vaapi does not exist.\n"
+          exit
+        fi
+
+        # NOTE: Below is commented, because it will not work, for example, when
+        # converting webm to mp4.
+        # ffmpeg -nostdin -loglevel panic -hide_banner \
+        #     -i "${item}" -codec copy -map 0 \
+        #     "converted/${filename%.*}.mp4"
+
         ffmpeg -nostdin -loglevel panic -hide_banner \
-            -i "${item}" -codec copy -map 0 \
+            -i "${item}" \
+            -vaapi_device /dev/dri/renderD128 \
+            -c:v h264_vaapi \
+            -preset slow -crf 22 \
+            -c:a aac -b:a 128k \
+            -vf 'format=nv12,hwupload' \
             "converted/${filename%.*}.mp4"
 
         if [[ $count -gt 0 ]]; then
