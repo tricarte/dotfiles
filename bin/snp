@@ -22,6 +22,7 @@ my $boldred = color('bold red');
 my $reset     = color('reset');
 
 # $ENV{PAGER} = 'less -RXF';
+$ENV{COLUMNS} = '80';
 $ENV{LESS} = '-RX --incsearch --ignore-case --clear-screen';
 
 my $hist_file = $ENV{'HOME'} . '/.snp.hst';
