@@ -274,24 +274,23 @@ endfunction
 function! RunBufferAsScript(...)
     let b:mft = &filetype
     if b:mft == "php"
-        " :RunPHP
         execute ':RunPHP' . ' ' . join(a:000, ' ')
-    elseif b:mft == "perl"
-        :RunPerl
-    elseif b:mft == "lua"
-        :RunLua
-    elseif b:mft == "rust"
-        :RunRust
-    elseif b:mft == "vlang"
-        :RunVLang
-    elseif b:mft == "go"
-        :RunGolang
-    elseif b:mft == "c"
-        :RunC
-    elseif b:mft == "ruby"
-        :RunRuby
     elseif b:mft == "sh"
         execute ':RunBash' . ' ' . join(a:000, ' ')
+    elseif b:mft == "c"
+        execute ':RunC' . ' ' . join(a:000, ' ')
+    elseif b:mft == "perl"
+        execute ':RunPerl' . ' ' . join(a:000, ' ')
+    elseif b:mft == "lua"
+        execute ':RunLua' . ' ' . join(a:000, ' ')
+    elseif b:mft == "vlang"
+        execute ':RunVLang' . ' ' . join(a:000, ' ')
+    elseif b:mft == "ruby"
+        execute ':RunRuby' . ' ' . join(a:000, ' ')
+    elseif b:mft == "go"
+        execute ':RunGolang' . ' ' . join(a:000, ' ')
+    elseif b:mft == "rust"
+        execute ':RunRust' . ' ' . join(a:000, ' ')
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
