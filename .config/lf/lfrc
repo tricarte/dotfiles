@@ -99,19 +99,16 @@ map i !{{
 
 }}
 
-# Open hovered directory in GUI file manager
-map <c-o> &{{
-    if [[ -d "$f" ]]; then
-        xdg-open "$f"
-        exit
-    fi
-
-    # If it's a file, open the containing dir
-    if [[ -f "$f" ]]; then
-        xdg-open $(dirname "$f")
-        exit
+# Info: Open current working directory in GUI file manager
+cmd open-in-file-manager &{{
+    DOLPHIN=$(command -v dolphin)
+    if [[ -n $DOLPHIN ]]; then
+        $DOLPHIN --select "${f}"
+    else
+        xdg-open "${PWD}"
     fi
 }}
+map <c-o> :open-in-file-manager
 
 # Info: Open selected file with the associated application <O>
 cmd open-with-menu !{{
