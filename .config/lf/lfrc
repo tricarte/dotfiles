@@ -2160,3 +2160,17 @@ cmd annotate-image &{{
 
 }}
 
+# Info: Extract text from image using tesseract-ocr
+cmd ocr &{{
+  if command -v tesseract &> /dev/null; then
+    tesseract "${f}" stdout -l eng | xclip -selection clipboard
+      if [[ $? == 0 ]]; then
+          lf -remote "send $id echo Extracted text copied to clipboard."
+      else
+          lf -remote "send $id echoerr Scanning failed!."
+      fi
+    else
+      lf -remote "send $id echoerr tesseract-ocr is not installed!"
+  fi
+}}
+
