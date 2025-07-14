@@ -288,10 +288,12 @@ let g:SprintHidden = 0
 
 " VDebug config
 let g:vdebug_options = {
-            \ "port": 9000,
-            \ "server": '192.168.1.10',
-            \ 'path_maps': {'/shared/httpd/mywp/mywp': '~/repos/devilbox/data/www/mywp/mywp'},
+            \ "port": 9003,
+            \ "server": 'localhost',
             \ }
+            " \ "break_on_open": 0,
+            " \ "ide_key": 'netbeans-xdebug',
+            " \ 'path_maps': {'/shared/httpd/mywp/mywp': '~/repos/devilbox/data/www/mywp/mywp'},
 
 " NerdTree config
 let NERDTreeShowBookmarks=1
