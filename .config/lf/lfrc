@@ -1659,7 +1659,7 @@ cmd convert-video-to-mp4 !{{
         filename="$(basename "${item}")"
         printf "Processing ${item}: "
 
-        if [[! -c /dev/dri/renderD128]]; then
+        if [[ ! -c /dev/dri/renderD128 ]]; then
           printf "/dev/dri/renderD128 for vaapi does not exist.\n"
           exit
         fi
