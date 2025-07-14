@@ -35,11 +35,15 @@ my ( $chosen ) = split /:/, `printf "${output}" | fzf --with-nth=2.. --delimiter
 # $entries[$chosen]->system($file) if $chosen;
 # $entries[$chosen]->run($file) if $chosen;
 if (defined $chosen) {
-    # $entries[$chosen]->exec($file);
-    $entries[$chosen]->run($file);
+    # $entries[$chosen]->exec($file); # Replaces the current process but no background support.
+    # $entries[$chosen]->run($file);  # Fork and run as a background process but output is not good.
+    # $entries[$chosen]->system($file); # No background support, but better output.
 
-    # my $exec = $entries[$chosen]->parse_Exec($file);
+    my $exec = $entries[$chosen]->parse_Exec($file);
     # exec $exec;
+    # system $exec;
+    fork $exec;
+    # `$exec`;
 
     # Because 'exec' will never return!
     # exit;
