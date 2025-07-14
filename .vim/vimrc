@@ -124,6 +124,14 @@ Plug 'AndrewRadev/tagalong.vim', { 'for': ['html', 'php', 'jsx', 'xml'] }
 " F6 to stop debugging
 " F10 to toggle line breakpoint
 " Plug 'joonty/vdebug'
+" Plug 'vim-vdebug/vdebug'
+
+" Use vimspector instead of vdebug.
+" Display mode does not have much effect in PHP debugging
+" let g:vimspector_variables_display_mode = 'full'
+" let g:vimspector_enable_mappings = 'HUMAN' " or 'VISUAL_STUDIO'
+" let g:vimspector_enable_auto_hover=0
+" Plug 'puremourning/vimspector'
 
 if isdirectory('/usr/local/opt/fzf')
   Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
