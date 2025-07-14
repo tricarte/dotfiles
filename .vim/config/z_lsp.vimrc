@@ -167,25 +167,33 @@ let lspServers = [
         \       }
         \     }
         \   },
-        \ }]
+        \ },
+        \]
 
-            " \ #{
-            " \   name: 'yaml-language-server',
-            " \   path: $HOME . '/.npm-global/bin/yaml-language-server',
-            " \   filetype: 'yaml',
-            " \   args: ['--stdio'],
-            " \   workspaceConfig: #{
-            " \     yaml: #{
-            " \       validate: v:true,
-            " \       hover: v:true,
-            " \       completion: v:true,
-            " \       customTags: [],
-            " \       schemas: #{},
-            " \       schemaStore: #{ enable: v:true },
-            " \       format: #{ enable: v:true },
-            " \     },
-            " \   },
-            " \ },
+" Tried lots of things, but couldn't get this yaml-language-server running
+        \#{
+            \   name: 'yaml-language-server',
+            \   filetype: 'yaml',
+            \   path: $HOME.'/.npm-global/bin/yaml-language-server',
+            \   args: ['--stdio'],
+            \   workspaceConfig: #{
+            \       yaml: #{
+            \           schemas: {
+            \               "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json" : [
+            \                   "**/*docker-compose*.yaml"
+            \               ],
+            \              "https://json.schemastore.org/chart.json": [
+            \                   "**helm/values*.yaml"
+            \               ],
+            \              "https://git.drupalcode.org/project/drupal/-/raw/10.1.x/core/modules/sdc/src/metadata.schema.json": [
+            \                   "accordion.component.yml"
+            \               ],
+            \           },
+            \           schemaStore: { 'enable': v:true },
+            \           completion: v:true,
+            \       }
+            \   }
+        \ }
 
 " Example extra config for luals. Put this into luals config above.
 " For settings: https://luals.github.io/wiki/settings/
