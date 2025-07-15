@@ -42,8 +42,9 @@ if (defined $chosen) {
     my $exec = $entries[$chosen]->parse_Exec($file);
     # exec $exec;
     # system $exec;
-    fork $exec;
-    # `$exec`;
+    # fork $exec; # NOOOO
+    `kitty @ --to unix:/tmp/mykitty launch --type window bash --noprofile --norc -c "${exec}"`
+    
 
     # Because 'exec' will never return!
     # exit;
