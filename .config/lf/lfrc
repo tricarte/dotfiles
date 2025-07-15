@@ -71,7 +71,7 @@ map i !{{
     #     clear && $PISTOL "$f"
     # fi
 
-    mime=$(file -bi "${f}")
+    mime=$(file --brief --mime "${f}")
     if [[ $mime =~ ^application/json ]]; then
         FX_COLLAPSED=1 $(command -v fx) "${f}"
         exit 0
@@ -2148,7 +2148,7 @@ cmd annotate-image &{{
         exit
     fi
 
-    mime=$(file -bi "${f}")
+    mime=$(file --brief --mime "${f}")
     if [[ $mime =~ ^image ]]; then
       ${TOOL} "${f}"
       exit 0
@@ -2177,7 +2177,7 @@ cmd ocr &{{
 
 # Info: Install the selected debian package
 cmd install-deb &{{
-  mime=$(file "${f}")
+  mime=$(file --brief "${f}")
   if [[ $mime =~ "Debian binary package" ]]; then
     kitty @ --to unix:/tmp/mykitty launch \
         --type window --hold \
