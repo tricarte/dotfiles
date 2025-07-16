@@ -63,16 +63,17 @@ $term->SetHistory( (@hist) ) if @hist;
 
 $term->add_defun( 'clear-search-term', \&clear_search_term );
 $term->add_defun( 'fuzzy-history',     \&fuzzy_history );
+$term->add_defun( 'fuzzy-categories',  \&fuzzy_categories );
 $term->MinLine(0);    # disable implicit call of add_history()
 
-my @cmds = ('.last', '.lastu', '.random', '.total', '.cc', '.help');
+my @cmds = ('.last', '.lastu', '.random', '.total', '.cc', '.help', '.cat');
 
 {
 $" = '|'; # Change array separator char temporarily.
 print $OUT <<"END_WCM";
 ${boldgreen}Snippet Search Console${reset}
 Try searching 'create branch' or 'php:create directory'.
-Use TAB to see available categories.
+Use TAB or ^B to see available categories.
 Available commands: [@cmds]
 Use 'q' to quit.
 END_WCM
@@ -154,6 +155,12 @@ while ( defined( $_ = $term->readline( $prompt, $last_query ) ) ) {
 
     if ( $_ eq '.cc' ) {
         handle_ccache();
+        next;
+    }
+
+    if ( $_ eq '.cat' ) {
+        $last_query = handle_categories();
+        $last_query .= ':' if length $last_query != 0;
         next;
     }
 
@@ -412,6 +419,32 @@ sub handle_search {
     render_fzf(\@records, $query, '')
 }
 
+sub handle_categories {
+    my $csql =
+q{SELECT replace(parents_title, 'HOME - ', '') as new_title FROM parents_tree_dashed};
+
+    my $records = $dbh->selectcol_arrayref( $dbh->prepare($csql) );
+    local $" = '\n';
+    my $command = <<"END_CMD";
+printf '@$records' \\
+| "/home/${usrname}/.fzf/bin/fzf"
+END_CMD
+    my $chosen = `${command}`;
+    chomp $chosen;
+    return $chosen;
+    # $attribs->{line_buffer} = $chosen;
+    # $attribs->{point}       = $attribs->{end};    # Move cursor to the end
+}
+
+sub fuzzy_categories {
+    my $chosen = handle_categories();
+    if ( $chosen ) {
+        $chosen .= ':' if length $chosen != 0;
+        $attribs->{line_buffer} = $chosen;
+        $attribs->{point}       = $attribs->{end};    # Move cursor to the end
+    }
+}
+
 sub to_clipboard {
     my $input = shift;
     my $cmd   = '|xclip -i -selection clipboard';
@@ -458,6 +491,7 @@ q{SELECT replace(parents_title, 'HOME - ', '') as new_title FROM generation
 sub setup_keys_readline {
     $term->bind_key( ord "\cu", 'clear-search-term', 'emacs' );
     $term->bind_key( ord "\cr", 'fuzzy-history',     'emacs' );
+    $term->bind_key( ord "\cb", 'fuzzy-categories',  'emacs' );
 }
 
 # C-u will clear the search term up to the ':' character if any.
