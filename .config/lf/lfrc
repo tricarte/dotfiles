@@ -403,8 +403,9 @@ cmd move2newdir ${{
     set -f
     printf "Directory name: "
     read newd
-    mkdir -- "$newd"
-    mv -- $fx "$newd"
+    mkdir -p -- "$newd"
+    # TODO: this cannot handle items with spaces
+    mv -- "${fx}" "$newd"
     lf -remote "send $id select \"${newd}\""
 }}
 
@@ -467,6 +468,8 @@ cmd bookmark-jump ${{
     fi
     LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
     res=$(cat $LF_BOOKMARK_PATH/$(ls "$LF_BOOKMARK_PATH" | $FZF))
+    # Bookmarks file contains shell variables.
+    # So this was the first thing that came to my mind.
     res=$(eval "echo -e ${res}")
 
     if [[ -z "${res}" ]]; then
@@ -611,7 +614,7 @@ cmd extract !{{
 
 }}
 
-# Info: Copy paths to clipboard
+# Info: Copy selected file paths to clipboard
 cmd path &{{
     if [[ $XDG_SESSION_TYPE == 'x11' ]]; then
         XCLIP=$(command -v xclip)
@@ -652,7 +655,7 @@ cmd basename &{{
             exit
         fi
 
-        xclip -sel clip < <(printf '%s' "${fx}" | xargs --delimiter='\n' -I '{}' basename '{}') && \
+        xclip -sel clip < <(printf "${fx}" | xargs --delimiter='\n' -I '{}' basename '{}') && \
             lf -remote "send $id echo File names copied to the clipboard."
     else
         lf -remote "send $id echoerr You are probably in a Wayland session."
@@ -1011,6 +1014,8 @@ cmd restore-backup ${{
 
 # Info: Go to the most recent file in current directory
 cmd last &{{
+    # This function accepts a directory as argument.
+    # If it is not provided, than CWD is used.
     FD=$(command -v fd)
     ITEM=$(
         $FD --base-directory "${@:-./}" --exact-depth 1 \
@@ -1065,7 +1070,7 @@ cmd goto-container-mount-point &{{
 }}
 
 # Info: Mount iso image
-cmd mountiso !{{
+cmd mount-iso !{{
   clear
   mime=$(mimetype --output-format '%m' "${f}")
 
@@ -1133,7 +1138,7 @@ cmd umountc !{{
 }}
 
 # Info: Unmount USB drives mounted to /media/${USER}
-cmd umountu !{{
+cmd umount-usb !{{
     clear
     # fd -t d . "/media/${USER}" -d1
     # fd adds trailing slash
@@ -1179,6 +1184,8 @@ cmd run &{{
     if [[ -x "${f}" ]]; then
         # --type=overlay
         kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" --self "${@:+sudo}" "${f}"
+    else
+        lf -remote "send $id echoerr Item is not executable."
     fi
 }}
 map go :run
@@ -1243,9 +1250,9 @@ EOF
                         fi
 
                         avifenc -j all -a cq-level=23 \
-                        --min 0 --max 63 --minalpha 0 --maxalpha 63 \
-                        -a end-usage=q -a tune=ssim \
-                        "${item}" "converted/${filename%.*}.avif" &> /dev/null
+                          --min 0 --max 63 --minalpha 0 --maxalpha 63 \
+                          -a end-usage=q -a tune=ssim \
+                          "${item}" "converted/${filename%.*}.avif" &> /dev/null
 
                         if [[ $count -gt 0 ]]; then
                             printf "DONE - remaining ${count}.\n"
@@ -1262,7 +1269,16 @@ EOF
                     if [[ ! "${delay}" -gt 0 ]]; then
                         delay=1
                     fi
-                    cmd="cat $(echo $(wrap-with-quotes "${fx}")) | ffmpeg -r "1/${delay}" -f image2pipe -i - -c:v libx264 -vf fps=25 -pix_fmt yuv420p -y converted/output.mp4"
+
+                    if [[ -c /dev/dri/renderD128 ]]; then
+                        cmd="cat $(echo $(wrap-with-quotes "${fx}")) | \
+                        ffmpeg -vaapi_device /dev/dri/renderD128  \
+                        -r "1/${delay}" -f image2pipe -i - -c:v h264_vaapi \
+                        -vf 'format=nv12,hwupload,fps=25' -pix_fmt yuv420p -y converted/output.mp4"
+                    else
+                        cmd="cat $(echo $(wrap-with-quotes "${fx}")) | ffmpeg -r "1/${delay}" -f image2pipe -i - -c:v libx264 -vf fps=25 -pix_fmt yuv420p -y converted/output.mp4"
+                    fi
+
                     bash -c "${cmd}"
                 else
                     cmds=""
@@ -1461,12 +1477,13 @@ cmd image2video ${{
         printf "Enter the video length in seconds: "
         read length
     else
+        # TODO: check the input is a number
         length="${@}"
     fi
 
     if [[ "${length}" -gt 0 ]]; then
         count=$(printf "${fx}\n" | wc -l)
-        encoder=$(printf "libx264\nh264_vaapi" | $FZF)
+        encoder=$(printf "h264_vaapi\nlibx264" | $FZF)
 
         case "${encoder}" in
             libx264)
@@ -1488,6 +1505,10 @@ cmd image2video ${{
             done < <(printf "${fx}\n")
             ;;
             h264_vaapi)
+                if [[ ! -c /dev/dri/renderD128 ]]; then
+                    lf -remote "send $id echoerr '/dev/dri/renderD128 vaapi device does not exist!'"
+                    exit
+                fi
                 while read item; do
                     count=$((count - 1))
                     filename="$(basename "${item}")"
@@ -1545,6 +1566,7 @@ cmd optimize-video !{{
                 filename="$(basename "${item}")"
                 printf "Processing ${item}: "
 
+                # TODO: add vaapi version for av1
                 SVT_LOG=1 ffmpeg -nostdin -loglevel panic -hide_banner \
                 -i "${item}" -map_metadata -1 -c:a libopus -c:v libsvtav1 -qp 30 \
                 -tile-columns 2 -tile-rows 2 -pix_fmt yuv420p -movflags +faststart -vf \
@@ -1563,7 +1585,7 @@ cmd optimize-video !{{
                 filename="$(basename "${item}")"
                 printf "Processing ${item}: "
 
-                if [[! -c /dev/dri/renderD128]]; then
+                if [[ ! -c /dev/dri/renderD128 ]]; then
                   printf "/dev/dri/renderD128 for vaapi does not exist.\n"
                   exit
                 fi
@@ -1627,8 +1649,19 @@ EOF
         printf "Rotating ${item}: "
 
         # TODO: This version re-encodes with smaller file size.
-        ffmpeg -nostdin -loglevel panic -hide_banner \
-        -i "${item}" -c:v libx264  -vf "transpose=${direction}" -c:a copy "rotated/${filename%.*}.mp4"
+        if [[ -c /dev/dri/renderD128 ]]; then
+            ffmpeg -nostdin -loglevel panic -hide_banner \
+                -i "${item}" \
+                -vaapi_device /dev/dri/renderD128 \
+                -c:v h264_vaapi \
+                -vf "format=nv12,transpose=${direction},hwupload" \
+                -c:a copy -y "rotated/${filename%.*}.mp4"
+        else
+            ffmpeg -nostdin -loglevel panic -hide_banner \
+                -i "${item}" -c:v libx264  \
+                -vf "transpose=${direction}" -c:a copy -y "rotated/${filename%.*}.mp4"
+        fi
+
 
         if [[ $count -gt 0 ]]; then
             printf "DONE - remaining ${count}.\n"
@@ -1763,6 +1796,7 @@ cmd resize-video !{{
         filename="$(basename "${item}")"
         printf "Processing ${item}: "
 
+        # TODO: use vaapi if available
         ffmpeg -nostdin -loglevel panic -hide_banner \
             -i "${item}" -c:v libx264 \
             -vsync vfr -vf scale="${format}" \
@@ -1827,7 +1861,7 @@ cmd md2pdf-groff !{{
 }}
 
 # Display a command palette
-# Every cmd must have an information line
+# Every cmd must have an information line.
 # Every cmd description must be in this format:
 # "# Info: Description goes here..."
 # "cmd cmd_name &{{ }}"
@@ -2144,7 +2178,7 @@ cmd annotate-image &{{
     done
 
     if [[ -z "${TOOL}" ]]; then
-        lf -remote "send $id echoerr This tool requires spectacle or satty."
+        lf -remote "send $id echoerr This command requires spectacle or satty."
         exit
     fi
 
