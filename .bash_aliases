@@ -180,6 +180,7 @@ alias upv="cd ~/repos/v; v up; v doc -m -f html vlib/; cd ~/Documents/vlang/docs
 alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at now +25 minute"
 alias kconref="kdeconnect-cli --refresh"
 alias less='less -x4RFsX --incsearch -i -g'
+alias mute="amixer -q sset 'Master' 0%"
 
 ##############
 #  Composer  #
