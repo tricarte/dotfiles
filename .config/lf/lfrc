@@ -1570,7 +1570,7 @@ cmd optimize-video !{{
                 SVT_LOG=1 ffmpeg -nostdin -loglevel panic -hide_banner \
                 -i "${item}" -map_metadata -1 -c:a libopus -c:v libsvtav1 -qp 30 \
                 -tile-columns 2 -tile-rows 2 -pix_fmt yuv420p -movflags +faststart -vf \
-                "scale=trunc(iw/2)*2:trunc(ih/2)*2" "optimized/${filename%.*}_av1.mp4"
+                "scale=trunc(iw/2)*2:trunc(ih/2)*2" -y "optimized/${filename%.*}_av1.mp4"
 
                 if [[ $count -gt 0 ]]; then
                     printf "DONE - remaining ${count}.\n"
@@ -1580,6 +1580,12 @@ cmd optimize-video !{{
         done < <(printf "${fx}\n")
         ;;
     h264_vaapi)
+        bitrate=$(printf "Copy from input\nEnter manually..." | $FZF --prompt="Enter the bitrate: ")
+
+        if [[ $bitrate == "Enter manually..." ]]; then
+            printf "Enter the bitrate in kb (e.g 3000): "
+            read bitrate
+        fi
         while read item; do
             count=$((count - 1))
                 filename="$(basename "${item}")"
@@ -1590,15 +1596,22 @@ cmd optimize-video !{{
                   exit
                 fi
 
+                if [[ $bitrate == "Copy from input" ]]; then
+                  bitrate=$(($(mediainfo --Output="Video;%BitRate%" "${item}")/1000))
+                fi
+
+                # -preset defines the compression amount and speed
+                # What you are probably more interested in is -b:v (bitrate)
                 ffmpeg -nostdin -loglevel panic -hide_banner \
                 -i "${item}" \
                 -vaapi_device /dev/dri/renderD128 \
                 -c:v h264_vaapi \
-                -vsync vfr -preset fast \
+                -b:v "${bitrate}"k \
+                -vsync vfr -preset fast -crf 23 \
                 -c:a aac -b:a 128k \
                 -vf 'format=nv12,hwupload' \
                 -movflags +faststart -c:a copy \
-                "optimized/${filename%.*}_h264.mp4"
+                -y "optimized/${filename%.*}_h264.mp4"
 
                 if [[ $count -gt 0 ]]; then
                     printf "DONE - remaining ${count}.\n"
