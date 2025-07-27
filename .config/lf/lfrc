@@ -1557,7 +1557,7 @@ cmd optimize-video !{{
         mkdir optimized
     fi
 
-    encoder=$(printf "av1\nh264_vaapi" | $FZF)
+    encoder=$(printf "h264_vaapi\nav1" | $FZF)
 
     case "${encoder}" in
     av1)
