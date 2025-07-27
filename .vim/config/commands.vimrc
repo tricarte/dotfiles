@@ -214,6 +214,9 @@ endif
 " Reload vimrc without restarting VIM!
 command! Resource :so $MYVIMRC
 
+" Refresh syntax highlight
+command! SSF :syntax sync fromstart
+
 " This is the default Rg command provided by fzf.vim
 " Just added the '--ignore-vcs' flag to ignore .gitignore files.
 " The project root directory must be a git directory.
