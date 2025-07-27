@@ -314,3 +314,5 @@ if [[ -n $DISPLAY ]]; then
   }
   bind -x '"\C-y": copy_line_to_x_clipboard'
 fi
+
+export PATH="$PATH:./vendor/bin"
