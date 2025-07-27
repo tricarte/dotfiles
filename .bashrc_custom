@@ -146,6 +146,16 @@ if [ -f ~/.rstc-completion.bash ]; then
   source ~/.rstc-completion.bash
 fi
 
+# load drush.php completion
+if [ -f ~/.drush-php-completion.sh ]; then
+  source ~/.drush-completion.sh
+fi
+
+# load drush completion
+if [ -f ~/.drush-completion.sh ]; then
+  source ~/.drush-completion.sh
+fi
+
 # Load ssh key for github/gitlab
 # FIXME: This supposes that only one key is added to the agent
 # and it is github/gitlab key.
