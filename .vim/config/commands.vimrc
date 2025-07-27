@@ -198,6 +198,7 @@ command! -bang SnpSyn :call fzf#run({'source': 'snippet-writer-v syn', 'sink': f
 command! -bang SnpParent :call fzf#run({'source': 'snippet-writer-v categories', 'sink': funcref('HandleSnpParent')})
 command! -bang SnpSave :call HandleSnpSave()
 command! -bang SnpCloneLast let tmpfile = system('snippet-writer-v clone') | :execute ':e ' . tmpfile | setf toml | :norm ggv2in'
+command! -bang SnpEditLast let tmpfile = system('snippet-writer-v read -s last') | :execute ':e ' . tmpfile | setf toml | :norm ggv2in'
 
 " Display 1m system load average
 command! -bang Lavg :echo LoadAvg()
