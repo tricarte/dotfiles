@@ -202,7 +202,22 @@ alias cgsp="phpoc global show --platform"                                       
 
 # Drupal & Drush
 alias dr="vendor/bin/drush"
-alias drcr="dr cr" # Clear all cache with drush
+# alias dro="if [ -f vendor/bin/drush.php ]; then script='drush.php'; else script='drush';fi;php -n \
+#     -d opcache.enable=1 \
+#     -d opcache.enable_cli=1 \
+#     -d opcache.jit_buffer_size=256M \
+#     -d opcache.validate_timestamps=0 \
+#     -d opcache.fast_shutdown=1 \
+#     -d opcache.jit=tracing \
+#     -d mysqlnd.collect_statistics=0 \
+#     -dextension=phar.so \
+#     -dextension=iconv.so \
+#     -dextension=dom.so \
+#     -derror_reporting=8189 \
+#     -dextension=mysqlnd \
+#     -dextension=pdo -dextension=pdo_mysql \
+#     -dextension=tokenizer vendor/bin/\${script}"
+
 
 ###########
 # Laravel #
