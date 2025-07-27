@@ -593,7 +593,9 @@ function cl() {
       if [[ -f "${current}/.curl" ]]; then
           echo "Using .curl file: ${current}/.curl"
           host_url=$(cat "${current}/.curl")
-          address="${host_url}${address}"
+          if [[ "$address" =~ ^/ ]]; then
+              address="${host_url}${address}"
+          fi
           break
       else
           current=$(dirname "$current")
@@ -622,7 +624,10 @@ function cl() {
     fi
   fi
 
-  headers=$(${CURL_CMD} --head "${address}" | grep 'Content-Type')
+  start=$(date +%s%N)
+  headers=$(${CURL_CMD} --head "${address}" | grep -i 'content-type')
+  end=$(date +%s%N)
+  header_duration=$(( (end - start) / 1000000 ))
 
   if [[ "${headers}" =~ 'json' ]]; then
       export FX_COLLAPSED=1
@@ -638,7 +643,8 @@ function cl() {
   echo -e "${response}" | $PAGER
   # duration=$(echo "scale=3; ($end - $start) / 1000000" | bc)
   duration=$(( (end - start) / 1000000 ))
-  echo "Execution time: ${duration} ms"
+  echo "First request (headers only): ${header_duration} ms"
+  echo "Second request:               ${duration} ms"
 }
 
 # ct 8080 -> curl-timing.sh 127.0.0.1:8080
