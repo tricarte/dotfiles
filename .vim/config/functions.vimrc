@@ -125,6 +125,22 @@ function! ScratchPERL()
     :7
 endfunction
 
+function! ScratchJS()
+    noswapfile enew!
+    " setlocal buftype=nofile
+    setlocal buftype=nowrite
+    " setlocal bufhidden=hide
+    " setlocal nobuflisted
+    setlocal filetype=javascript
+    lcd ~
+    file JAVASCRIPT
+    let content =<< trim END
+                console.log('Hello World!');
+                
+    END
+    call setline(1, content)
+endfunction
+
 " " This is the first version
 " " that uses a buffer with not file
 " function! ScratchLUA()
@@ -210,6 +226,20 @@ function! ScratchVLang()
     w!
 endfunction
 
+function! ScratchDart()
+    e! $HOME/repos/dart-playground/playground/bin/playground.dart
+    " setlocal filetype=dart
+    " :% norm die
+    " let content =<< trim END
+    "             void main() {
+    "               print('Hello World!');
+    "             }
+    " END
+    " call setline(1, content)
+    " :2
+    " w!
+endfunction
+
 function! ScratchGolang()
     e! /tmp/golang-scratch-file.go
     setlocal filetype=go
@@ -291,6 +321,10 @@ function! RunBufferAsScript(...)
         execute ':RunGolang' . ' ' . join(a:000, ' ')
     elseif b:mft == "rust"
         execute ':RunRust' . ' ' . join(a:000, ' ')
+    elseif b:mft == "dart"
+        execute ':RunDart' . ' ' . join(a:000, ' ')
+    elseif b:mft == "javascript"
+        execute ':RunJS' . ' ' . join(a:000, ' ')
     endif
 endfunction
 nnoremap <leader>r :call RunBufferAsScript()<cr>
