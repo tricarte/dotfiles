@@ -171,7 +171,7 @@ cmd size-usage !{{
     if [[ -n $PDU ]]; then
         # clear && echo -ne "Calculating... \r"
         clear && printf "Calculating... \r"
-        printf "$fx" | xargs --delimiter='\n' $PDU
+        printf "$fx" | xargs --delimiter='\n' $PDU --bytes-format=binary
     else
         lf -remote "send $id echoerr pdu is not installed."
     fi
