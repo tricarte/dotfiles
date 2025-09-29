@@ -249,6 +249,12 @@ export EDITOR="$VISUAL"
 export BAT_PAGER='less -F -R --incsearch -i -J -g'
 
 export ANDROID_HOME="${HOME}/Android/Sdk"
+# export ANDROID_HOME="/usr/lib/android-sdk"
+# export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+# export PATH=$ANDROID_HOME/emulator/:$PATH
+export PATH=$ANDROID_HOME/platform-tools/:$PATH
+export PATH="$HOME/Downloads/flutter/bin:$PATH"
 
 if [[ -f "${HOME}/.apis" ]]; then
   source "${HOME}/.apis"
@@ -320,7 +326,7 @@ export LUA_CPATH_5_4="lua_modules/lib/lua/5.4/?.so;./?.so;/usr/local/lib/lua/5.4
 
 export PATH="${HOME}/.luarocks/bin:${PATH}"
 
-export PATH="$PATH:/opt/nvim-linux64/bin"
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
 source "/etc/profile.d/rvm.sh"
 
@@ -333,3 +339,10 @@ if [[ -n $DISPLAY ]]; then
 fi
 
 export PATH="$PATH:./vendor/bin"
+
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+
+if [ -f ~/.local/share/bash-completion/completions/deno.bash ]; then
+  . ~/.local/share/bash-completion/completions/deno.bash
+fi
+export PATH=$HOME/.deno/bin:$PATH
