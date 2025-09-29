@@ -236,3 +236,18 @@ augroup OpenQuickNotes
   autocmd VimEnter * :e ~/.quick
   " autocmd WinEnter :e ~/.quick
 augroup end
+
+augroup DartFormat
+  autocmd!
+  autocmd BufWritePre *.dart :LspFormat
+augroup END
+
+" augroup DartLspDisableInlayHints
+"   autocmd!
+"   autocmd BufNewFile,BufReadPost *.dart :LspInlayHints toggle
+" augroup END
+
+augroup FlutterCodeAction
+  autocmd!
+  autocmd FileType dart nnoremap <buffer> <space>a :LspCodeAction<CR>
+augroup END
