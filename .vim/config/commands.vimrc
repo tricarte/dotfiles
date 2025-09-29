@@ -224,9 +224,16 @@ endif
 command! Resource :so $MYVIMRC
 
 " Refresh syntax highlight
-command! SSF :syntax sync fromstart
+command! RefreshSyntax :syntax sync fromstart
 
 " This is the default Rg command provided by fzf.vim
 " Just added the '--ignore-vcs' flag to ignore .gitignore files.
 " The project root directory must be a git directory.
 command!      -bang -nargs=* Rg                               call fzf#vim#grep("rg --column --ignore-vcs --line-number --no-heading --color=always --smart-case -- ".fzf#shellescape(<q-args>), fzf#vim#with_preview(), <bang>0)
+
+if executable('flutter') && $TERM == 'xterm-kitty'
+    command! -bang FltRun :call FlutterRun()
+    command! -bang FltReload :call FlutterReload()
+    command! -bang FltRestart :call FlutterRestart()
+    command! -bang FltStop :call FlutterStop()
+endif
