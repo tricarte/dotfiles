@@ -186,7 +186,8 @@ nnoremap <c-p>c :Commands<cr>
 " They are just using the tags file.
 nnoremap <c-p>t :Tags<cr>
 " Same as Tags but for current buffer only
-nnoremap <c-p>s :BTags<cr>
+" nnoremap <c-p>s :BTags<cr>
+nnoremap <c-p>s :call BufferSymbols()<CR>
 nnoremap <c-p>l :Lines<cr>
 nnoremap <c-p>$ :Floaterms<cr>
 
@@ -398,3 +399,8 @@ nnoremap <space>q :e ~/.quick<CR>
 " Search in command and search history
 nnoremap <silent> <Leader>h: :History:<CR>
 nnoremap <silent> <Leader>h/ :History/<CR>
+
+nnoremap <silent> <space>u :call FlutterReload()<CR>
+nnoremap <silent> <space>U :call FlutterRestart()<CR>
+nnoremap <silent> <space><CR> :call FlutterRun()<CR>
+nnoremap <silent> <space>d :call FlutterStop()<CR>
