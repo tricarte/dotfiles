@@ -1740,6 +1740,80 @@ cmd convert-video-to-mp4 !{{
     fi
 }}
 
+# Info: Reverse video
+cmd reverse-video !{{
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d reversed ]]; then
+        mkdir reversed
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Reversing ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -i "${item}" \
+            -vaapi_device /dev/dri/renderD128 \
+            -c:v h264_vaapi \
+            -vsync vfr -preset fast -crf 23 \
+            -vf 'reverse,format=nv12,hwupload' \
+            -movflags +faststart \
+            -y "reversed/${filename%.*}_h264.mp4"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "reversed" ]]; then
+        lf -remote "send $id select \"reversed\""
+    fi
+}}
+
+# Info: Loop video N more times
+cmd loop-video !{{
+    clear
+    printf "Enter the additional # of loops: "
+    read loop
+
+    if ! [[ $loop =~ ^[0-9]+$ ]]; then
+      echo "Error: Not a number"
+      exit
+    fi
+
+    bname=$(basename "${f}")
+    count=$(printf "${fx}\n" | wc -l)
+
+    if [[ ! -d loops ]]; then
+        mkdir loops
+    fi
+
+    while read item; do
+        count=$((count - 1))
+        filename="$(basename "${item}")"
+        printf "Looping ${item}: "
+
+        ffmpeg -nostdin -loglevel panic -hide_banner \
+            -stream_loop "${loop}" -i "${item}" -c copy \
+            "loops/${filename}"
+
+        if [[ $count -gt 0 ]]; then
+            printf "DONE - remaining ${count}.\n"
+        else
+            printf "FINISHED.\n"
+        fi
+    done < <(printf "${fx}\n")
+
+    if [[ -d "loops" ]]; then
+        lf -remote "send $id select \"loops\""
+    fi
+}}
+
 # Info: Convert audio to mp3
 cmd convert-audio-to-mp3 !{{
     bname=$(basename "${f}")
