@@ -260,7 +260,8 @@ let g:ale_linters = {
             \ 'typescriptreact': [],
             \ "javascript": [],
             \ 'perl': ['perl', 'perlcritic'],
-            \ 'lua': ['selene']
+            \ 'lua': ['selene'],
+            \ 'dart': ['dart_analyze'],
             \ }
 " goimports can be used in place of gofmt which can also manage imports
 " but gopls can interfere with goimports so I'm using gofmt instead.
@@ -269,6 +270,7 @@ let g:ale_linters = {
 " vfmt fixer is defined in functions.vimrc
             " \ 'php':   ['php_cs_fixer'],
             " \ 'php':   ['phpcbf'],
+            " \ 'dart':  ['dart-format'],
 let g:ale_fixers = {
             \ 'html':  ['prettier'],
             \ 'css':   ['prettier'],
@@ -276,10 +278,15 @@ let g:ale_fixers = {
             \ 'perl':  ['perltidy'],
             \ 'rust':  ['rustfmt'],
             \ 'vlang': ['vfmt'],
-            \ 'go':    ['gofmt']
+            \ 'go':    ['gofmt'],
+            \ 'dart':  [],
             \ }
 let g:ale_sh_shfmt_options = '-ln bash -i 2'
 let g:ale_perl_perl_options = '-c'
+let g:ale_dart_analysis_server_enable_language_server = 0
+" let g:ale_dart_analysis_server_executable = 'dart'
+" let g:ale_dart_analyze_executable = 'dart'
+" let g:ale_dart_language_server_executable = 'dart_language_server'
 
 let g:prettier#config#tab_width = 2
 
@@ -544,3 +551,13 @@ let g:vem_tabline_show_number = 'buffnr'
 " This does not work!
 " Snippets are listed but expansion is broken.
 " let g:vsnip_snippet_dir = '~/.vim/my-snippets'
+
+" Using autocmd instead
+let g:dart_format_on_save = v:false
+let g:dart_style_guide = 2
+let g:dart_trailing_comma_indent = v:true
+
+" Enable flutter snippets
+" TODO: CANNOT load snippets from friendly-snippets/frameworks/xyz
+" let g:vsnip_filetypes = {}
+" let g:vsnip_filetypes.dart = ['flutter']
