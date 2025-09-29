@@ -113,6 +113,10 @@ command! -nargs=1 -range=% FindAndReplaceLiteral  <line1>,<line2>:!sd --string-m
 command! -nargs=? RunPerl :w !perl -- - <args>
 command! NewPerl :call ScratchPERL()
 
+" Run current buffer as JavaScript code
+command! -nargs=? RunJS :w !bun -- - <args>
+command! NewJS :call ScratchJS()
+
 " Run current buffer as Ruby code
 command! -nargs=? RunRuby :w !ruby -- - <args>
 command! NewRuby :call ScratchRUBY()
@@ -167,12 +171,16 @@ command! -nargs=? RunVLang :!clear;v run % <args>
 " Create a new vlang single file buffer
 command! NewVLang :call ScratchVLang()
 
+command! -nargs=? RunDart :!clear;dart --enable-asserts % <args>
+" Create a new vlang single file buffer
+command! NewDart :call ScratchDart()
+
 " command! RunGolang :w !go run %
 command! -nargs=? RunGolang :w | :!clear;go run % <args>
 " Create a new Golang single file buffer
 command! NewGolang :call ScratchGolang()
 
-command! -nargs=? RunBufferAsScript :call RunBufferAsScript("<args>")
+command! -nargs=* RunBufferAsScript :call RunBufferAsScript("<args>")
 
 " Some closed buffers will come back when you restore a session
 " even you closed them with bd
