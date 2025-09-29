@@ -1585,6 +1585,8 @@ cmd optimize-video !{{
         if [[ $bitrate == "Enter manually..." ]]; then
             printf "Enter the bitrate in kb (e.g 3000): "
             read bitrate
+        else
+            copy=1
         fi
         while read item; do
             count=$((count - 1))
@@ -1596,8 +1598,12 @@ cmd optimize-video !{{
                   exit
                 fi
 
-                if [[ $bitrate == "Copy from input" ]]; then
+                if [[ $copy == 1 ]]; then
                   bitrate=$(($(mediainfo --Output="Video;%BitRate%" "${item}")/1000))
+                  if ! [[ $bitrate =~ ^[0-9]+$ ]]; then
+                    echo "Couldnot get bitrate of ${item}"
+                    continue
+                  fi
                 fi
 
                 # -preset defines the compression amount and speed
