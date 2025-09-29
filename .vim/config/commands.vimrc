@@ -59,6 +59,7 @@ let g:source_list = {
             \ 'Notes': { 'type': 'files', 'path': '~/Documents/notes' },
             \ 'Etc': { 'type': 'files', 'path': '/etc' },
             \ 'Dotfiles': { 'type': 'run', 'command': {'source': 'dfl', 'sink': 'e'} },
+            \ 'Vimconfig': { 'type': 'files', 'path': '~/.vim' },
             \}
 
 command! -bang FindFiles :call fzf#run({'source': keys(g:source_list), 'sink': function('FuncFindFiles'), 'options': '+m', 'window': g:fzf_layout['window']})
