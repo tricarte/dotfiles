@@ -1537,7 +1537,7 @@ cmd image2video ${{
 
 # Info: Crop black areas from videos
 cmd crop-video !{{
-    crop-video.sh "${fx}"
+    crop-video.sh ${fx}
 }}
 
 # Info: Encode video using x264 fast preset or av1
