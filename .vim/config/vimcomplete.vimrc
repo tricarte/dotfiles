@@ -67,7 +67,7 @@ var options = {
         # completionMatcher: 'fuzzy', # This may not be supported by phpactor
     },
     vsnip: { enable: true, priority: 12 },
-    omnifunc: { enable: false, priority: 8, filetypes: ['javascript', 'php', 'css', 'perl', 'lua'] },
+    # omnifunc: { enable: false, priority: 8, filetypes: ['javascript', 'php', 'css', 'perl', 'lua'] },
     # vimscript: { enable: true, priority: 11 },
 }
 augroup VimCompleteSetOptions
