@@ -407,3 +407,149 @@ function! RemoveFileAndBuffer(skipConfirm = 0)
         echo "Cancelled!"
     endif
 endfunction
+
+function! FlutterRun()
+
+    if &filetype != 'dart'
+        call EchoMessage('Not a Dart file!')
+        return 0
+    endif
+
+    let parent_basename = fnamemodify(getcwd(), ':t')
+    let pid_file = '/tmp/flutter_' . parent_basename . '.pid'
+
+    if filereadable(pid_file)
+        call EchoMessage('App is already running!')
+        return 0
+    endif
+
+    if getbufinfo('%')[0].changed
+        write
+    endif
+    call EchoMessage('Attempting to start the app, please wait...')
+    call job_start([
+                \ 'kitty',
+                \ '@',
+                \ '--to',
+                \ 'unix:/tmp/mykitty',
+                \ 'launch',
+                \ '--type',
+                \ 'window',
+                \ '--dont-take-focus',
+                \ '--copy-env',
+                \ '--cwd',
+                \ getcwd(),
+                \ 'fltr',
+                \ '-t',
+                \ expand('%')])
+
+    " let timer = timer_start(1000, 'CheckFile', {'repeat': -1})
+    let timer = timer_start(1000, {timer -> CheckFile(timer, pid_file)}, {'repeat': 10})
+endfunction
+
+" Used in FlutterRun as a timer callback
+function! CheckFile(timer, pid_file)
+    if filereadable(a:pid_file)
+        call EchoMessage('App has started to run!')
+        call timer_stop(a:timer)
+    endif
+endfunction
+
+function! FlutterReload()
+    let parent_basename = fnamemodify(getcwd(), ':t')
+    let pid_file = '/tmp/flutter_' . parent_basename . '.pid'
+    if filereadable(pid_file)
+        if getbufinfo('%')[0].changed
+            write
+        endif
+        let pid = readfile(pid_file)
+        call system('kill -usr1 ' . pid[0])
+    else
+        call EchoMessage('Couldnot get the pid from: ' . pid_file)
+        call FlutterRun()
+        return 0
+    endif
+endfunction
+
+function! FlutterRestart()
+    let parent_basename = fnamemodify(getcwd(), ':t')
+    let pid_file = '/tmp/flutter_' . parent_basename . '.pid'
+    if filereadable(pid_file)
+        if getbufinfo('%')[0].changed
+            write
+        endif
+        let pid = readfile(pid_file)
+        call system('kill -usr2 ' . pid[0])
+    else
+        call EchoMessage('Couldnot get the pid from: ' . pid_file)
+        call FlutterRun()
+        return 0
+    endif
+endfunction
+
+function! FlutterStop()
+    let parent_basename = fnamemodify(getcwd(), ':t')
+    let pid_file = '/tmp/flutter_' . parent_basename . '.pid'
+    if filereadable(pid_file)
+        let pid = readfile(pid_file)
+        call system('kill -term ' . pid[0])
+    else
+        call EchoMessage('Couldnot get the pid from: ' . pid_file)
+        return 0
+    endif
+endfunction
+
+function! BufferSymbols()
+    if &filetype == 'dart'
+        :LspDocumentSymbol
+    else
+        :BTags
+    endif
+endfunction
+
+function! EchoMessage(msg)
+    redraw | echohl WarningMsg | echo a:msg | echohl None
+endfunction
+
+" function! TimedEcho(msg, duration)
+"     redraw | echohl WarningMsg | echo a:msg | echohl None
+"     call timer_start(a:duration, {-> execute('redraw')})
+" endfunction
+"
+" function! Notify(message, type, ...)
+"     let duration = get(a:, 1, 3000)
+"     
+"     if a:type ==# 'error'
+"         let highlight = 'ErrorMsg'
+"         let border_hl = ['ErrorMsg']
+"         let prefix = '✗ '
+"     elseif a:type ==# 'warning'
+"         let highlight = 'WarningMsg' 
+"         let border_hl = ['WarningMsg']
+"         let prefix = '⚠ '
+"     elseif a:type ==# 'success'
+"         let highlight = 'DiffAdd'
+"         let border_hl = ['DiffAdd']
+"         let prefix = '✓ '
+"     else
+"         let highlight = 'Normal'
+"         let border_hl = ['Comment']
+"         let prefix = 'ℹ '
+"     endif
+"     
+"     let options = {
+"         \ 'line': 1,
+"         \ 'col': 60,
+"         \ 'minwidth': 25,
+"         \ 'maxwidth': 60,
+"         \ 'wrap': 1,
+"         \ 'border': [1,1,1,1],
+"         \ 'borderchars': ['─', '│', '─', '│', '┌', '┐', '┘', '└'],
+"         \ 'highlight': highlight,
+"         \ 'borderhighlight': border_hl,
+"         \ 'time': duration,
+"         \ 'close': 'click',
+"         \ }
+"     
+"     call popup_notification(prefix . a:message, options)
+" endfunction
