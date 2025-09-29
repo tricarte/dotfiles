@@ -306,11 +306,12 @@ cmd grep ${{
     # Read FZF response into $file and $line
     IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
     [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
-    pid=$(pgrep -f '^sh -c lf')
-    # DON'T run VIM if lf is inside VIM
-    if [[ -z "${pid}" ]]; then
-        vim +"${line}" "${file}"
-    fi
+    # FIXME: not works for neovim
+    # DON'T run the editor if lf is inside VIM or nvim
+    # pid=$(pgrep -f '^sh -c lf')
+    # if [[ -z "${pid}" ]]; then
+    #     vim +"${line}" "${file}"
+    # fi
 }}
 
 # Info: Fuzzy grep files using fzf and ripgrep
@@ -330,11 +331,12 @@ cmd grepf ${{
     # echo "${res}"
     IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
     [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
-    pid=$(pgrep -f '^sh -c lf')
-    # DON'T run VIM if lf is inside VIM
-    if [[ -z "${pid}" ]]; then
-        vim +"${line}" "${file}"
-    fi
+    # FIXME: not works for neovim
+    # DON'T run the editor if lf is inside VIM or nvim
+    # pid=$(pgrep -f '^sh -c lf')
+    # if [[ -z "${pid}" ]]; then
+    #     vim +"${line}" "${file}"
+    # fi
 }}
 
 # Info: Create new directory
