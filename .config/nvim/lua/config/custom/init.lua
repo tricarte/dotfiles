@@ -1,0 +1,6 @@
+require("config.custom.commands")
+require("config.custom.abbreviations")
+require("config.custom.autocmds")
+require("config.custom.snippets")
+require("config.custom.functions")
+require("config.custom.run_buffer")
