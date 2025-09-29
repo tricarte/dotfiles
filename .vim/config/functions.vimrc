@@ -369,8 +369,8 @@ function! SnpSaveHandler(channel, msg)
 endfunction
 
 function! LoadAvg()
-    let cmd = 'bash --norc --noprofile -c "loadavg"'
-    return system(cmd)
+    " let cmd = 'bash --norc --noprofile -c "loadavg"'
+    return system('loadavg')
 endfunction
 
 " <leader>1-9 is mapped to this function
