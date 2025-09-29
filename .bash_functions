@@ -211,6 +211,26 @@ function vim() {
 }
 export -f vim
 
+function nvim() {
+  nvim_orig=$(which 2>/dev/null nvim)
+  if [ -z "$nvim_orig" ]; then
+    echo "$SHELL: nvim: command not found"
+    return 127
+  fi
+
+  # If there is already a nvim server, use it
+  if [[ -S "${HOME}/.cache/nvim/server.pipe" ]]; then
+    if [ $# -eq 0 ]; then
+      $nvim_orig
+    else
+      $nvim_orig --server "${HOME}/.cache/nvim/server.pipe" --remote-send ':e '"$@"'<CR>'
+    fi
+  else
+    $nvim_orig --listen "${HOME}/.cache/nvim/server.pipe" "$@"
+  fi
+}
+export -f nvim
+
 # https://github.com/ranger/ranger/blob/master/examples/bash_automatic_cd.sh
 function ranger-cd() {
   tempfile="$(mktemp -t tmp.XXXXXX)"
@@ -588,18 +608,17 @@ function cl() {
 
   # Check for current and parent directories for a .curl file
   current=$PWD
-  while [[ $current != "/" ]];
-  do
-      if [[ -f "${current}/.curl" ]]; then
-          echo "Using .curl file: ${current}/.curl"
-          host_url=$(cat "${current}/.curl")
-          if [[ "$address" =~ ^/ ]]; then
-              address="${host_url}${address}"
-          fi
-          break
-      else
-          current=$(dirname "$current")
+  while [[ $current != "/" ]]; do
+    if [[ -f "${current}/.curl" ]]; then
+      echo "Using .curl file: ${current}/.curl"
+      host_url=$(cat "${current}/.curl")
+      if [[ "$address" =~ ^/ ]]; then
+        address="${host_url}${address}"
       fi
+      break
+    else
+      current=$(dirname "$current")
+    fi
   done
 
   if [[ -z "${address}" ]]; then
@@ -627,11 +646,11 @@ function cl() {
   start=$(date +%s%N)
   headers=$(${CURL_CMD} --head "${address}" | grep -i 'content-type')
   end=$(date +%s%N)
-  header_duration=$(( (end - start) / 1000000 ))
+  header_duration=$(((end - start) / 1000000))
 
   if [[ "${headers}" =~ 'json' ]]; then
-      export FX_COLLAPSED=1
-      PAGER="fx"
+    export FX_COLLAPSED=1
+    PAGER="fx"
   fi
 
   echo "Requested address: ${address}"
@@ -642,7 +661,7 @@ function cl() {
 
   echo -e "${response}" | $PAGER
   # duration=$(echo "scale=3; ($end - $start) / 1000000" | bc)
-  duration=$(( (end - start) / 1000000 ))
+  duration=$(((end - start) / 1000000))
   echo "First request (headers only): ${header_duration} ms"
   echo "Second request:               ${duration} ms"
 }
@@ -829,12 +848,13 @@ function fw() {
 }
 
 function ppas() {
-  ppa=$(apt-cache policy |
-    grep http |
-    awk '{print $2" "$3}' |
-    sort -u |
-    grep ppa |
-    cut -d'/' -f4-5 | fzf
+  ppa=$(
+    apt-cache policy |
+      grep http |
+      awk '{print $2" "$3}' |
+      sort -u |
+      grep ppa |
+      cut -d'/' -f4-5 | fzf
   )
 
   if [[ -n "${ppa}" ]]; then
