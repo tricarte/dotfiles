@@ -169,6 +169,7 @@ augroup END
 "     autocmd FileType php setlocal dictionary+=~/.vim/dict/some-file
 " augroup END
 
+" Open help in vertical split
 augroup helpfiles
   au!
   au BufRead,BufEnter */doc/* wincmd L
