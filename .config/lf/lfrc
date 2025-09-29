@@ -2206,12 +2206,20 @@ cmd markdown-view &{{
 }}
 
 # Info: Open selected file with $EDITOR (usually, vim)
-cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
+# cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
+cmd open-with-vim &{{
+  while IFS=$'\n' read item; do
+    $(which nvim) --noplugin \
+      --cmd "lua vim.fn.rpcrequest(vim.fn.sockconnect('pipe', '/home/sagirbas/.cache/nvim/server.pipe', { rpc = true }), 'nvim_command', ':e! ${item}')" \
+      --cmd "q" --headless
+  done < <(printf "${fx}\n")
+  go2vim
+}}
 map e open-with-vim
 
 # Info: Add current working directory to autojump database
 cmd add-to-autojump &{{
-    autojump --add "${PWD}"
+  autojump --add "${PWD}"
 }}
 
 # Info: Compress selected files(s) for WEB with gzip or brotli
