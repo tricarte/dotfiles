@@ -362,13 +362,21 @@ Plug 'rust-lang/rust.vim'
 " Automatically change directory to project's root
 Plug 'airblade/vim-rooter'
 
+" Filetype detection, syntax highlighting, indentation for Dart
+Plug 'dart-lang/dart-vim-plugin'
+
 " Using vimcomplete instead of CoC
 Plug 'girishji/vimcomplete'
 Plug 'girishji/ngram-complete.vim' " ngram and bigram completion instead of dictionary
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'rafamadriz/friendly-snippets'
-Plug 'yegappan/lsp', { 'for': ['php', 'lua', 'vlang', 'c', 'cpp', 'go'] }
+Plug 'yegappan/lsp', { 'for': ['php', 'lua', 'vlang', 'c', 'cpp', 'go', 'dart'] }
+set complete+=o
+
+" Plug 'vim-denops/denops.vim'
+" Plug 'vim-denops/denops-shared-server.vim'
+
 
 " Plug 'editorconfig/editorconfig-vim'
 packadd! editorconfig
@@ -507,7 +515,7 @@ let g:session_command_aliases = 1
 "syntax on
 syntax sync fromstart
 " Improve this setting, because it loads all these highlights in every md file
-let g:markdown_fenced_languages = ['php', 'js=javascript', 'rust', 'html']
+let g:markdown_fenced_languages = ['php', 'js=javascript', 'rust', 'html', 'dart']
 set ruler
 set relativenumber
 set number
