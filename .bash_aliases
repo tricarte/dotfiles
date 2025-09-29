@@ -109,7 +109,7 @@ alias phpo="php \
     -d opcache.jit=tracing \
     -d mysqlnd.collect_statistics=0"
 alias phphash="phpo ~/repos/php-playground/src/hash_algorithms_benchmark_time_length.php" # Benchmark PHP hashing algorithms
-alias phpm="php -m | grep -i" # Check PHP extension is installed
+alias phpm="php -m | grep -i"                                                             # Check PHP extension is installed
 alias psh="psysh"                                                                         # PHP cli shell
 alias heyb="hey -n 100 -c 20"                                                             # HTTP Benchmark with hey
 alias spd="speedtest --simple --no-upload"                                                # Download speed test
@@ -147,7 +147,7 @@ alias weather="curl http://wttr.in/kayseri"
 # alias mcons="sudo mount-containers single"
 # alias mconu="sudo conta --text --non-interactive -d"
 alias mcon="mount-containers2"
-alias cc="rm -rf ~/.cache/thumbnails/*"          # Clear thumbnail cache
+alias cc="rm -rf ~/.cache/thumbnails/*"    # Clear thumbnail cache
 alias nb="ip n | grep REACHABLE | cut -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
 # alias kssha="kssh \$(whoami)@\$(nb) -p 8022"   # Ssh into android
@@ -165,7 +165,7 @@ alias sniploc="cd ~/valet-park/sniploc; pws"
 alias yt="ytfzf -T kitty -f -t"
 alias update-kitty="curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin"
 alias update-starship="curl -sS https://starship.rs/install.sh | sh -s -- -y"
-alias update-wpcli="sudo wp cli update"    # Update wpcli, use 'wp cli check-update'
+alias update-wpcli="sudo wp cli update" # Update wpcli, use 'wp cli check-update'
 alias update-npm-global="npm update -g" # Update globally installed npm packages
 alias str="vlc -vvv -I ncurses --recursive expand --quiet --random --sout '#http{mux=ts,dst=\$(hostname -I):8080/stream}' --sout-all --sout-keep /media/v*"
 alias ger="mcon mount-only && sstart gerbera.service"
@@ -181,6 +181,7 @@ alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at no
 alias kconref="kdeconnect-cli --refresh"
 alias less='less -x4RFsX --incsearch -i -g'
 alias mute="amixer -q sset 'Master' 0%"
+# alias offand="adb shell input keyevent 26" # Toggle android screen on/off
 
 ##############
 #  Composer  #
@@ -217,7 +218,6 @@ alias dr="vendor/bin/drush"
 #     -dextension=mysqlnd \
 #     -dextension=pdo -dextension=pdo_mysql \
 #     -dextension=tokenizer vendor/bin/\${script}"
-
 
 ###########
 # Laravel #
@@ -256,9 +256,9 @@ alias dpushgh="dfiles push -u github_remote main"
 alias dpushall="dpush && dpushgh"
 alias darchive="dfiles archive -o ~/dotfiles-gitlab-repo.zip HEAD"
 alias dlog="dfiles log"
-alias drevert="dfiles reset --hard HEAD" # Revert changes to last commit of dotfiles
-alias dui="gitui -d \$HOME/.dotfiles -w \$HOME" # Dotfiles management with gitui
-alias dlazy="lazygit -g \$HOME/.dotfiles -w \$HOME" # Dotfiles management with gitui
+alias drevert="dfiles reset --hard HEAD"            # Revert changes to last commit of dotfiles
+alias dui="gitui -d \$HOME/.dotfiles -w \$HOME"     # Dotfiles management with gitui
+alias dlazy="lazygit -g \$HOME/.dotfiles -w \$HOME" # Dotfiles management with lazygit
 
 #########################
 #  Docker and Devilbox  #
