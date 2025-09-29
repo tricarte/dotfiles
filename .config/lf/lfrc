@@ -2322,3 +2322,13 @@ cmd install-deb &{{
     lf -remote "send $id echoerr Not a Debian package!"
   fi
 }}
+
+# Info: Rename mp4 files
+cmd rename-mp4 &{{
+    if [[ -z "$@" ]]; then
+        lf -remote "send $id echoerr No start number provided!"
+        exit
+    fi
+
+    wrap-with-quotes "${fx}" | xargs -I '{}' rename-mp4 -c "$1" "{}"
+}}
