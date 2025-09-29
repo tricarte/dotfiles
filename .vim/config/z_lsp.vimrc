@@ -74,14 +74,14 @@ let lspOpts = #{
         \   noNewlineInCompletion: v:false,
         \   omniComplete: v:false,
         \   outlineOnRight: v:true,
-        \   outlineWinSize: 20,
-        \   semanticHighlight: v:true,
+        \   outlineWinSize: 40,
+        \   semanticHighlight: v:false,
         \   showDiagInBalloon: v:true,
         \   showDiagInPopup: v:true,
         \   showDiagOnStatusLine: v:false,
         \   showDiagWithSign: v:true,
         \   showDiagWithVirtualText: v:false,
-        \   showInlayHints: v:true,
+        \   showInlayHints: v:false,
         \   showSignature: v:true,
         \   snippetSupport: v:false,
         \   ultisnipsSupport: v:false,
@@ -102,9 +102,27 @@ function! HandleNotifications(lspserver, reply)
     echo "LSP Server started!"
 endfunction
 
+function! HandleRequest(lspserver, request)
+    " echo request
+    echo "blah blah"
+endfunction
+
 " intelephense configuration
 " https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
+        " \     customRequestHandlers: { "textDocument/completion": function('HandleRequest'), },
+        " \     customNotificationHandlers: { "textDocument/completion": function('HandleNotifications'), },
+        " \     args: ['language-server', '--client-id', 'Vim', '--client-version', '1.2'],
+        " \     args: ['language-server', '--client-id', 'Vim', '--client-version', '1.2', '--instrumentation-log-file=/tmp/lsp-log.txt'],
+        " \     args: ['language-server', '--client-id', 'Vim', '--client-version', '1.2'],
 let lspServers = [
+        \  #{name: 'dart',
+        \     filetype: ['dart'],
+        \     path: $HOME.'/Downloads/flutter/bin/dart',
+        \     args: ['language-server', '--client-id', 'Vim', '--client-version', '1.2', '--instrumentation-log-file=/tmp/lsp-log.txt'],
+        \     initializationOptions: #{onlyAnalyzeProjectsWithOpenFiles: v:true},
+        \     runIfSearch: ['.root', 'pubspec.yaml'],
+        \     rootSearch: ['.root', 'pubspec.yaml'],
+        \ },
         \  #{
         \     name: 'v-analyzer',
         \     path: $HOME.'/.config/v-analyzer/bin/v-analyzer',
