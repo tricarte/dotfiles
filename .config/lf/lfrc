@@ -2022,7 +2022,7 @@ cmd rename-random &{{
     printf '%s' "${fx}" | perl -wnlaF'/' \
         -e '@arr = split /\./, $F[-1];
             $rand = sprintf("%010X", rand(0xFFFFFFFF));
-            rename $F[-1], "$rand.$arr[1]" or die "Rename failed: $!";'
+            rename $F[-1], "$rand.$arr[$#arr]" or die "Rename failed: $!";'
     lf -remote "send $id reload"
 }}
 
