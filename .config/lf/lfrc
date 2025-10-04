@@ -1044,6 +1044,11 @@ cmd mountc !{{
 
   pass=$(gpg -q -d --pinentry-mode loopback /etc/.container.gpg)
 
+  if [[ -z "${pass}" ]]; then
+    lf -remote "send $id echoerr Probably wrong passphrase!"
+    exit 1
+  fi
+
   while IFS=$'\n' read item; do
     BASENAME=$(basename "${item}")
     SLOT=$(echo "${BASENAME%%.*}" | cut -d'_' -f2)
