@@ -147,8 +147,8 @@ alias weather="curl http://wttr.in/kayseri"
 # alias mcons="sudo mount-containers single"
 # alias mconu="sudo conta --text --non-interactive -d"
 alias mcon="mount-containers2"
-alias cc="rm -rf ~/.cache/thumbnails/*"    # Clear thumbnail cache
-alias nb="ip n | grep REACHABLE | cut -f1" # Neighbors in the network
+alias cc="rm -rf ~/.cache/thumbnails/*"          # Clear thumbnail cache
+alias nb="ip n | grep REACHABLE | cut -d' ' -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
 # alias kssha="kssh \$(whoami)@\$(nb) -p 8022"   # Ssh into android
 alias ssha="ssh -o ServerAliveInterval=600 \$(whoami)@\$(nb) -p 8022" # Ssh into android
