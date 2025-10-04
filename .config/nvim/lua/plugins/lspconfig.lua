@@ -17,9 +17,11 @@ return {
       dartls = {},
       intelephense = {
         settings = {
-          -- intelephense = {
-          --   runtime = "/home/user/.bun/bin/bun",
-          -- },
+          intelephense = {
+            -- runtime = "/home/user/.bun/bin/bun",
+            -- runtime = "/home/user/.volta/bin/node",
+            -- runtime = vim.env.USER .. "/.volta/bin/node",
+          },
         },
         -- root_dir = nil,
         -- root_dir = require("lspconfig").util.root_pattern(".git", "composer.json"),

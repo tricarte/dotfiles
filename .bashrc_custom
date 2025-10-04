@@ -21,7 +21,7 @@ eval "$(starship init bash)"
 IGNOREEOF=3 # Shell only exists after the third consecutive Ctrl-d
 # set -o ignoreeof  # Same as setting IGNOREEOF=3
 
-pathmunge "$HOME/.composer/vendor/bin:$HOME/.npm-global/bin"
+# pathmunge "$HOME/.composer/vendor/bin:$HOME/.npm-global/bin"
 # PATH="$HOME/.composer/vendor/bin:$HOME/.npm-global/bin:$PATH"
 
 . /usr/share/autojump/autojump.bash
@@ -220,23 +220,10 @@ if [[ -f "$HOME/.cargo/env" ]]; then
   source "$HOME/.cargo/env"
 fi
 
-TMUXP=$(command -v tmuxp)
-if [[ $TMUXP ]]; then
-  eval "$(_TMUXP_COMPLETE=bash_source tmuxp)"
-fi
-
-# nnn file manager configuration
-# e enables detached text file editing.
-# c enables nuke as opener. See NNN_OPENER
-# export NNN_OPTS="AdoQUc"
-# Working region
-export NNN_OPTS="AdoQUe"
-export NNN_BMS="h:$HOME;n:$HOME/Documents/notes;s:$HOME/sites;r:$HOME/repos;p:$HOME/valet-park;D:$HOME/Downloads/;V:$HOME/Videos;P:$HOME/Pictures"
-export NNN_PLUG='j:autojump;f:finder;o:fzopen;p:mocplay;d:diffs;t:nmount;v:imgview'
-export VISUAL=ewrap
-export NNN_COLORS='1234'
-# End of working region
-# export NNN_OPENER="$HOME/.config/nnn/plugins/nuke"
+# TMUXP=$(command -v tmuxp)
+# if [[ $TMUXP ]]; then
+#   eval "$(_TMUXP_COMPLETE=bash_source tmuxp)"
+# fi
 
 # export LF_BOOKMARK_PATH="$HOME/.config/lf/bookmarks"
 
@@ -256,13 +243,13 @@ export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools/:$PATH
 export PATH="$HOME/Downloads/flutter/bin:$PATH"
 
-if [[ -f "${HOME}/.apis" ]]; then
-  source "${HOME}/.apis"
-fi
+# if [[ -f "${HOME}/.apis" ]]; then
+#   source "${HOME}/.apis"
+# fi
 
-if [[ -f "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
-  source "${HOME}/perl5/perlbrew/etc/bashrc"
-fi
+# if [[ -f "${HOME}/perl5/perlbrew/etc/bashrc" ]]; then
+#   source "${HOME}/perl5/perlbrew/etc/bashrc"
+# fi
 
 PATH="${HOME}/perl5/bin${PATH:+:${PATH}}"
 export PATH
@@ -328,7 +315,7 @@ export PATH="${HOME}/.luarocks/bin:${PATH}"
 
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 
-source "/etc/profile.d/rvm.sh"
+# source "/etc/profile.d/rvm.sh"
 
 # https://askubuntu.com/questions/413436/copy-current-terminal-prompt-to-clipboard
 if [[ -n $DISPLAY ]]; then
