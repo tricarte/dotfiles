@@ -2300,6 +2300,7 @@ cmd annotate-image &{{
 # Info: Extract text from image using tesseract-ocr
 cmd ocr &{{
   if command -v tesseract &> /dev/null; then
+    lf -remote "send $id echo Please wait..."
     tesseract "${f}" stdout -l eng | xclip -selection clipboard
       if [[ $? == 0 ]]; then
           lf -remote "send $id echo Extracted text copied to clipboard."
