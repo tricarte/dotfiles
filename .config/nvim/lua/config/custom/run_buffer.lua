@@ -78,19 +78,7 @@ end, {
   force = true,
   nargs = 1,
   complete = function()
-    return {
-      "sh",
-      "lua",
-      "php",
-      "dart",
-      "go",
-      "v",
-      "c",
-      "perl",
-      "javascript",
-      "typescript",
-      "ruby",
-    }
+    return vim.tbl_keys(t_fts)
   end,
 })
 
