@@ -21,6 +21,8 @@ return {
             -- runtime = "/home/user/.bun/bin/bun",
             -- runtime = "/home/user/.volta/bin/node",
             -- runtime = vim.env.USER .. "/.volta/bin/node",
+            -- format = { braces = "k&r" },
+            -- environment = { phpVersion = "7.4.0" },
           },
         },
         -- root_dir = nil,
