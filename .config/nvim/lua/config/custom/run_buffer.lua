@@ -7,7 +7,7 @@ local t_fts = {
   },
   lua = {
     command = string.format('bash --noprofile --norc -c "%s %%s %%s"', vim.env.HOME .. "/luajit21/bin/luajit"),
-    input = HOME .. "/repos/bash-playground/bash-scratch.sh",
+    input = HOME .. "/repos/lua-playground/lua-scratch.lua",
   },
   php = {
     command = [[
@@ -39,7 +39,7 @@ local t_fts = {
   },
   perl = {
     command = "perl %s %s",
-    input = HOME .. "/repos/perl-playground/playground.perl",
+    input = HOME .. "/repos/perl-playground/playground.pl",
   },
   javascript = {
     command = "bun %s %s",
