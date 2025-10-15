@@ -1,6 +1,6 @@
 local va = vim.api
 va.nvim_create_user_command("SnpNew", function(_)
-  local tmpfile = vim.fn.system("snippet_writer new")
+  local tmpfile = vim.fn.system("snpcl new")
   vim.cmd(string.format(
     [[
     edit %s
@@ -11,7 +11,7 @@ va.nvim_create_user_command("SnpNew", function(_)
 end, { nargs = 0, bang = true })
 
 va.nvim_create_user_command("SnpCloneLast", function(_)
-  local tmpfile = vim.fn.system("snippet_writer clone")
+  local tmpfile = vim.fn.system("snpcl clone")
   vim.cmd(string.format(
     [[
     edit %s
@@ -21,7 +21,7 @@ va.nvim_create_user_command("SnpCloneLast", function(_)
 end, { nargs = 0, bang = true })
 
 va.nvim_create_user_command("SnpEditLast", function(_)
-  local tmpfile = vim.fn.system("snippet_writer read -s last")
+  local tmpfile = vim.fn.system("snpcl read -s last")
   vim.cmd(string.format(
     [[
     edit %s
@@ -33,7 +33,7 @@ end, { nargs = 0, bang = true })
 -- TODO: when a snippet saved for the first time, return the whole toml file as a response
 va.nvim_create_user_command("SnpSave", function(_)
   vim.cmd("silent! w")
-  local obj = vim.system({ "snippet_writer", "save", "-f", vim.fn.expand("%") }, { text = true }):wait()
+  local obj = vim.system({ "snpcl", "save", "-f", vim.fn.expand("%") }, { text = true }):wait()
   if obj.stdout == "success\n" then
     remove_file_and_buffer(1)
     vim.notify("Snippet saved succesfully!", vim.log.levels.INFO)
@@ -49,7 +49,7 @@ va.nvim_create_user_command("SnpSyn", function(_)
   end
   Snacks.picker.pick({
     finder = function()
-      local syntaxes = vim.fn.systemlist({ "snippet_writer", "syn" })
+      local syntaxes = vim.fn.systemlist({ "snpcl", "syn" })
       local items = {}
       for _, v in ipairs(syntaxes) do
         table.insert(items, {
@@ -83,7 +83,7 @@ va.nvim_create_user_command("SnpParent", function(_)
   end
   Snacks.picker.pick({
     finder = function()
-      local categories = vim.fn.systemlist({ "snippet_writer", "categories" })
+      local categories = vim.fn.systemlist({ "snpcl", "categories" })
       local items = {}
       for _, v in ipairs(categories) do
         table.insert(items, {
