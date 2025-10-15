@@ -14,7 +14,9 @@ return {
           },
         },
       },
-      dartls = {},
+      -- Listing the lsp server like this below is enough to be installed.
+      -- But, nvim-flutter/flutter-tools.nvim tells not to list dartls here.
+      -- dartls = {},
       intelephense = {
         settings = {
           intelephense = {
