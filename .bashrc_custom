@@ -333,3 +333,5 @@ if [ -f ~/.local/share/bash-completion/completions/deno.bash ]; then
   . ~/.local/share/bash-completion/completions/deno.bash
 fi
 export PATH=$HOME/.deno/bin:$PATH
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
