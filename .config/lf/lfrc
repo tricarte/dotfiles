@@ -2217,9 +2217,7 @@ cmd markdown-view &{{
 # cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
 cmd open-with-vim &{{
   while IFS=$'\n' read item; do
-    $(which nvim) --noplugin \
-      --cmd "lua vim.fn.rpcrequest(vim.fn.sockconnect('pipe', '/home/sagirbas/.cache/nvim/server.pipe', { rpc = true }), 'nvim_command', ':e! ${item}')" \
-      --cmd "q" --headless
+    open_with_nvim "${item}"
   done < <(printf "${fx}\n")
   go2vim
 }}
