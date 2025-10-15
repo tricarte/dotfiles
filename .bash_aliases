@@ -143,10 +143,7 @@ alias y2mp3="youtube-dl \
   "
 alias qk="vim ~/.quick" # Open quick notes file in vim
 alias weather="curl http://wttr.in/kayseri"
-# alias mcon="sudo mount-containers"
-# alias mcons="sudo mount-containers single"
-# alias mconu="sudo conta --text --non-interactive -d"
-alias mcon="mount-containers2"
+alias mcon="mount_containers"
 alias cc="rm -rf ~/.cache/thumbnails/*"          # Clear thumbnail cache
 alias nb="ip n | grep REACHABLE | cut -d' ' -f1" # Neighbors in the network
 alias kssh="kitty +kitten ssh"
@@ -170,7 +167,7 @@ alias update-npm-global="npm update -g" # Update globally installed npm packages
 alias str="vlc -vvv -I ncurses --recursive expand --quiet --random --sout '#http{mux=ts,dst=\$(hostname -I):8080/stream}' --sout-all --sout-keep /media/v*"
 alias ger="mcon mount-only && sstart gerbera.service"
 alias gers="sstop gerbera.service && cd ~ && sudo conta -d && cc"
-alias uud="unmount-usb-drives"
+alias uud="unmount_usb_drives"
 alias die="uud && shutdown -h now"
 alias killdnsm="sudo killall -s SIGKILL dnsmasq"
 alias q="exit"
@@ -181,7 +178,7 @@ alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at no
 alias kconref="kdeconnect-cli --refresh"
 alias less='less -x4RFsX --incsearch -i -g'
 alias mute="amixer -q sset 'Master' 0%"
-# alias offand="adb shell input keyevent 26" # Toggle android screen on/off
+alias seb="safeeyes --take-break"
 
 ##############
 #  Composer  #

@@ -18,6 +18,8 @@ set mouse true
 set preview false
 set selmode dir
 set hidden true
+# set drawbox true
+# set roundbox true
 # set filesep "\n"
 
 # Right now this looks useless.
@@ -115,7 +117,7 @@ map <c-o> :open-in-file-manager
 cmd open-with-menu !{{
     # Requires libfile-mimeinfo-perl package
     clear
-    open-with.pl "${f}"
+    open_with.pl "${f}"
 }}
 map O :open-with-menu
 
@@ -547,7 +549,7 @@ cmd quicklook-single-image &{{
    printf "${fx}" | xargs --delimiter='\n' $iv
 
     # if [[ -n $items ]]; then
-    #     items=$(wrap-with-quotes "${items}")
+    #     items=$(wrap_with_quotes "${items}")
     #     lf -remote "send $id toggle $(echo ${items})"
     # fi
 }}
@@ -575,7 +577,7 @@ cmd browse-images &{{
     fi
 
     if [[ -n $items ]]; then
-        items=$(wrap-with-quotes "${items}")
+        items=$(wrap_with_quotes "${items}")
         lf -remote "send $id toggle $(echo ${items})"
     fi
 }}
@@ -878,7 +880,7 @@ map <delete> delete
 
 # Info: Trash selected items to ~/.local/share/Trash without actually deleting
 cmd trash &{{
-    wrap-with-quotes "${fx}" | xargs -I '{}' rip --graveyard ~/.local/share/Trash/rip "{}"
+    wrap_with_quotes "${fx}" | xargs -I '{}' rip --graveyard ~/.local/share/Trash/rip "{}"
     lf -remote "send $id load"
 }}
 
@@ -890,13 +892,13 @@ cmd empty-trash !{{
 
 # Info: Restore item from Trash
 cmd untrash &{{
-    wrap-with-quotes "${fx}" | xargs -I '{}' rip --unbury "{}" --graveyard ~/.local/share/Trash/rip
+    wrap_with_quotes "${fx}" | xargs -I '{}' rip --unbury "{}" --graveyard ~/.local/share/Trash/rip
     lf -remote "send $id load"
 }}
 
 # Info: Check if selected directory is in a backup profile or not
 cmd in-backup-profile %{{
-    in-backup-profile.sh "${f}"
+    in_backup_profile "${f}"
 }}
 
 # Info: Select items in cwd which are not listed in a backup profile
@@ -906,7 +908,7 @@ cmd not-in-backup-profile &{{
     items=()
 
     for item in ${dirs}; do
-        out=$(in-backup-profile.sh "${item}")
+        out=$(in-backup-profile "${item}")
         if [[ $out == No* ]]; then
             # lf -remote "send $id select ${item}"
             items+=("${item}")
@@ -915,7 +917,7 @@ cmd not-in-backup-profile &{{
 
     lf -remote "send $id echo ''"
     if [[ ${#items[@]} -gt 0 ]]; then
-        # TODO: wrap-with-quotes
+        # TODO: wrap_with_quotes
         lf -remote "send $id toggle $(echo ${items[@]})"
     fi
 }}
@@ -1016,23 +1018,30 @@ cmd restore-backup ${{
 }}
 
 # Info: Go to the most recent file in current directory
-cmd last &{{
-    # This function accepts a directory as argument.
+cmd mrf &{{
+    # FD=$(command -v fd)
+    # ITEM=$(
+    #     $FD --base-directory "${@:-./}" --exact-depth 1 \
+    #         --type f -a \
+    #         --color never --exec-batch ls -t -Q -1 | head -n1
+    # )
+    # if [[ -n $ITEM ]]; then
+    #     lf -remote "send $id select ${ITEM}"
+    # fi
+
+    # This script accepts a directory as argument.
     # If it is not provided, than CWD is used.
-    FD=$(command -v fd)
-    ITEM=$(
-        $FD --base-directory "${@:-./}" --exact-depth 1 \
-            --type f -a \
-            --color never --exec-batch ls -t -Q -1 | head -n1
-    )
+    ITEM=$(most_recent_file "${@:-./}")
     if [[ -n $ITEM ]]; then
-        lf -remote "send $id select ${ITEM}"
+      lf -remote "send $id select ${ITEM}"
+    else
+      lf -remote "send $id echoerr Something went wrong."
     fi
 }}
 
 # Info: Go to the most recently downloaded item in ~/Downloads
-cmd lastdown &{{
-    lf -remote "send $id :last \"${HOME}/Downloads\""
+cmd mrfdown &{{
+    lf -remote "send $id :mrf \"${HOME}/Downloads\""
 }}
 
 # Info: Mount veracrypt container
@@ -1240,7 +1249,7 @@ EOF
                     if [[ ! "${delay}" -gt 0 ]]; then
                         delay=80
                     fi
-                    cmd="gm convert -loop 10 -delay ${delay} $(echo $(wrap-with-quotes "${fx}")) converted/output.gif"
+                    cmd="gm convert -loop 10 -delay ${delay} $(echo $(wrap_with_quotes "${fx}")) converted/output.gif"
                     bash -c "${cmd}"
                 elif [[ "${ext}" == 'avif' ]]; then
                     # imagemagick mogrify and convert commands suck cpu and memory with jpeg images
@@ -1279,12 +1288,12 @@ EOF
                     fi
 
                     if [[ -c /dev/dri/renderD128 ]]; then
-                        cmd="cat $(echo $(wrap-with-quotes "${fx}")) | \
+                        cmd="cat $(echo $(wrap_with_quotes "${fx}")) | \
                         ffmpeg -vaapi_device /dev/dri/renderD128  \
                         -r "1/${delay}" -f image2pipe -i - -c:v h264_vaapi \
                         -vf 'format=nv12,hwupload,fps=25' -pix_fmt yuv420p -y converted/output.mp4"
                     else
-                        cmd="cat $(echo $(wrap-with-quotes "${fx}")) | ffmpeg -r "1/${delay}" -f image2pipe -i - -c:v libx264 -vf fps=25 -pix_fmt yuv420p -y converted/output.mp4"
+                        cmd="cat $(echo $(wrap_with_quotes "${fx}")) | ffmpeg -r "1/${delay}" -f image2pipe -i - -c:v libx264 -vf fps=25 -pix_fmt yuv420p -y converted/output.mp4"
                     fi
 
                     bash -c "${cmd}"
@@ -1416,7 +1425,7 @@ EOF
             fi
             ;;
         Montage)
-            cmd="gm montage -quality 100 +frame +shadow +label -geometry +0+0 $(echo $(wrap-with-quotes "${fx}")) montage.jpg"
+            cmd="gm montage -quality 100 +frame +shadow +label -geometry +0+0 $(echo $(wrap_with_quotes "${fx}")) montage.jpg"
             bash -c "${cmd}"
             if [[ -f 'montage.jpg' ]]; then
                 lf -remote "send $id select montage.jpg"
@@ -1545,7 +1554,7 @@ cmd image2video ${{
 
 # Info: Crop black areas from videos
 cmd crop-video !{{
-    crop-video.sh ${fx}
+    crop_video ${fx}
 }}
 
 # Info: Encode video using x264 fast preset or av1
@@ -1972,38 +1981,15 @@ cmd md2pdf-groff !{{
 # "cmd_name ${{}}"
 # TODO: This is VERY fragile.
 map gp ${{
-    FZF=$(command -v fzf)
+  result="$(lf_cmd_palette)"
 
-    if [[ -f "/tmp/lf_cmd_palette_cache" ]] && [[ "/tmp/lf_cmd_palette_cache" -ot "${HOME}/.config/lf/lfrc" ]]; then
-        rm "/tmp/lf_cmd_palette_cache"
+  if [[ "${result}" =~ ^Error ]]; then
+    lf -remote "send $id echoerr ${result}"
+  else
+    if [[ -n "${result}" ]]; then
+      lf -remote "send $id push :${result%%\ *}<space>"
     fi
-
-    if [[ -f /tmp/lf_cmd_palette_cache ]]; then
-        action=$(cat /tmp/lf_cmd_palette_cache | $FZF)
-    else
-        cmds=$(grep -E ^cmd "${HOME}/.config/lf/lfrc" | cut -d' ' -f2)
-        infos=$(grep -E '^# Info:' "${HOME}/.config/lf/lfrc" | cut -d' ' -f3-)
-        noops=$(echo "$infos" | grep "Noop" | cut -d'>' -f2)
-        infos=$(echo "$infos" | grep -v "Noop")
-        # TODO: Improve this ugliness
-        cmds=$(
-                while IFS=$'\n' read item; do
-                    echo "$cmds" | grep -v "${item}"
-                done < <(printf "${noops}\n")
-        )
-        c1=$(printf "$cmds" | wc -l)
-        c2=$(printf "$infos" | wc -l)
-        if [[ $c1 == $c2 ]]; then
-            action=$(paste -d':' <(printf "${cmds}") <(printf "${infos}") | column -t -s':' | sort | tee /tmp/lf_cmd_palette_cache | $FZF)
-        else
-            lf -remote "send $id echoerr Info strings do not match the count of cmds."
-            exit
-        fi
-    fi
-
-    if [[ -n "${action}" ]]; then
-        lf -remote "send $id push :${action%%\ *}<space>"
-    fi
+  fi
 
 }}
 
@@ -2091,7 +2077,7 @@ cmd mp4-to-avif !{{
 
 # Info: Calculate total number of lines of selected file(s)
 cmd total-line-number &{{
-    output=$(total_line_numbers.php $fx)
+    output=$(total_line_numbers $fx)
     lf -remote "send $id echo ${output}"
 }}
 
@@ -2337,5 +2323,5 @@ cmd rename-mp4 &{{
         exit
     fi
 
-    wrap-with-quotes "${fx}" | xargs -I '{}' rename-mp4 -c "$1" "{}"
+    wrap_with_quotes "${fx}" | xargs -I '{}' rename-mp4 -c "$1" "{}"
 }}
