@@ -53,6 +53,10 @@ local t_fts = {
     command = "ruby %s %s",
     input = HOME .. "/repos/ruby-playground/playground",
   },
+  html = {
+    command = "cha %s %s", -- second formatter is not used.
+    input = HOME .. "/repos/html-playground/scratch.html",
+  },
 }
 
 function RunBuffer(file, filetype, args)
