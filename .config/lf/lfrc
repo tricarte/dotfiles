@@ -86,7 +86,8 @@ map i !{{
             exit 0
         fi
 
-        clear;/usr/local/bin/vim -u "${HOME}/.vim/vimrc.minimal" "${f}"
+        # clear;/usr/local/bin/vim -u "${HOME}/.vim/vimrc.minimal" "${f}"
+        clear;/opt/nvim-linux-x86_64/bin/nvim --clean "${f}"
         exit 0
     fi
 
