@@ -81,6 +81,11 @@ vk.set("n", "<leader>so", function()
   Snacks.picker.grep({ cwd = vim.fn.expand("%:h"), args = { "--max-depth", "1" } })
 end, { desc = "Grep only sibling files" })
 
+-- Grep in dofiles.
+-- vk.set("n", "<leader>df", function()
+--   Snacks.picker.grep({ cwd = vim.fn.expand("%:h"), args = { "--max-depth", "1" } })
+-- end, { desc = "Grep in dotfiles" })
+
 vk.set("n", "<F4>", "<cmd>Outline<CR>", { desc = "Outliner (Tagbar)" })
 
 vk.set("n", "25", "<cmd>vertical resize 40<CR>", { desc = "Resize window 25%" })
