@@ -15,7 +15,6 @@ va.nvim_create_user_command("SnpCloneLast", function(_)
   vim.cmd(string.format(
     [[
     edit %s
-    norm vin'
   ]],
     tmpfile
   ))
@@ -26,7 +25,6 @@ va.nvim_create_user_command("SnpEditLast", function(_)
   vim.cmd(string.format(
     [[
     edit %s
-    norm vin'
   ]],
     tmpfile
   ))
