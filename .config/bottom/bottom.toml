@@ -89,6 +89,7 @@ show_table_scroll_position = true
 
 # Show processes as their commands by default in the process widget.
 #process_command = false
+process_command = true
 
 # Displays the network widget with binary prefixes.
 #network_use_binary_prefix = false
