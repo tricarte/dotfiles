@@ -62,7 +62,7 @@ va.nvim_create_user_command("SnpSyn", function(_)
       return false
     end,
     format = function(item, picker)
-      return { { item.text } }
+      return { { string.upper(item.text) } }
     end,
     confirm = function(picker, item)
       picker:norm(function()
