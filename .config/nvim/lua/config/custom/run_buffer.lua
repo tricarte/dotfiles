@@ -57,6 +57,13 @@ local t_fts = {
     command = "cha %s %s", -- second formatter is not used.
     input = HOME .. "/repos/html-playground/scratch.html",
   },
+  zig = {
+    -- Below is for zig projects with build.zig file.
+    -- command = "cd " .. HOME .. "/repos/zig-projects/zig-playground; zig build run",
+    -- This should be used with a single zig file without build.zig
+    command = "zig run %s -- %s",
+    input = HOME .. "/repos/zig-projects/zig-playground/playground.zig",
+  },
 }
 
 function RunBuffer(file, filetype, args)
