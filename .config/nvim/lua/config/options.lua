@@ -14,6 +14,8 @@ vim.g.root_spec = {
     "v.mod", --vlang
     "go.mod", --golang
     "Gemfile", -- ruby
+    "build.zig.zon", -- zig
+    "build.zig", -- zig
   },
   "cwd",
   "lsp",
