@@ -1033,7 +1033,7 @@ cmd mrf &{{
     # If it is not provided, than CWD is used.
     ITEM=$(most_recent_file "${@:-./}")
     if [[ -n $ITEM ]]; then
-      lf -remote "send $id select ${ITEM}"
+      lf -remote "send $id select \"${ITEM}\""
     else
       lf -remote "send $id echoerr Something went wrong."
     fi
@@ -1616,6 +1616,7 @@ cmd optimize-video !{{
                 fi
 
                 if [[ $copy == 1 ]]; then
+                  # TODO: Does not work for mpeg files.
                   bitrate=$(($(mediainfo --Output="Video;%BitRate%" "${item}")/1000))
                   if ! [[ $bitrate =~ ^[0-9]+$ ]]; then
                     echo "Couldnot get bitrate of ${item}"
@@ -2310,7 +2311,7 @@ cmd install-deb &{{
     kitty @ --to unix:/tmp/mykitty launch \
         --type window --hold \
         --cwd "${PWD}" \
-        bash --noprofile --norc -c "sudo dpkg -i "${f}""
+        bash --noprofile --norc -c "sudo dpkg -i \"${f}\""
   else
     lf -remote "send $id echoerr Not a Debian package!"
   fi
