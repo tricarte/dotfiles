@@ -219,7 +219,8 @@ function nvim() {
   fi
 
   # If there is already a nvim server, use it
-  if [[ -S "${HOME}/.cache/nvim/server.pipe" ]]; then
+  # if [[ -S "${HOME}/.cache/nvim/server.pipe" ]]; then
+  if [[ -S "/tmp/nvim.server.pipe" ]]; then
     if [ $# -eq 0 ]; then
       $nvim_orig
     else
@@ -227,7 +228,8 @@ function nvim() {
       open-with-nvim.sh "${@}"
     fi
   else
-    $nvim_orig --listen "${HOME}/.cache/nvim/server.pipe" "$@"
+    # $nvim_orig --listen "${HOME}/.cache/nvim/server.pipe" "$@"
+    $nvim_orig --listen "/tmp/nvim.server.pipe" "$@"
   fi
 }
 export -f nvim
