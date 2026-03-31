@@ -864,3 +864,16 @@ function ppas() {
     printf "%s" "sudo apt-add-repository --remove ppa:${ppa}"
   fi
 }
+
+# Open local zig reference documentation page in browser
+function zigref() {
+  ver=$(realpath "${HOME}/.zvm/bin")
+  ver=$(basename "${ver}")
+  ref="${HOME}/.zvm/${ver}/doc/langref.html"
+  if [[ -f "${ref}" ]]; then
+    xdg-open "${ref}"
+  else
+    echo "Reference could not be found for version: ${ver}!"
+    return 1
+  fi
+}
