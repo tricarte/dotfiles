@@ -2200,6 +2200,16 @@ cmd markdown-view &{{
         --self /usr/bin/glow "${f}" --pager
 }}
 
+# Info: View csv files with csvlens
+cmd csv-view &{{
+    if command -v csvlens > /dev/null 2>&1; then
+      kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" \
+          --self /usr/local/bin/csvlens "${f}"
+    else
+      kitten panel sh -c 'printf "\n\n\ncsvlens is not installed."; sleep 3s'
+    fi
+}}
+
 # Info: Open selected file with $EDITOR (usually, vim)
 # cmd open-with-vim &{{$EDITOR "$f" && go2vim}}
 cmd open-with-vim &{{
