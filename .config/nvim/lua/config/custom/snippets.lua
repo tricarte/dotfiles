@@ -66,7 +66,7 @@ va.nvim_create_user_command("SnpSyn", function(_)
     end,
     actions = {
       ["default"] = function(selected, opts)
-        local line = vim.fn.search("type=")
+        local line = vim.fn.search("type=", "bw")
         vim.fn.setline(line, "type='" .. string.lower(selected[1]) .. "'")
       end,
     },
