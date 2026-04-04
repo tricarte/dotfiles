@@ -309,11 +309,16 @@ cmd grep ${{
     # Read FZF response into $file and $line
     IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
     [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
-    # FIXME: not works for neovim
+    
+    # Unlike VIM, neovim can open files remotely
+    # while the lf file manager is open inside neovim.
+    open_with_nvim_line "${file}" "${line}"
+    
     # DON'T run the editor if lf is inside VIM or nvim
     # pid=$(pgrep -f '^sh -c lf')
+    # pid=$(pgrep -f 'lf -selection-path')
     # if [[ -z "${pid}" ]]; then
-    #     vim +"${line}" "${file}"
+    #   open_with_nvim_line "${file}" "${line}"
     # fi
 }}
 
@@ -334,11 +339,16 @@ cmd grepf ${{
     # echo "${res}"
     IFS=":" read -rd '' file line < <(printf '%s%s' "${res}" ":") || true
     [ ! -z "${file}" ] && lf -remote "send $id select \"$file\""
-    # FIXME: not works for neovim
+    
+    # Unlike VIM, neovim can open files remotely
+    # while the lf file manager is open inside neovim.
+    open_with_nvim_line "${file}" "${line}"
+    
     # DON'T run the editor if lf is inside VIM or nvim
     # pid=$(pgrep -f '^sh -c lf')
+    # pid=$(pgrep -f 'lf -selection-path')
     # if [[ -z "${pid}" ]]; then
-    #     vim +"${line}" "${file}"
+    #   open_with_nvim_line "${file}" "${line}"
     # fi
 }}
 
