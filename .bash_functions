@@ -225,7 +225,7 @@ function nvim() {
       $nvim_orig
     else
       # $nvim_orig --server "${HOME}/.cache/nvim/server.pipe" --remote-send ":e! "${@}"<CR>"
-      open-with-nvim.sh "${@}"
+      open_with_nvim "${@}"
     fi
   else
     # $nvim_orig --listen "${HOME}/.cache/nvim/server.pipe" "$@"
