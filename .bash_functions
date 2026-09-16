@@ -454,7 +454,9 @@ fkill() {
       awk '{print $2}'
   )" || return
 
-  kill -"${1:-9}" "$pid"
+  if [[ -n "${pid}" ]]; then
+    kill -"${1:-9}" "${pid}"
+  fi
 }
 export -f fkill
 
