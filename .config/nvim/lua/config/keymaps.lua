@@ -27,8 +27,10 @@ vk.set("n", ",f", function()
     { text = "Notes", info = { type = "files", path = "~/Documents/notes" } },
     { text = "Etc", info = { type = "files", path = "/etc" } },
     { text = "Bin", info = { type = "files", path = "~/bin" } },
+    { text = "Dotconfig", info = { type = "files", path = "~/.config" } },
     { text = "Dotfiles", info = { type = "run", command = { source = "dfl" } } },
     { text = "Vimconfig", info = { type = "files", path = "~/.vim" } },
+    { text = "Lighttpd Config", info = { type = "files", path = "~/repos/compiled-lighttpd-config" } },
   }
   Snacks.picker.pick({
     items = source_list,
