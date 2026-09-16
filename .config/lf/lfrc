@@ -116,7 +116,7 @@ cmd open-in-file-manager &{{
 map <c-o> :open-in-file-manager
 
 # Info: Open selected file with the associated application <O>
-cmd open-with-menu !{{
+cmd open-with-menu ${{
     # Requires libfile-mimeinfo-perl package
     clear
     open_with.pl "${f}"
