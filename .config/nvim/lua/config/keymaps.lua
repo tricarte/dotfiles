@@ -85,7 +85,7 @@ end, { desc = "Grep only sibling files" })
 
 -- Grep in dofiles.
 -- vk.set("n", "<leader>df", function()
---   Snacks.picker.grep({ cwd = vim.fn.expand("%:h"), args = { "--max-depth", "1" } })
+--   Snacks.picker.grep({ cmd = "dfl" })
 -- end, { desc = "Grep in dotfiles" })
 
 vk.set("n", "<F4>", "<cmd>Outline<CR>", { desc = "Outliner (Tagbar)" })
