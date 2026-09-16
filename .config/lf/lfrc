@@ -2389,12 +2389,13 @@ cmd ocr &{{
 
 # Info: Install the selected debian package
 cmd install-deb &{{
+  # bash --noprofile --norc -c "sudo dpkg -i \"${f}\""
   mime=$(file --brief "${f}")
   if [[ $mime =~ "Debian binary package" ]]; then
     kitty @ --to unix:/tmp/mykitty launch \
         --type window --hold \
         --cwd "${PWD}" \
-        bash --noprofile --norc -c "sudo dpkg -i \"${f}\""
+        bash --noprofile --norc -c "sudo apt install \"${f}\""
   else
     lf -remote "send $id echoerr Not a Debian package!"
   fi
