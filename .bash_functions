@@ -879,3 +879,127 @@ function zigref() {
     return 1
   fi
 }
+
+# Start llama.cpp server with specified model file
+function lmsrv() {
+  models_dir="/media/${USER}/D892E34792E32928/llm-models"
+  llama_path="${HOME}/repos/llama.cpp/build/bin"
+
+  model_file="${1}"
+
+  if [[ ! -f "${model_file}" ]]; then
+    if [[ ! -d "${models_dir}" ]]; then
+      echo "External storage not connected!"
+      return 1
+    fi
+
+    model_file="$(ls ${models_dir}/*.gguf | xargs --delimiter='\n' -I '{}' basename '{}' | fzf)"
+    model_file="${models_dir}/${model_file}"
+  fi
+
+  # --tools all: removed, causes errors
+  # --batch-size: Default: 2048: How to digest the long prompts in order to process them parallel. Keep it low for low-end systems.
+  # --flash-attn on \
+
+  # --no-cache-prompt
+  if [[ -f "${model_file}" ]]; then
+    "${llama_path}/llama-server" \
+      -m "${model_file}" \
+      --host 127.0.0.1 \
+      --port 8033 \
+      --temp 0.8 \
+      --top-k 50 \
+      --top-p 0.1 \
+      --mlock \
+      --ctx-size 4096 \
+      --batch-size 1024 \
+      --threads 3 \
+      --repeat-penalty 1.05 \
+      --api-key "hebele-gubele" \
+      --prio 2 \
+      --seed -1 \
+      --context-shift \
+      --spec-default \
+      --tools get_datetime \
+      --jinja
+  else
+    echo "Specify a correct path for a model file!"
+    return 1
+  fi
+
+}
+
+# Start llama-cli with specified model file
+function lmcli() {
+  models_dir="/media/${USER}/D892E34792E32928/llm-models"
+  llama_path="${HOME}/repos/llama.cpp/build/bin"
+
+  model_file="${1}"
+
+  if [[ ! -f "${model_file}" ]]; then
+    if [[ ! -d "${models_dir}" ]]; then
+      echo "External storage not connected!"
+      return 1
+    fi
+
+    model_file="$(ls ${models_dir}/*.gguf | xargs --delimiter='\n' -I '{}' basename '{}' | fzf)"
+    model_file="${models_dir}/${model_file}"
+  fi
+
+  if [[ -f "${model_file}" ]]; then
+    "${llama_path}/llama-cli" \
+      -m "${model_file}" \
+      --threads 3 \
+      --batch-size 1024 \
+      --mlock \
+      --jinja \
+      --ctx-size 4096 \
+      --temp 0.2 \
+      --top-k 50 \
+      --top-p 0.1 \
+      --repeat-penalty 1.05
+  else
+    echo "Specify a correct path for a model file!"
+    return 1
+  fi
+
+}
+
+# Create a veracrypt encrypted container
+function vcr() {
+  SIZE=$1
+
+  if [[ -z $SIZE ]]; then
+    echo "Usage: ${FUNCNAME[0]} 256M"
+    echo ""
+    echo "Create a veracrypt conainer"
+    echo "Output file will be \"container.vcrypt\""
+    return
+  fi
+
+  if [[ ! $SIZE =~ [0-9]+[M]$ ]]; then
+    echo "Wrong size format!"
+    return 1
+  fi
+
+  SIZE_N=${SIZE%[M]}
+  if [[ $SIZE_N -lt 1 ]]; then
+    echo "Size cannot be less than 1M!"
+    return 1
+  fi
+
+  VERACRYPT=$(command -v veracrypt)
+  $VERACRYPT --text --create --filesystem=fat \
+    --keyfiles="" \
+    --pim=0 \
+    --volume-type=normal \
+    --hash="SHA-512" \
+    --encryption="AES-Twofish" \
+    --random-source="/dev/urandom" \
+    --size="${SIZE}" \
+    container.vcrypt
+
+  if [[ -f container.vcrypt ]]; then
+    echo "container.vcrypt successfully created."
+  fi
+}
