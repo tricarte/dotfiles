@@ -8,7 +8,7 @@ alias hdtemp="sudo hddtemp /dev/sda"
 alias rr="file /var/run/reboot-required"
 alias sizes='sudo du -sk * | sort -n | perl -ne '\''($s,$f)=split(m{\t});for (qw(K M G)) {if($s<1024) {printf("%.1f",$s);print "$_\t$f"; last};$s=$s/1024}'\' # sort filesystem items by size
 alias mounts="mount | column -t"
-alias diskusage="df -H -T $(mount | grep -E "ext4|xfs" | cut -d' ' -f1)"
+alias diskusage="df -H -T \$(mount | grep -E \"ext4 | xfs\" | cut -d' ' -f1)"
 alias codename="lsb_release -rcs | tr '\n' ' '; echo"
 alias ipsets="sudo ipset list -terse"
 alias mygroups="id -nG"
@@ -43,7 +43,7 @@ alias prcl="mysql -uadmin -ppassword -h 127.0.0.1 -e 'SHOW FULL PROCESSLIST'"   
 alias busy="lsof | { head -1 ; grep /media/\$(whoami) ; }"                                                       # Which process keeps the usb device busy
 # alias iscoremodule="corelist --upstream" # Is this module in perl core?
 alias taillighty="tail -f /tmp/custom-lighttpd-error.log"
-alias tailfpm="tail -f /tmp/php-fpm-845-drupal.error.log /tmp/lighttpd-fpm-static-php-fpm-pool.log"
+alias tailfpm="tail -f /tmp/current-fpm-unix-php-user-errors.log /tmp/current-fpm.error.log"
 
 ##############################################
 # archive management based on file extension #
@@ -110,12 +110,17 @@ alias phpo="php \
     -d mysqlnd.collect_statistics=0"
 alias phphash="phpo ~/repos/php-playground/src/hash_algorithms_benchmark_time_length.php" # Benchmark PHP hashing algorithms
 alias phpm="php -m | grep -i"                                                             # Check PHP extension is installed
-alias psh="psysh"                                                                         # PHP cli shell
-alias heyb="hey -n 100 -c 20"                                                             # HTTP Benchmark with hey
-alias spd="speedtest --simple --no-upload"                                                # Download speed test
+alias tpc="TYPEPHP_HOME="\${HOME}/Downloads/tpc" tpc"
+alias psh="psysh"                          # PHP cli shell
+alias heyb="hey -n 100 -c 20"              # HTTP Benchmark with hey
+alias spd="speedtest --simple --no-upload" # Download speed test
 alias onl="sudo systemctl restart dnsmasq && sudo systemctl restart valet-dns"
 alias metal="host metallica.com"
-alias vnstatl='vnstat -l -i $(ip route | grep default | cut -d" " -f5)' # Monitor current gateway internet interface bandwidth
+alias vnstatl='vnstat -l -i \$(ip route | grep default | cut -d" " -f5)' # Monitor current gateway internet interface bandwidth
+
+# Python Related
+alias act="source .venv/bin/activate"
+alias dct="deactivate"
 
 #######################################################################
 #                     Use ssh host config instead                     #
@@ -172,12 +177,14 @@ alias die="uud && shutdown -h now"
 alias killdnsm="sudo killall -s SIGKILL dnsmasq"
 alias q="exit"
 alias qq="exit"
-alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die"                                    # Backup with rstc and shutdown
-alias upv="cd ~/repos/v; v up; v doc -m -f html vlib/; cd ~/Documents/vlang/docs/; git pull;" # Update vlang source, api reference and docs
+alias rstcgo="rstc go && sleep 3 && uud && sleep 3 && die" # Backup with rstc and shutdown
+# alias upv="cd ~/repos/v; v up -v -prod; v doc -m -f html vlib/; cd ~/Documents/vlang/docs/; git pull;" # Update vlang source, api reference and docs
+alias upv="cd ~/repos/v; git pull; v self -prod -parallel-cc; v doc -m -f html vlib/; cd ~/Documents/vlang/docs/; git pull;" # Update vlang source, api reference and docs
 alias brk="echo \"notify-send -a BREAK 'Have a break, have a KitKat!.'\" | at now +25 minute"
 alias kconref="kdeconnect-cli --refresh"
 alias less='less -x4RFsX --incsearch -i -g'
 alias mute="amixer -q sset 'Master' 0%"
+alias umute="amixer -q sset 'Master' 70%"
 alias seb="safeeyes --take-break"
 
 ##############
