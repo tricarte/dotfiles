@@ -920,7 +920,7 @@ cmd not-in-backup-profile &{{
     items=()
 
     for item in ${dirs}; do
-        out=$(in-backup-profile "${item}")
+        out=$(in_backup_profile "${item}")
         if [[ $out == No* ]]; then
             # lf -remote "send $id select ${item}"
             items+=("${item}")
