@@ -2168,6 +2168,7 @@ cmd umount-mtp &{{
 # Info: Split video by duration
 cmd split-video-by-duration !{{
     # FIXME: Output durations may all be different.
+    # probably because of not re-encoding.
     clear
     read -rp "Enter the duration in MM::SS format (default: 00:11): " duration
 
@@ -2184,6 +2185,7 @@ cmd split-video-by-duration !{{
             NAME="${BASENAME%.*}"
             EXT="${BASENAME##*.}"
             printf "Splitting ${item}\n"
+            # TODO: -vcodec copy causes wrong splits
             ffmpeg -nostdin -loglevel panic -hide_banner -i "${item}" \
                 -threads "$(nproc)" -vcodec copy \
                 -f segment -segment_time "${duration}" \
