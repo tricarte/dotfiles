@@ -54,7 +54,7 @@ map <f-4> :filter
 # Disabled preview and use i key for previewing
 # set nopreview
 # map i $/usr/local/bin/pistol $f | less -R
-map i !{{
+map i ${{
     # if [[ -f "$f" ]]; then
     #     BAT_PAGER='less -R --incsearch -i -J -g' $(command -v bat) "$f"
     # else
@@ -74,22 +74,24 @@ map i !{{
     # fi
 
     mime=$(file --brief --mime "${f}")
-    if [[ $mime =~ ^application/json ]]; then
-        FX_COLLAPSED=1 $(command -v fx) "${f}"
-        exit 0
-    fi
+    # if [[ $mime =~ ^application/json ]]; then
+    #     FX_COLLAPSED=1 $(command -v fx) "${f}"
+    #     exit 0
+    # fi
 
     if [[ $mime == text/* ]]; then
 
         ext="${f##*.}"
-        if [[ $ext == "md" ]]; then
-            GLOW=$(command -v glow)
-            PAGER="/usr/bin/bat --style plain" "${GLOW}" --pager --config "${HOME}/.config/glow/glow.yml" "${f}"
-            exit 0
-        fi
+        # if [[ $ext == "md" ]]; then
+        #     # GLOW=$(command -v glow)
+        #     # PAGER="/usr/bin/bat --style plain" "${GLOW}" --pager --config "${HOME}/.config/glow/glow.yml" "${f}"
+        #     TREEMD=$(command -v treemd)
+        #     "${TREEMD}" "${f}"
+        #     exit 0
+        # fi
 
         # clear;/usr/local/bin/vim -u "${HOME}/.vim/vimrc.minimal" "${f}"
-        clear;/opt/nvim-linux-x86_64/bin/nvim --clean "${f}"
+        clear;export NVIM_APPNAME="nvim.light";/opt/nvim-linux-x86_64/bin/nvim "${f}"
         exit 0
     fi
 
