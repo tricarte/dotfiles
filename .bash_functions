@@ -694,19 +694,19 @@ function ct() {
     echo "in which you can define the host:port combo like this: 127.0.0.1:8080/"
     echo ""
     echo "Usage:"
-    echo "  ct 8080        -> 'curl-timing.sh 127.0.0.1:8080'"
-    echo "  ct example.com -> 'curl-timing.sh example.com'"
+    echo "  ct 8080        -> 'curl_timing.sh 127.0.0.1:8080'"
+    echo "  ct example.com -> 'curl_timing.sh example.com'"
     echo ""
     echo "  # Or inside directory with a '.curl' file with 'host:port/' inside:"
-    echo "  ct route       -> 'curl-timing.sh host:port/route'"
+    echo "  ct route       -> 'curl_timing.sh host:port/route'"
     return
   fi
 
   if [[ "$address" =~ ^[[:digit:]] ]]; then
-    curl-timing.sh "127.0.0.1:${address}"
+    curl_timing "127.0.0.1:${address}"
     return
   else
-    curl-timing.sh "${address}"
+    curl_timing "${address}"
     return
   fi
 }
