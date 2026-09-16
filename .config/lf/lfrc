@@ -952,19 +952,28 @@ cmd slugify &{{
 
 # Info: Add selected item to an existing rustic backup profile
 cmd add-to-backup-profile ${{
+    YQ=$(command -v yq)
+    if [[ -z $YQ ]]; then
+        lf -remote "send $id echoerr yq is not installed."
+        exit
+    fi
+    
     RSTC=$(command -v rstc)
     if [[ -z $RSTC ]]; then
         lf -remote "send $id echoerr rstc script is not installed."
+        eixt
     fi
 
     FZF=$(command -v fzf)
     if [[ -z $FZF ]]; then
         lf -remote "send $id echoerr fzf is not installed."
+        exit
     fi
 
     FD=$(command -v fd)
     if [[ -z $FD ]]; then
         lf -remote "send $id echoerr fd is not installed."
+        exit
     fi
 
     res="$($FD toml --base-directory ~/.config/rustic -x printf "{/.}\n" | sed '$s/$/\nCreate a new profile.../' | $FZF +m --header='Select backup profile')"
@@ -998,11 +1007,13 @@ cmd add-to-backup-profile ${{
             check=$(grep "\"${item}\"" "${HOME}/.config/rustic/${res}.toml")
 
             if [[ -z $check ]]; then
-                cat <<EOT >> "${HOME}/.config/rustic/${res}.toml"
-
-[[backup.sources]]
-source = "${item}"
-EOT
+              # TODO: Adding too many items at once will cause IO utilization on a single file.
+              $YQ -i ".backup.snapshots[].sources += \"${item}\"" "${HOME}/.config/rustic/${res}.toml"
+#                 cat <<EOT >> "${HOME}/.config/rustic/${res}.toml"
+#
+# [[backup.sources]]
+# source = "${item}"
+# EOT
             fi
         done < <(printf "${fx}\n")
     fi
