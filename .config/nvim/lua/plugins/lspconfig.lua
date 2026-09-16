@@ -5,6 +5,31 @@ return {
     ---@type lspconfig.options
     inlay_hints = { enabled = false },
     servers = {
+      ruff = {
+        root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git", "uv.lock" },
+        init_options = {
+          settings = {
+            logLevel = "error",
+          },
+        },
+      },
+      pyright = {
+        -- Below cmd with bun does not work!
+        -- Actually, it has started but completions did not work.
+        -- cmd = { "bun", "/home/sagirbas/.local/share/nvim/mason/bin/pyright-langserver", "--stdio" },
+        settings = {
+          pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+          },
+          python = {
+            analysis = {
+              -- Ignore all files for analysis to exclusively use Ruff for linting
+              ignore = { "*" },
+            },
+          },
+        },
+      },
       lua_ls = {
         settings = {
           Lua = {
