@@ -2267,8 +2267,10 @@ cmd convert-audio !{{
 
 # Info: View markdown in a new terminal split using glow
 cmd markdown-view &{{
+    # kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" \
+    #     --self /usr/bin/glow "${f}" --pager
     kitty @ --to unix:/tmp/mykitty launch --cwd "${PWD}" \
-        --self /usr/bin/glow "${f}" --pager
+      --self $(command -v treemd) "${f}"
 }}
 
 # Info: View csv files with csvlens
