@@ -2407,3 +2407,23 @@ cmd rename-mp4 &{{
 
     wrap_with_quotes "${fx}" | xargs -I '{}' rename-mp4 -c "$1" "{}"
 }}
+
+# Info: Set selection as current fpm
+cmd set-as-current-fpm &{{
+    if [[ ! -x "${f}" ]]; then
+        lf -remote "send $id echoerr Not an executable!"
+        exit
+    fi
+
+    output=$("${f}" -v)
+
+    if [[ "${output}" =~ fcgi ]]; then
+      fli stop > /dev/null 2>&1
+      ln -sfn "${f}" "${HOME}/bin/current-fpm"
+    else
+      lf -remote "send $id echoerr This is not an PHP-FPM binary!"
+      exit
+    fi
+
+    lf -remote "send $id echo current-fpm now is $(basename $f)!"
+}}
