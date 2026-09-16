@@ -671,9 +671,9 @@ function cl() {
   echo "Second request:               ${duration} ms"
 }
 
-# ct 8080 -> curl-timing.sh 127.0.0.1:8080
-# ct 8080/login -> curl-timing.sh 127.0.0.1:8080/login
-# ct example.com -> curl-timing.sh example.com
+# ct 8080 -> curl_timing 127.0.0.1:8080
+# ct 8080/login -> curl_timing 127.0.0.1:8080/login
+# ct example.com -> curl_timing example.com
 function ct() {
   # CURL_CMD="$(command -v curl) --silent --include"
   # PAGER=$(command -v bat)
@@ -684,7 +684,7 @@ function ct() {
   if [[ -f './.curl' ]]; then
     curl_file=$(cat ./.curl)
     address="${curl_file}${address}"
-    curl-timing.sh "${address}"
+    curl_timing "${address}"
     return
   fi
 
