@@ -64,6 +64,10 @@ local t_fts = {
     command = "zig run %s -- %s",
     input = HOME .. "/repos/zig-projects/zig-playground/playground.zig",
   },
+  python = {
+    command = "uv run %s %s",
+    input = HOME .. "/repos/python-playground/playground/main.py",
+  },
 }
 
 function RunBuffer(file, filetype, args)
