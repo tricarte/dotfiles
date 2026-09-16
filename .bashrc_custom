@@ -332,6 +332,7 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 if [ -f ~/.local/share/bash-completion/completions/deno.bash ]; then
   . ~/.local/share/bash-completion/completions/deno.bash
 fi
+
 export PATH=$HOME/.deno/bin:$PATH
 export VOLTA_HOME="$HOME/.volta"
 export PATH="$VOLTA_HOME/bin:$PATH"
@@ -339,3 +340,30 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# llama.cpp
+export PATH="$PATH:$HOME/repos/llama.cpp/build/bin"
+
+# elvm
+export PATH="/home/sagirbas/.elvm/bin:$PATH"
+
+# passtui added this to ~/.bashrc
+export GPG_TTY=$(tty)
+
+export PHP_HOME="${HOME}/repos/php-build"
+export PHPX_HOME="${HOME}/repos/phpx"
+export PATH="$HOME/Downloads/tpc:$PATH"
+export LD_LIBRARY_PATH="${PHP_HOME}/lib:${PHPX_HOME}/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+# ZVM
+export ZVM_INSTALL="$HOME/.zvm/self"
+export PATH="$PATH:$HOME/.zvm/bin"
+export PATH="$PATH:$ZVM_INSTALL/"
+
+if [[ -f "${HOME}/.wasmedge/env" ]]; then
+  source "${HOME}/.wasmedge/env"
+fi
+
+# ant
+export ANT_INSTALL="$HOME/.ant"
+export PATH="$ANT_INSTALL/bin:$PATH"
